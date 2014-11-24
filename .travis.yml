@@ -7,4 +7,4 @@ services:
 
 addons:
    code_climate:
-     repo_token:
+     repo_token: 8ad48d69e6a9e8bc75b7cdd1e3fa794c108e95789da80a4ae42bdbb972064d17
