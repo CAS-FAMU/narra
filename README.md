@@ -1,0 +1,3 @@
+![grape logo](narra.png)
+
+[![Build Status](https://travis-ci.org/CAS-FAMU/narra.svg?branch=master)](https://travis-ci.org/CAS-FAMU/narra) [![Code Climate](https://codeclimate.com/github/CAS-FAMU/narra/badges/gpa.svg)](https://codeclimate.com/github/CAS-FAMU/narra) [![Test Coverage](https://codeclimate.com/github/CAS-FAMU/narra/badges/coverage.svg)](https://codeclimate.com/github/CAS-FAMU/narra) [![Dependency Status](https://gemnasium.com/CAS-FAMU/narra.png)](https://gemnasium.com/CAS-FAMU/narra)

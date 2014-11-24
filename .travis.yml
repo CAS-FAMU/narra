@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.1.4
+
+services:
+  - mongodb
+
+addons:
+   code_climate:
+     repo_token:
