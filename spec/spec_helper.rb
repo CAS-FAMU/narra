@@ -52,4 +52,28 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'default'
+
+  # Prepare users
+  config.before(:each) do
+    # create users
+    # testing hashes
+    admin_hash = ActiveSupport::JSON.decode('{"provider":"test","uid":"admin@narra.eu","info":{"name":"Admin","email":"admin@narra.eu"},"credentials":{},"extra":{}}')
+    author_hash = ActiveSupport::JSON.decode('{"provider":"test","uid":"author@narra.eu","info":{"name":"Author","email":"author@narra.eu"},"credentials":{},"extra":{}}')
+    unroled_hash = ActiveSupport::JSON.decode('{"provider":"test","uid":"guest@narra.eu","info":{"name":"Unroled","email":"unroled@narra.eu"},"credentials":{},"extra":{}}')
+    # create user and its identity
+    Narra::Identity.create_from_hash(admin_hash)
+    Narra::Identity.create_from_hash(author_hash)
+    Narra::Identity.create_from_hash(unroled_hash)
+    # get admin token and user
+    @admin_token = CGI::escape(Base64.urlsafe_encode64(admin_hash['uid']))
+    @admin_user = Narra::User.find_by(name: 'Admin')
+    # get author token and user
+    @author_token = CGI::escape(Base64.urlsafe_encode64(author_hash['uid']))
+    @author_user = Narra::User.find_by(name: 'Author')
+    # get guest token and user
+    @unroled_token = CGI::escape(Base64.urlsafe_encode64(unroled_hash['uid']))
+    @unroled_user = Narra::User.find_by(name: 'Unroled')
+    @unroled_user.roles = []
+    @unroled_user.save
+  end
 end

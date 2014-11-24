@@ -29,6 +29,7 @@ gem 'mongoid'
 gem 'omniauth'
 gem 'omniauth-openid'
 gem 'rack-cors'
+gem 'thin'
 gem 'narra-core', git: 'https://github.com/CAS-FAMU/narra-core.git'
 gem 'rspec-rails', :group => [:test, :development]
 gem 'rspec-mocks', :group => [:test, :development]
