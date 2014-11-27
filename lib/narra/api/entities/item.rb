@@ -44,23 +44,21 @@ module Narra
           {id: library._id.to_s, name: library.name}
         end
 
-        expose :thumbnails, if: lambda { |model, options| !model.thumbnails.nil? && !model.thumbnails.empty? } do |model, options|
+        expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
           model.url_thumbnails
         end
 
         expose :proxy_hq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
-          model.url_proxy_lq
-        end
-
-        expose :proxy_lq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
           model.url_proxy_hq
         end
 
-        expose :meta, as: :metadata, if: {type: :detail_item} do |item, options|
+        expose :proxy_lq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
+          model.url_proxy_lq
+        end
+
+        expose :meta, as: :metadata, using: Narra::API::Entities::Meta, if: {type: :detail_item} do |item, options|
           # get scoped metadata for item
-          meta = options[:project].nil? ? item.meta : Narra::Meta.where(item: item).generators(options[:project].generators)
-          # format them
-          meta.collect { |m| { name: m.name, content: m.content, generator: m.generator} }
+          options[:project].nil? ? item.meta : Narra::Meta.where(item: item).generators(options[:project].generators)
         end
       end
     end

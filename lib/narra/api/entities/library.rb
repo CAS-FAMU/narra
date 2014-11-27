@@ -34,7 +34,7 @@ module Narra
           { username: model.owner.username, name: model.owner.name}
         end
 
-        expose :thumbnails, if: lambda { |model, options| !model.thumbnails.nil? && !model.thumbnails.empty? } do |model, options|
+        expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
           model.url_thumbnails
         end
 

@@ -25,6 +25,9 @@ module Narra
       class Meta < Grape::Entity
 
         expose :name, :content, :generator
+
+        expose :in, if: lambda { |model, options| !model.in.nil? }
+        expose :out, if: lambda { |model, options| !model.out.nil? }
       end
     end
   end

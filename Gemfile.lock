@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: e265591396cca11326e4098fb07a5dfa512a87a9
+  revision: 6d7762b3a79fe5d6d61d2e72d78d69260338c4d4
   specs:
     narra-core (0.0.1)
       aasm
@@ -9,14 +9,19 @@ GIT
       rails (~> 4.1.8)
       sidekiq
       sinatra
-      streamio-ffmpeg
       wisper
+
+GIT
+  remote: https://github.com/marigan/streamio-ffmpeg.git
+  revision: 90470da0eaecb71df0ca6ae90f3d27f76cdb3ca2
+  specs:
+    streamio-ffmpeg (1.0.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.2.8)
-    aasm (4.0.2)
+    aasm (4.0.3)
     actionmailer (4.1.8)
       actionpack (= 4.1.8)
       actionview (= 4.1.8)
@@ -176,7 +181,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
-    nokogiri (1.6.4.1)
+    nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
@@ -271,7 +276,6 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
-    streamio-ffmpeg (1.0.0)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -310,4 +314,5 @@ DEPENDENCIES
   rails (= 4.1.8)
   rspec-mocks
   rspec-rails
+  streamio-ffmpeg!
   thin
