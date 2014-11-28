@@ -19,7 +19,7 @@
 # Authors: Michal Mocnak <michal@marigan.net>
 #
 
-:concurrency: 4
+:concurrency: 1
 :queues:
   - transcodes
   - generators
