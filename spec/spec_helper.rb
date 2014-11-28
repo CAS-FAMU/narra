@@ -24,6 +24,8 @@ require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
 ENV['RAILS_ENV'] ||= 'test'
+ENV['NARRA_MONGOID_HOST'] ||= 'localhost'
+ENV['NARRA_MONGOID_PORT'] ||= '27017'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'factory_girl_rails'
