@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: c067834c50078298ac7533a6ddf3cefa40c5489c
+  revision: d780b78aba52c01789368ae69bf8cf5900f2a0a5
   specs:
     narra-core (0.0.1)
       aasm
@@ -57,7 +57,7 @@ GEM
     builder (3.2.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    codeclimate-test-reporter (0.4.1)
+    codeclimate-test-reporter (0.4.2)
       simplecov (>= 0.7.1, < 1.0.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
