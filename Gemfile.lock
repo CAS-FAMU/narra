@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: d780b78aba52c01789368ae69bf8cf5900f2a0a5
+  revision: 8b1e70a1ada0d66f317ee1288afd00138ec610bf
   specs:
     narra-core (0.0.1)
       aasm
@@ -116,7 +116,7 @@ GEM
     fog-sakuracloud (0.1.1)
       fog-core
       fog-json
-    fog-softlayer (0.3.24)
+    fog-softlayer (0.3.25)
       fog-core
       fog-json
     fog-terremark (0.0.3)
@@ -221,7 +221,7 @@ GEM
       activesupport (= 4.1.8)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.4.0)
+    rake (10.4.1)
     rbvmomi (1.8.2)
       builder
       nokogiri (>= 1.4.1)

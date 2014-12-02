@@ -34,7 +34,7 @@ production:
     default:
       database: narra
       hosts:
-        - <%= ENV['NARRA_MONGOID'] %>
+        - localhost:27017
   options:
     preload_models: true
     raise_not_found_error: false
