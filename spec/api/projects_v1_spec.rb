@@ -603,7 +603,7 @@ describe Narra::API::Modules::ProjectsV1 do
         # check received data
         expect(data['status']).to match('OK')
         expect(data['sequence']['id']).to match(@sequence._id.to_s)
-        expect(data['sequence']).to have_key('playlist')
+        expect(data['sequence']).to have_key('marks')
       end
     end
   end
