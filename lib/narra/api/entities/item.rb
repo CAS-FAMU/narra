@@ -48,12 +48,20 @@ module Narra
           model.url_thumbnails
         end
 
-        expose :proxy_hq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
-          model.url_proxy_hq
+        expose :video_proxy_hq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
+          model.url_video_proxy_hq
         end
 
-        expose :proxy_lq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
-          model.url_proxy_lq
+        expose :video_proxy_lq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
+          model.url_video_proxy_lq
+        end
+
+        expose :image_proxy_hq, if: lambda { |model, options| model.type == :image && model.prepared? } do |model, options|
+          model.url_image_proxy_hq
+        end
+
+        expose :image_proxy_lq, if: lambda { |model, options| model.type == :image && model.prepared? } do |model, options|
+          model.url_image_proxy_lq
         end
 
         expose :meta, as: :metadata, using: Narra::API::Entities::Meta, if: {type: :detail_item} do |item, options|

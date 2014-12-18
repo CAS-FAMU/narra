@@ -26,8 +26,7 @@ module Narra
 
         expose :name, :content, :generator
 
-        expose :in, if: lambda { |model, options| !model.in.nil? }
-        expose :out, if: lambda { |model, options| !model.out.nil? }
+        expose :marks, using: Narra::API::Entities::Mark, if: lambda { |model, options| !model.marks.empty? }
       end
     end
   end
