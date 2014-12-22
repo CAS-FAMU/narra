@@ -20,5 +20,5 @@
 #
 
 module Narra
-  VERSION = "dev"
+  MODULES = Gem.loaded_specs.select { |g| /^narra/ =~ g }.values
 end

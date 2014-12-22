@@ -34,10 +34,6 @@ module Narra
           model.prepared?
         end
 
-        expose :owner do |model, options|
-          { username: model.owner.username, name: model.owner.name}
-        end
-
         expose :library, format_with: :library, if: {type: :detail_item}
 
         format_with :library do |library|

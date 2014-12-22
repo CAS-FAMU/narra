@@ -33,7 +33,12 @@ module Narra
 
           desc "Return system version."
           get '/version' do
-            present_ok_generic(:version, present({ release: Narra::VERSION, modules: Narra::MODULES.collect { |m| { name: m.name, version: m.version.version } }}))
+            present_ok_generic(:version, Narra::VERSION)
+          end
+
+          desc "Return system modules."
+          get '/modules' do
+            present_ok_generic(:modules, Narra::MODULES.collect { |m| { name: m.name, version: m.version.version, summary: m.summary, description: m.description, authors: m.authors, email: m.email, homepage: m.homepage, license: m.license }})
           end
         end
       end

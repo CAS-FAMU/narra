@@ -42,8 +42,18 @@ module Narra
 
           desc 'Create new library.'
           post 'new' do
-            required_attributes! [:name, :title]
-            new_one(Library, Narra::API::Entities::Library, :name, {name: params[:name], title: params[:title], description: params[:description], owner: current_user}, [:admin, :author]) do |library|
+            required_attributes! [:name]
+            # check for the author
+            author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
+            # check for contributors
+            contributors = []
+            # iterate through
+            unless params[:contributors].nil?
+              params[:contributors].each do |author|
+                contributors << User.find_by(username: author)
+              end
+            end
+            new_one(Library, Narra::API::Entities::Library, :name, {name: params[:name], description: params[:description], author: author, contributors: contributors}, [:admin, :author]) do |library|
               # check for the project if any
               project = Project.find_by(name: params[:project]) unless params[:project].nil?
               # authorize the owner
@@ -56,28 +66,27 @@ module Narra
           end
 
           desc 'Return a specific library.'
-          get ':name' do
-            return_one(Library, Narra::API::Entities::Library, :name, [:admin, :author])
+          get ':id' do
+            return_one(Library, Narra::API::Entities::Library, :id, [:admin, :author])
           end
 
           desc 'Update a specific library.'
-          post ':name/update' do
-            update_one(Library, Narra::API::Entities::Library, :name, [:admin, :author]) do |library|
-              library.update_attributes(title: params[:title]) unless params[:title].nil?
+          post ':id/update' do
+            update_one(Library, Narra::API::Entities::Library, :id, [:admin, :author]) do |library|
               library.update_attributes(description: params[:description]) unless params[:description].nil?
             end
           end
 
           desc 'Delete a specific library.'
-          get ':name/delete' do
-            delete_one(Library, :name, [:admin, :author])
+          get ':id/delete' do
+            delete_one(Library, :id, [:admin, :author])
           end
 
           desc 'Return a specific library items.'
-          get ':name/items' do
+          get ':id/items' do
             auth! [:admin, :author]
             # get user
-            library = Library.find_by(name: params[:name])
+            library = Library.find(params[:id])
             # present or not found
             if (library.nil?)
               error_not_found!

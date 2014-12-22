@@ -34,7 +34,7 @@ module Narra
         def return_many(model, entity = nil, authorization = [], authentication = true)
           auth!(authorization, authentication)
           # get items
-          items = params[:owner].nil? ? model.limit(params[:limit]) : model.where(owner: ::User.find(params[:owner])).limit(params[:limit])
+          items = params[:author].nil? ? model.limit(params[:limit]) : model.where(author: ::User.find(params[:owner])).limit(params[:limit])
           # present
           present_ok(items, model, entity)
         end

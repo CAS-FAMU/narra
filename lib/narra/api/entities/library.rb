@@ -28,20 +28,24 @@ module Narra
           model._id.to_s
         end
 
-        expose :name, :title, :description
+        expose :name, :description
 
-        expose :owner do |model, options|
-          { username: model.owner.username, name: model.owner.name}
+        expose :author do |model, options|
+          { username: model.author.username, name: model.author.name}
         end
 
         expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
           model.url_thumbnails
         end
 
+        expose :contributors do |model, options|
+          model.contributors.collect { |user| { username: user.username, name: user.name} }
+        end
+
         expose :projects, format_with: :projects, :if => {:type => :detail_library}
 
         format_with :projects do |projects|
-          projects.collect { |project| {id: project._id.to_s, name: project.name, title: project.title, owner: {id: project.owner._id.to_s, name: project.owner.name}} }
+          projects.collect { |project| {id: project._id.to_s, name: project.name, title: project.title, author: {username: project.author.username, name: project.author.name}} }
         end
       end
     end

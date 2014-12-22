@@ -25,17 +25,18 @@ require 'spec_helper'
 describe Narra::API::Modules::ItemsV1 do
   before(:each) do
     # create libraries
-    @library_01 = FactoryGirl.create(:library, owner: @author_user)
-    @library_02 = FactoryGirl.create(:library, owner: @author_user)
+    @library_01 = FactoryGirl.create(:library, author: @author_user)
+    @library_02 = FactoryGirl.create(:library, author: @author_user)
+    @library_03 = FactoryGirl.create(:library, author: @admin_user)
 
     # create metadata
     @meta_src_01 = FactoryGirl.create(:meta, :source)
     @meta_src_02 = FactoryGirl.create(:meta, :source)
 
     # create items
-    @item = FactoryGirl.create(:item, library: @library_01, owner: @author_user)
-    @item_admin = FactoryGirl.create(:item, library: @library_02, owner: @admin_user)
-    @item_meta = FactoryGirl.create(:item, library: @library_02, meta: [@meta_src_01, @meta_src_02], owner: @author_user)
+    @item = FactoryGirl.create(:item, library: @library_01)
+    @item_admin = FactoryGirl.create(:item, library: @library_03)
+    @item_meta = FactoryGirl.create(:item, library: @library_02, meta: [@meta_src_01, @meta_src_02])
 
     # create events
     @event = FactoryGirl.create(:event, item: @item)

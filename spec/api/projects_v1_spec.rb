@@ -25,20 +25,20 @@ require 'spec_helper'
 describe Narra::API::Modules::ProjectsV1 do
   before(:each) do
     # create item
-    @item_01 = FactoryGirl.create(:item, owner: @author_user)
-    @item_02 = FactoryGirl.create(:item, owner: @author_user)
-    @item_03 = FactoryGirl.create(:item, owner: @author_user)
-    @item_04 = FactoryGirl.create(:item, owner: @author_user)
+    @item_01 = FactoryGirl.create(:item)
+    @item_02 = FactoryGirl.create(:item)
+    @item_03 = FactoryGirl.create(:item)
+    @item_04 = FactoryGirl.create(:item)
 
     # create libraries
-    @library_01 = FactoryGirl.create(:library, owner: @author_user, items: [@item_01])
-    @library_02 = FactoryGirl.create(:library, owner: @author_user, items: [@item_02])
-    @library_03 = FactoryGirl.create(:library, owner: @author_user, items: [@item_03])
-    @library_04 = FactoryGirl.create(:library, owner: @author_user, items: [@item_04])
+    @library_01 = FactoryGirl.create(:library, author: @author_user, items: [@item_01])
+    @library_02 = FactoryGirl.create(:library, author: @author_user, items: [@item_02])
+    @library_03 = FactoryGirl.create(:library, author: @author_user, items: [@item_03])
+    @library_04 = FactoryGirl.create(:library, author: @author_user, items: [@item_04])
 
     # create projects for testing purpose
-    @project = FactoryGirl.create(:project, owner: @author_user, libraries: [@library_01, @library_02])
-    @project_admin = FactoryGirl.create(:project, owner: @admin_user, libraries: [@library_03, @library_04])
+    @project = FactoryGirl.create(:project, author: @author_user, libraries: [@library_01, @library_02])
+    @project_admin = FactoryGirl.create(:project, author: @admin_user, libraries: [@library_03, @library_04])
 
     # create sequences for testing purpose
     @sequence = FactoryGirl.create(:sequence, project: @project)
@@ -454,7 +454,7 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['project']['name']).to match('test_project')
         expect(data['project']['title']).to match('Test Project')
         expect(data['project']['description']).to match('Test Project Description')
-        expect(data['project']['owner']['name']).to match(@author_user.name)
+        expect(data['project']['author']['name']).to match(@author_user.name)
       end
     end
 
@@ -478,7 +478,7 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['project']['name']).to match(@project.name)
         expect(data['project']['title']).to match('Test Project Updated')
         expect(data['project']['description']).to match('Test Project Description Updated')
-        expect(data['project']['owner']['name']).to match(@author_user.name)
+        expect(data['project']['author']['name']).to match(@author_user.name)
       end
     end
 

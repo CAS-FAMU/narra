@@ -24,12 +24,15 @@ module Narra
     module Entities
       class Project < Grape::Entity
 
-        expose :id do |model, options|
-          model._id.to_s
+        expose :name, :title, :description, :generators
+        expose :author do |model, options|
+          { username: model.author.username, name: model.author.name}
         end
-        expose :name, :title, :description, :generators, :thumbnails
-        expose :owner do |model, options|
-          { username: model.owner.username, name: model.owner.name}
+        expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
+          model.url_thumbnails
+        end
+        expose :contributors do |model, options|
+          model.contributors.collect { |user| { username: user.username, name: user.name} }
         end
         expose :libraries, using: Narra::API::Entities::Library, :if => {:type => :detail_project}
       end

@@ -32,7 +32,7 @@ describe Narra::API::Modules::SystemV1 do
       expect(response.status).to match(200)
 
       # check received data
-      expect(JSON.parse(response.body)['version']['release']).to match(Narra::VERSION)
+      expect(JSON.parse(response.body)['version']).to match(Narra::VERSION)
     end
   end
 end

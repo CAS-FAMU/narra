@@ -32,8 +32,13 @@ module Narra
           if object.nil?
             error_not_authorized! unless current_user.is?(roles)
           else
-            if object.has_attribute?('owner_id') && !current_user.is?([:admin]) && current_user.is?(roles)
-              error_not_authorized! unless object.owner._id == current_user._id
+            # check if the object is an item
+            object = object.library if object.is_a?(Narra::Item)
+            # test against
+            if object.has_attribute?('author_id') || object.has_attribute?('contributor_ids')
+              if !current_user.is?([:admin]) && current_user.is?(roles)
+                error_not_authorized! unless (object.author_id == current_user._id || object.contributor_ids.include?(current_user._id))
+              end
             end
           end
         end

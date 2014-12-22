@@ -39,6 +39,11 @@ module Narra
           get do
             return_many(Event, Narra::API::Entities::Event, [:admin])
           end
+
+          desc 'Return all events by user scope.'
+          get '/user/:username' do
+            return_many(Event.user(User.find_by(username: params[:username])), Narra::API::Entities::Event, [:admin, :author])
+          end
         end
       end
     end

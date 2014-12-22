@@ -37,7 +37,8 @@ module Narra
 
           desc "Return settings."
           get do
-            return_many(Narra::Tools::Settings)
+            auth! [:admin]
+            present_ok_generic(:settings, Narra::Tools::Settings.all)
           end
 
           desc "Return defaults."
@@ -61,7 +62,7 @@ module Narra
 
           desc "Update a specific setting."
           post ':name/update' do
-            auth!
+            auth! [:admin]
             required_attributes! [:value]
             # update
             Narra::Tools::Settings.set(params[:name], params[:value])

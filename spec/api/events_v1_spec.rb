@@ -25,10 +25,10 @@ require 'spec_helper'
 describe Narra::API::Modules::EventsV1 do
   before(:each) do
     # create libraries
-    @library = FactoryGirl.create(:library, owner: @author_user)
+    @library = FactoryGirl.create(:library, author: @author_user)
 
     # create items
-    @item = FactoryGirl.create(:item, library: @library, owner: @author_user)
+    @item = FactoryGirl.create(:item, library: @library)
 
     # create events
     @event = FactoryGirl.create(:event, item: @item)

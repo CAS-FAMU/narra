@@ -46,6 +46,8 @@ module Narra
             new_one_custom(Item, Narra::API::Entities::Item, [:admin, :author]) do
               # trying to get library
               library = Library.find(params[:library])
+              # check the author field
+              author = params[:author].nil? ? current_user.name : params[:author]
               # input metadata container
               metadata = []
               # check for metadata
@@ -57,7 +59,7 @@ module Narra
                 end
               end
               # add new item
-              Narra::Core.add_item(params[:url], current_user, library, metadata)
+              Narra::Core.add_item(params[:url], author, current_user, library, metadata)
             end
           end
 
@@ -76,6 +78,15 @@ module Narra
             return_one_custom(Item, :id, [:admin, :author]) do |item|
               present_ok(item.events, Event, Narra::API::Entities::Event, 'item')
             end
+          end
+
+          desc 'Return a specific count of random thumbnails.'
+          get 'thumbnails/:count' do
+            # resolve random thumbnails
+            thumbnails = Narra::Meta.where(generator: :thumbnail).sample(params[:count].to_i).collect { |meta| meta.content }
+
+            # present
+            present_ok_generic('thumbnails', thumbnails)
           end
         end
       end

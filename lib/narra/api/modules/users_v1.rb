@@ -37,7 +37,7 @@ module Narra
 
           desc "Return users."
           get do
-            return_many(User, Narra::API::Entities::User, [:admin])
+            return_many(User, Narra::API::Entities::User, [:admin, :author])
           end
 
           desc "Return logged user in the current session."
@@ -57,7 +57,7 @@ module Narra
 
           desc "Return roles."
           get 'roles' do
-            auth! [:admin]
+            auth! [:admin, :author]
             present_ok_generic(:roles, present(User.all_roles))
           end
 
@@ -74,8 +74,17 @@ module Narra
           desc "Update a user."
           post ':username/update' do
             required_attributes! [:roles]
-            update_one(User, Narra::API::Entities::User, :username, [:admin]) do |user|
-              user.roles = params[:roles].collect { |role| role.to_sym }
+            update_one(User, Narra::API::Entities::User, :username, [:admin, :author]) do |user|
+              # gather new roles
+              new_roles = params[:roles].collect { |role| role.to_sym }
+              if user.roles.sort != new_roles.sort
+                # authorize for admin to change roles
+                authorize!([:admin])
+                # change roles
+                user.roles = new_roles
+              end
+              # change username if there is a change
+              user.username = params[:new_username] unless params[:new_username].nil? || user.username.equal?(params[:username])
             end
           end
         end

@@ -23,7 +23,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.8'
 gem 'jquery-rails'
-gem 'grape'
+gem 'grape', '0.9.0'
 gem 'grape-entity'
 gem 'mongoid'
 gem 'omniauth'

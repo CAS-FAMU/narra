@@ -41,13 +41,20 @@ module Narra
           end
 
           desc "Create new project."
-          params do
-            requires :name, type: String, desc: "Name of new project."
-            requires :title, type: String, desc: "Title of new project."
-          end
           post 'new' do
             required_attributes! [:name, :title]
-            new_one(Project, Narra::API::Entities::Project, :name, {name: params[:name], title: params[:title], description: params[:description], owner: current_user}, [:admin, :author])
+            # check for the author
+            author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
+            # check for contributors
+            contributors = []
+            # iterate through
+            unless params[:contributors].nil?
+              params[:contributors].each do |author|
+                contributors << User.find_by(username: author)
+              end
+            end
+            # create new project
+            new_one(Project, Narra::API::Entities::Project, :name, {name: params[:name], title: params[:title], description: params[:description], author: author, contributors: contributors}, [:admin, :author])
           end
 
           desc "Return a specific project."

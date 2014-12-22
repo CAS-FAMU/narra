@@ -137,38 +137,6 @@ describe Narra::API::Modules::UsersV1 do
   end
 
   context 'not authorized' do
-    describe 'GET /v1/users' do
-      it 'returns users' do
-        get '/v1/users' + '?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(403)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authorized')
-      end
-    end
-
-    describe 'GET /v1/users/roles' do
-      it 'returns all roles' do
-        get '/v1/users/roles' + '?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(403)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authorized')
-      end
-    end
-
     describe 'GET /v1/users/[:username]' do
       it 'returns a specific user' do
         get '/v1/users/' + @unroled_user.username + '?token=' + @author_token
