@@ -73,7 +73,19 @@ module Narra
           desc 'Update a specific library.'
           post ':id/update' do
             update_one(Library, Narra::API::Entities::Library, :id, [:admin, :author]) do |library|
-              library.update_attributes(description: params[:description]) unless params[:description].nil?
+              library.update_attributes(name: params[:name]) unless params[:name].nil? || library.name.equal?(params[:name])
+              library.update_attributes(description: params[:description]) unless params[:description].nil? || library.description.equal?(params[:description])
+              library.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || library.author.username.equal?(params[:author])
+              # gather contributors if exist
+              contributors = []
+              # iterate through
+              unless params[:contributors].nil?
+                params[:contributors].each do |contributor|
+                  contributors << User.find_by(username: contributor)
+                end
+              end
+              # push them if changed
+              library.update_attributes(contributors: contributors) unless contributors.sort == library.contributors.sort
             end
           end
 

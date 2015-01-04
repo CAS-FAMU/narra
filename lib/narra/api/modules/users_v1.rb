@@ -81,10 +81,10 @@ module Narra
                 # authorize for admin to change roles
                 authorize!([:admin])
                 # change roles
-                user.roles = new_roles
+                user.update_attributes(roles: new_roles)
               end
               # change username if there is a change
-              user.username = params[:new_username] unless params[:new_username].nil? || user.username.equal?(params[:username])
+              user.update_attributes(username: params[:new_username]) unless params[:new_username].nil? || user.username.equal?(params[:new_username])
             end
           end
         end
