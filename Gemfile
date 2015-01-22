@@ -21,11 +21,12 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.8'
+gem 'rails', '4.2.0'
 gem 'jquery-rails'
-gem 'grape', '0.9.0'
+gem 'grape'
 gem 'grape-entity'
 gem 'mongoid'
+gem 'mongoid-tree'
 gem 'omniauth'
 gem 'omniauth-openid'
 gem 'rack-cors'
