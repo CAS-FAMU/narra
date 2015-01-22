@@ -28,9 +28,8 @@ module Narra
 
         helpers Narra::API::Helpers::User
         helpers Narra::API::Helpers::Present
-
-        resource :auth do
-          post '/:provider/callback' do
+        helpers do
+          def handle_auth_response
             auth = request.env['omniauth.auth']
 
             unless @auth = Narra::Identity.find_from_hash(auth)
@@ -49,6 +48,16 @@ module Narra
 
             # return token in json when request is not from browser
             present_ok_generic(:token, @token)
+          end
+        end
+
+        resource :auth do
+          get '/:provider/callback' do
+            handle_auth_response
+          end
+
+          post '/:provider/callback' do
+            handle_auth_response
           end
         end
       end

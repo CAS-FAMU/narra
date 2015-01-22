@@ -24,7 +24,7 @@ module Narra
     module Entities
       class User < Grape::Entity
 
-        expose :username, :name, :email, :roles
+        expose :username, :name, :email, :image, :roles
         expose :identities do |user, options|
           user.identities.collect { |identity| identity.provider }
         end

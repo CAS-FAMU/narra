@@ -28,7 +28,7 @@ gem 'grape-entity'
 gem 'mongoid'
 gem 'mongoid-tree'
 gem 'omniauth'
-gem 'omniauth-openid'
+gem 'omniauth-google-oauth2'
 gem 'rack-cors'
 gem 'narra-core', git: 'https://github.com/CAS-FAMU/narra-core.git'
 gem 'rspec-rails', :group => [:test, :development]
