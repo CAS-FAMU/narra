@@ -15,11 +15,20 @@ GIT
 
 GIT
   remote: https://github.com/CAS-FAMU/narra-speech.git
-  revision: c1f8609dfbd18f422c9ccf4b4982573a6f863926
+  revision: e5627f3fda8c559972e21f3595bfd40c3dbe29e4
   specs:
     narra-speech (0.0.1)
       att-codekit
       narra-core
+
+GIT
+  remote: https://github.com/attdevsupport/codekit-ruby.git
+  revision: 2afb6d52f31d58c53b053d8f41985221c857fbc0
+  specs:
+    att-codekit (4.3.2)
+      immutable_struct
+      json
+      rest-client (~> 1.6)
 
 GIT
   remote: https://github.com/marigan/streamio-ffmpeg.git
@@ -29,7 +38,6 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: http://lprod.code-api-att.com:8808/
   specs:
     CFPropertyList (2.3.0)
     aasm (4.0.8)
@@ -69,10 +77,6 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.0)
-    att-codekit (4.3.2)
-      immutable_struct
-      json
-      rest-client (~> 1.6)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -382,7 +386,6 @@ DEPENDENCIES
   omniauth-google-oauth2
   rack-cors
   rails (= 4.2.0)
-  rest-client!
   rspec-mocks
   rspec-rails
   streamio-ffmpeg!

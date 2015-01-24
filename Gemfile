@@ -40,6 +40,4 @@ gem 'mongoid-rspec', :group => :test
 gem 'factory_girl_rails', :group => :test
 gem 'codeclimate-test-reporter', :group => :test, :require => nil
 gem 'streamio-ffmpeg', git: 'https://github.com/marigan/streamio-ffmpeg.git'
-
-gem 'att-codekit', :source => 'http://lprod.code-api-att.com:8808/'
-gem 'rest-client', :source => 'http://lprod.code-api-att.com:8808/'
+gem 'att-codekit', git: 'https://github.com/attdevsupport/codekit-ruby.git'
