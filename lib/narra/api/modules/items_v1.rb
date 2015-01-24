@@ -40,6 +40,11 @@ module Narra
             return_many(Item, Narra::API::Entities::Item, [:admin])
           end
 
+          desc 'Return a specific item.'
+          get ':id' do
+            return_one(Item, Narra::API::Entities::Item, :id, [:admin, :author])
+          end
+
           desc 'Create new item.'
           post 'new' do
             required_attributes! [:url, :library]
@@ -55,7 +60,7 @@ module Narra
                 # iterate through hash
                 params[:metadata].each do |key, value|
                   # store new source metadata
-                  metadata << {name: key, content: value}
+                  metadata << {name: key, value: value}
                 end
               end
               # add new item
@@ -63,30 +68,9 @@ module Narra
             end
           end
 
-          desc 'Return a specific item.'
-          get ':id' do
-            return_one(Item, Narra::API::Entities::Item, :id, [:admin, :author])
-          end
-
           desc 'Delete a specific item.'
           get ':id/delete' do
             delete_one(Item, :id, [:admin, :author])
-          end
-
-          desc 'Return item events.'
-          get ':id/events' do
-            return_one_custom(Item, :id, [:admin, :author]) do |item|
-              present_ok(item.events, Event, Narra::API::Entities::Event, 'item')
-            end
-          end
-
-          desc 'Return a specific count of random thumbnails.'
-          get 'thumbnails/:count' do
-            # resolve random thumbnails
-            thumbnails = Narra::Meta.where(generator: :thumbnail).sample(params[:count].to_i).collect { |meta| meta.content }
-
-            # present
-            present_ok_generic('thumbnails', thumbnails)
           end
         end
       end

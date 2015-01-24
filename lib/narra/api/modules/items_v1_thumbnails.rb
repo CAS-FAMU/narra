@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014 CAS / FAMU
+# Copyright (C) 2013 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -21,14 +21,29 @@
 
 module Narra
   module API
-    module Entities
-      class Sequence < Grape::Entity
+    module Modules
+      class ItemsV1Thumbnails < Narra::API::Modules::Generic
 
-        expose :id do |model, options|
-          model._id.to_s
+        version 'v1', :using => :path
+        format :json
+
+        helpers Narra::API::Helpers::User
+        helpers Narra::API::Helpers::Error
+        helpers Narra::API::Helpers::Present
+        helpers Narra::API::Helpers::Generic
+        helpers Narra::API::Helpers::Attributes
+
+        resource :items do
+
+          desc 'Return a specific count of random thumbnails.'
+          get 'thumbnails/:count' do
+            # resolve random thumbnails
+            thumbnails = Narra::MetaItem.where(generator: :thumbnail).sample(params[:count].to_i).collect { |meta| meta.value }
+
+            # present
+            present_ok_generic('thumbnails', thumbnails)
+          end
         end
-        expose :name
-        expose :marks, using: Narra::API::Entities::MarkSequence
       end
     end
   end

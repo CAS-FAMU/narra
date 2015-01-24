@@ -40,6 +40,11 @@ module Narra
             return_many(Library, Narra::API::Entities::Library, [:admin, :author])
           end
 
+          desc 'Return a specific library.'
+          get ':id' do
+            return_one(Library, Narra::API::Entities::Library, :id, [:admin, :author])
+          end
+
           desc 'Create new library.'
           post 'new' do
             required_attributes! [:name]
@@ -65,11 +70,6 @@ module Narra
             end
           end
 
-          desc 'Return a specific library.'
-          get ':id' do
-            return_one(Library, Narra::API::Entities::Library, :id, [:admin, :author])
-          end
-
           desc 'Update a specific library.'
           post ':id/update' do
             update_one(Library, Narra::API::Entities::Library, :id, [:admin, :author]) do |library|
@@ -92,19 +92,6 @@ module Narra
           desc 'Delete a specific library.'
           get ':id/delete' do
             delete_one(Library, :id, [:admin, :author])
-          end
-
-          desc 'Return a specific library items.'
-          get ':id/items' do
-            auth! [:admin, :author]
-            # get user
-            library = Library.find(params[:id])
-            # present or not found
-            if (library.nil?)
-              error_not_found!
-            else
-              present_ok(library.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
-            end
           end
         end
       end

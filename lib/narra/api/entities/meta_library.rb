@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014 CAS / FAMU
+# Copyright (C) 2015 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -22,13 +22,9 @@
 module Narra
   module API
     module Entities
-      class Sequence < Grape::Entity
+      class MetaLibrary < Grape::Entity
 
-        expose :id do |model, options|
-          model._id.to_s
-        end
-        expose :name
-        expose :marks, using: Narra::API::Entities::MarkSequence
+        expose :name, :value
       end
     end
   end

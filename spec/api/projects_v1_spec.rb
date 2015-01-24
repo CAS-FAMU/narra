@@ -409,6 +409,7 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['status']).to match('OK')
         expect(data['project']['name']).to match(@project.name)
         expect(data['project']['title']).to match(@project.title)
+        expect(data['project']['public']).to match('false')
       end
     end
 
@@ -453,6 +454,7 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['status']).to match('OK')
         expect(data['project']['name']).to match('test_project')
         expect(data['project']['title']).to match('Test Project')
+        expect(data['project']['public']).to match('false')
         expect(data['project']['description']).to match('Test Project Description')
         expect(data['project']['author']['name']).to match(@author_user.name)
       end

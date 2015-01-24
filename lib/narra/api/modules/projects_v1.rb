@@ -35,12 +35,17 @@ module Narra
 
         resource :projects do
 
-          desc "Return all projects."
+          desc 'Return all projects.'
           get do
             return_many(Project, Narra::API::Entities::Project, [], false)
           end
 
-          desc "Create new project."
+          desc 'Return a specific project.'
+          get ':name' do
+            return_one(Project, Narra::API::Entities::Project, :name, [:admin, :author])
+          end
+
+          desc 'Create new project.'
           post 'new' do
             required_attributes! [:name, :title]
             # check for the author
@@ -57,12 +62,7 @@ module Narra
             new_one(Project, Narra::API::Entities::Project, :name, {name: params[:name], title: params[:title], description: params[:description], author: author, contributors: contributors}, [:admin, :author])
           end
 
-          desc "Return a specific project."
-          get ':name' do
-            return_one(Project, Narra::API::Entities::Project, :name, [:admin, :author])
-          end
-
-          desc "Update a specific project."
+          desc 'Update a specific project.'
           post ':name/update' do
             update_one(Project, Narra::API::Entities::Project, :name, [:admin, :author]) do |project|
               # change name if there is a change
@@ -83,68 +83,9 @@ module Narra
             end
           end
 
-          desc "Delete a specific project."
+          desc 'Delete a specific project.'
           get ':name/delete' do
             delete_one(Project, :name, [:admin, :author])
-          end
-
-          desc "Add or remove libraries"
-          post ':name/libraries/:action' do
-            required_attributes! [:libraries]
-            update_one(Project, Narra::API::Entities::Project, :name, [:admin, :author]) do |project|
-              params[:libraries].each do |library|
-                if params[:action] == 'add'
-                  project.libraries << Library.find_by(name: library)
-                elsif params[:action] == 'remove'
-                  project.libraries.delete(Library.find_by(name: library))
-                end
-              end
-            end
-          end
-
-          desc "Return project's items."
-          get ':name/items' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
-              present_ok(project.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
-            end
-          end
-
-          desc "Return project's item."
-          get ':name/items/:item' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
-              # Get item
-              items = Item.where(name: params[:item]).any_in(library_id: project.library_ids)
-              # Check for the first and the last
-              items |= [project.items.first] if params[:item].equal?('first')
-              items |= [project.items.last] if params[:item].equal?('last')
-              # Check if the item is part of the project
-              if items.empty?
-                error_not_found!
-              else
-                present_ok(items.first, Item, Narra::API::Entities::Item, 'detail', project: project)
-              end
-            end
-          end
-
-          desc "Return project's sequences."
-          get ':name/sequences' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
-              present_ok(project.sequences.limit(params[:limit]), Sequence, Narra::API::Entities::Sequence)
-            end
-          end
-
-          desc "Return project's sequence."
-          get ':name/sequences/:sequence' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
-              # Get item
-              sequences = project.sequences.where(id: params[:sequence])
-              # Check if the item is part of the project
-              if sequences.empty?
-                error_not_found!
-              else
-                present_ok(sequences.first, Sequence, Narra::API::Entities::Sequence, 'detail')
-              end
-            end
           end
         end
       end

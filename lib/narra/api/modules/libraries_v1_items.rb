@@ -21,14 +21,33 @@
 
 module Narra
   module API
-    module Entities
-      class Sequence < Grape::Entity
+    module Modules
+      class LibrariesV1Items < Narra::API::Modules::Generic
 
-        expose :id do |model, options|
-          model._id.to_s
+        version 'v1', :using => :path
+        format :json
+
+        helpers Narra::API::Helpers::User
+        helpers Narra::API::Helpers::Error
+        helpers Narra::API::Helpers::Present
+        helpers Narra::API::Helpers::Generic
+        helpers Narra::API::Helpers::Attributes
+
+        resource :libraries do
+
+          desc 'Return a specific library items.'
+          get ':id/items' do
+            auth! [:admin, :author]
+            # get user
+            library = Library.find(params[:id])
+            # present or not found
+            if (library.nil?)
+              error_not_found!
+            else
+              present_ok(library.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
+            end
+          end
         end
-        expose :name
-        expose :marks, using: Narra::API::Entities::MarkSequence
       end
     end
   end

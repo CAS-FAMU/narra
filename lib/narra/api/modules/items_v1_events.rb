@@ -21,12 +21,27 @@
 
 module Narra
   module API
-    module Entities
-      class Mark < Grape::Entity
+    module Modules
+      class ItemsV1Events < Narra::API::Modules::Generic
 
-        expose :index, if: lambda { |model, options| !model.index.nil? }
-        expose :in, if: lambda { |model, options| !model.in.nil? }
-        expose :out, if: lambda { |model, options| !model.out.nil? }
+        version 'v1', :using => :path
+        format :json
+
+        helpers Narra::API::Helpers::User
+        helpers Narra::API::Helpers::Error
+        helpers Narra::API::Helpers::Present
+        helpers Narra::API::Helpers::Generic
+        helpers Narra::API::Helpers::Attributes
+
+        resource :items do
+
+          desc 'Return item events.'
+          get ':id/events' do
+            return_one_custom(Item, :id, [:admin, :author]) do |item|
+              present_ok(item.events, Event, Narra::API::Entities::Event, 'item')
+            end
+          end
+        end
       end
     end
   end

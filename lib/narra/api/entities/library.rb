@@ -47,6 +47,11 @@ module Narra
         format_with :projects do |projects|
           projects.collect { |project| {id: project._id.to_s, name: project.name, title: project.title, author: {username: project.author.username, name: project.author.name}} }
         end
+
+        expose :meta, as: :metadata, using: Narra::API::Entities::MetaLibrary, if: {type: :detail_library} do |library, options|
+          # get scoped metadata for project
+          Narra::MetaLibrary.where(library: library)
+        end
       end
     end
   end

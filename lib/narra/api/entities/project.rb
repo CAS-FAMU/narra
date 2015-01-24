@@ -28,6 +28,9 @@ module Narra
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}
         end
+        expose :public do |model, options|
+          model.get_meta(name: 'public').value
+        end
         expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
           model.url_thumbnails
         end
@@ -35,6 +38,11 @@ module Narra
           model.contributors.collect { |user| { username: user.username, name: user.name} }
         end
         expose :libraries, using: Narra::API::Entities::Library, :if => {:type => :detail_project}
+
+        expose :meta, as: :metadata, using: Narra::API::Entities::MetaProject, if: {type: :detail_project} do |project, options|
+          # get scoped metadata for project
+          Narra::MetaProject.where(project: project)
+        end
       end
     end
   end

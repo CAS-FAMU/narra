@@ -39,6 +39,10 @@ module Narra
         def present_ok_generic(key, object)
           present({:status => 'OK', key => object})
         end
+
+        def present_ok_generic_options(key, object, options)
+          present({:status => 'OK', key => present(object, options)})
+        end
       end
     end
   end

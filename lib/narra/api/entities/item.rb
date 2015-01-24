@@ -64,9 +64,9 @@ module Narra
           model.url_audio_proxy
         end
 
-        expose :meta, as: :metadata, using: Narra::API::Entities::Meta, if: {type: :detail_item} do |item, options|
+        expose :meta, as: :metadata, using: Narra::API::Entities::MetaItem, if: {type: :detail_item} do |item, options|
           # get scoped metadata for item
-          options[:project].nil? ? item.meta : Narra::Meta.where(item: item).generators(options[:project].generators)
+          options[:project].nil? ? item.meta : Narra::MetaItem.where(item: item).generators(options[:project].generators)
         end
       end
     end

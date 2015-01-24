@@ -22,7 +22,7 @@
 
 require 'spec_helper'
 
-describe Narra::API::Modules::ItemsV1 do
+describe Narra::API::Modules::ItemsV1Metadata do
   before(:each) do
     # create libraries
     @library_01 = FactoryGirl.create(:library, author: @author_user)
@@ -43,9 +43,9 @@ describe Narra::API::Modules::ItemsV1 do
   end
 
   context 'not authenticated' do
-    describe 'GET /v1/items' do
-      it 'returns items' do
-        get '/v1/items'
+    describe 'GET /v1/items/[:id]/metadata' do
+      it 'returns all meta' do
+        get '/v1/items/' + @item._id + '/metadata'
 
         # check response status
         expect(response.status).to match(401)
@@ -59,9 +59,9 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
-    describe 'GET /v1/items/[:id]' do
-      it 'returns a specific item' do
-        get '/v1/items/' + @item._id
+    describe 'GET /v1/items/[:id]/metadata/[:name]' do
+      it 'returns a specific meta' do
+        get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name
 
         # check response status
         expect(response.status).to match(401)
@@ -75,9 +75,9 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
-    describe 'GET /v1/items/[:id]/delete' do
-      it 'deletes a specific item' do
-        get '/v1/items/' + @item._id + '/delete'
+    describe 'POST /v1/items/[:id]/metadata/new' do
+      it 'creates new meta' do
+        post '/v1/items/' + @item._id + '/metadata/new', {name: 'test', value: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -91,25 +91,9 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
-    describe 'POST /v1/items/new' do
-      it 'creates new item' do
-        post '/v1/items/new', {url: 'test', library: 'test'}
-
-        # check response status
-        expect(response.status).to match(401)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
-      end
-    end
-
-    describe 'GET /v1/items/[:id]/events' do
-      it 'returns item events' do
-        get '/v1/items/' + @item._id + '/events'
+    describe 'POST /v1/items/[:id]/metadata/update' do
+      it 'updates specific meta' do
+        post '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '/update', {value: 'updated', generator: @meta_src_01.generator}
 
         # check response status
         expect(response.status).to match(401)
@@ -125,9 +109,9 @@ describe Narra::API::Modules::ItemsV1 do
   end
 
   context 'not authorized' do
-    describe 'GET /v1/items' do
-      it 'returns items' do
-        get '/v1/items' + '?token=' + @author_token
+    describe 'GET /v1/items/[:id]/metadata' do
+      it 'returns all meta' do
+        get '/v1/items/' + @item._id + '/metadata' + '?token=' + @unroled_token
 
         # check response status
         expect(response.status).to match(403)
@@ -141,9 +125,9 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
-    describe 'GET /v1/items/[:id]' do
-      it 'returns a specific item' do
-        get '/v1/items/' + @item._id + '?token=' + @unroled_token
+    describe 'GET /v1/items/[:id]/metadata/[:name]' do
+      it 'returns a specific meta' do
+        get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name + '?token=' + @unroled_token
 
         # check response status
         expect(response.status).to match(403)
@@ -157,9 +141,9 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
-    describe 'GET /v1/items/[:id]/delete' do
-      it 'deletes a specific item' do
-        get '/v1/items/' + @item_admin._id + '/delete' + '?token=' + @author_token
+    describe 'POST /v1/items/[:id]/metadata/new' do
+      it 'creates new meta' do
+        post '/v1/items/' + @item._id + '/metadata/new' + '?token=' + @unroled_token, {name: 'test', value: 'test'}
 
         # check response status
         expect(response.status).to match(403)
@@ -173,25 +157,9 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
-    describe 'POST /v1/items/new' do
-      it 'creates new item' do
-        post '/v1/items/new' + '?token=' + @unroled_token, {url: 'test', library: 'test'}
-
-        # check response status
-        expect(response.status).to match(403)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authorized')
-      end
-    end
-
-    describe 'GET /v1/items/[:id]/events' do
-      it 'returns item events' do
-        get '/v1/items/' + @item_admin._id + '/events?token=' + @author_token
+    describe 'POST /v1/items/[:id]/metadata/update' do
+      it 'updates specific meta' do
+        post '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '/update' + '?token=' + @unroled_token, {value: 'updated', generator: @meta_src_01.generator}
 
         # check response status
         expect(response.status).to match(403)
@@ -207,10 +175,9 @@ describe Narra::API::Modules::ItemsV1 do
   end
 
   context 'authenticated & authorized' do
-    describe 'GET /v1/items' do
-      it 'returns items' do
-        # send request
-        get '/v1/items' + '?token=' + @admin_token
+    describe 'GET /v1/items/[:id]/metadata' do
+      it 'returns all meta' do
+        get '/v1/items/' + @item_meta._id + '/metadata' + '?token=' + @author_token
 
         # check response status
         expect(response.status).to match(200)
@@ -220,101 +187,68 @@ describe Narra::API::Modules::ItemsV1 do
 
         # check received data format
         expect(data).to have_key('status')
-        expect(data).to have_key('items')
+        expect(data).to have_key('metadata')
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['items'].count).to match(3)
+        expect(data['metadata'].count).to match(2)
       end
     end
 
-    describe 'GET /v1/items/[:id]' do
-      it 'returns a specific item' do
-        # send request
-        get '/v1/items/' + @item_meta._id + '?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(200)
+    describe 'GET /v1/items/[:id]/metadata/[:name]' do
+      it 'returns a specific meta' do
+        get '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '?token=' + @author_token
 
         # parse response
         data = JSON.parse(response.body)
 
         # check received data format
         expect(data).to have_key('status')
-        expect(data).to have_key('item')
+        expect(data).to have_key('metadata')
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['item']['name']).to match(@item_meta.name)
-        expect(data['item']['url']).to match(@item_meta.url)
-        expect(data['item']['metadata'].count).to match(2)
+        expect(data['metadata']['name']).to match(@meta_src_01.name)
+        expect(data['metadata']['value']).to match(@meta_src_01.value)
+        expect(data['metadata']['generator']).to match(@meta_src_01.generator.to_s)
       end
     end
 
-    describe 'GET /v1/items/[:id]/delete' do
-      it 'deletes a specific item' do
-        # send request
-        get '/v1/items/' + @item._id + '/delete' + '?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(200)
+    describe 'POST /v1/items/[:id]/metadata/new' do
+      it 'creates new meta' do
+        post '/v1/items/' + @item_meta._id + '/metadata/new' + '?token=' + @author_token, {name: 'test', value: 'test'}
 
         # parse response
         data = JSON.parse(response.body)
 
         # check received data format
         expect(data).to have_key('status')
+        expect(data).to have_key('metadata')
 
         # check received data
         expect(data['status']).to match('OK')
-
-        # check if the user is deleted
-        expect(Narra::Item.find(@item._id)).to be_nil
+        expect(data['metadata']['name']).to match('test')
+        expect(data['metadata']['value']).to match('test')
+        expect(data['metadata']['generator']).to match('user')
       end
     end
 
-    describe 'POST /v1/items/new' do
-      it 'creates new item' do
-        # send request
-        post '/v1/items/new' + '?token=' + @author_token, {url: 'http://test', library: @library_01._id.to_s, metadata: {meta_01: 'Meta 01', meta_02: 'Meta 02'}}
-
-        # check response status
-        expect(response.status).to match(201)
+    describe 'POST /v1/items/[:id]/metadata/update' do
+      it 'updates specific meta' do
+        post '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '/update' + '?token=' + @author_token, {value: 'updated', generator: @meta_src_01.generator}
 
         # parse response
         data = JSON.parse(response.body)
 
         # check received data format
         expect(data).to have_key('status')
-        expect(data).to have_key('item')
+        expect(data).to have_key('metadata')
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['item']['name']).to match('test_item')
-        expect(data['item']['url']).to match('http://test')
-        expect(data['item']['metadata'].count).to match(9)
-      end
-    end
-
-    describe 'GET /v1/items/[:id]/events' do
-      it 'returns item events' do
-        get '/v1/items/' + @item._id + '/events?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(200)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data format
-        expect(data).to have_key('status')
-        expect(data).to have_key('events')
-
-        # check received data
-        expect(data['status']).to match('OK')
-        expect(data['events'].count).to match(1)
-        expect(data['events'][0]['status']).to match('pending')
-        expect(data['events'][0]).not_to have_key('item')
+        expect(data['metadata']['name']).to match(@meta_src_01.name)
+        expect(data['metadata']['value']).to match('updated')
+        expect(data['metadata']['generator']).to match(@meta_src_01.generator.to_s)
       end
     end
   end

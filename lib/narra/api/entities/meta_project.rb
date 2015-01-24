@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2015 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -22,11 +22,9 @@
 module Narra
   module API
     module Entities
-      class Meta < Grape::Entity
+      class MetaProject < Grape::Entity
 
-        expose :name, :content, :generator
-
-        expose :marks, using: Narra::API::Entities::Mark, if: lambda { |model, options| !model.marks.empty? }
+        expose :name, :value
       end
     end
   end
