@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2015 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -16,26 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Narra Core. If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
+# Authors: Michal Mocnak <michal@marigan.net>
 #
 
-Rails.application.config.middleware.use OmniAuth::Builder do
-
-  # Developer provider
-  if Rails.env.development?
-    # Developer Provider
-    provider :developer
-    # register
-    Narra::Auth::PROVIDERS << 'developer'
+module Narra
+  module Auth
+    # Narra Auth providers
+    PROVIDERS = []
   end
-
-  # Google OAuth2 Provider
-  provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], { :name => 'google' }
-  # register
-  Narra::Auth::PROVIDERS << 'google'
-
-  # Github OAuth2 Provider
-  provider :github, ENV['GITHUB_CLIENT_ID'], ENV['GITHUB_CLIENT_SECRET']
-  # register
-  Narra::Auth::PROVIDERS << 'github'
 end

@@ -83,6 +83,8 @@ module Narra
                 # change roles
                 user.update_attributes(roles: new_roles)
               end
+              # change email if there is a change
+              user.update_attributes(email: params[:email]) unless params[:email].nil? || user.email.equal?(params[:email])
               # change username if there is a change
               user.update_attributes(username: params[:new_username]) unless params[:new_username].nil? || user.username.equal?(params[:new_username])
             end

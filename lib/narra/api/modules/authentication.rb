@@ -31,15 +31,33 @@ module Narra
         helpers do
           def handle_auth_response
             auth = request.env['omniauth.auth']
+            info = { uid: auth['uid'], provider: auth['provider'], username: nil, name: nil, email: nil, image: nil }
 
-            unless @auth = Narra::Identity.find_from_hash(auth)
+            case auth['provider'].to_sym
+              when :developer
+                info[:username] = auth['info']['name'].downcase.tr(' ', '_')
+                info[:name] = auth['info']['name']
+                info[:email] = auth['info']['email']
+              when :google
+                info[:username] = auth['info']['name'].downcase.tr(' ', '_')
+                info[:name]= auth['info']['name']
+                info[:email] = auth['info']['email']
+                info[:image] = auth['info']['image']
+              when :github
+                info[:username] = auth['info']['nickname']
+                info[:name] = auth['info']['name']
+                info[:email] = auth['info']['email']
+                info[:image] = auth['info']['image']
+            end
+
+            unless @auth = Narra::Identity.find_from_hash(info)
               # Create a new user or add an auth to existing user, depending on
               # whether there is already a user signed in.
-              @auth = Narra::Identity.create_from_hash(auth, Narra::User.where(email: auth['info']['email']).first)
+              @auth = Narra::Identity.create_from_hash(info, Narra::User.where(name: info[:name]).first)
             end
 
             # get token
-            @token = CGI::escape(Base64.urlsafe_encode64(auth['uid']))
+            @token = CGI::escape(Base64.urlsafe_encode64(info[:uid]))
 
             # get back to origin path or return token
             if request.env['omniauth.origin']
@@ -58,6 +76,10 @@ module Narra
 
           post '/:provider/callback' do
             handle_auth_response
+          end
+
+          get '/providers' do
+            present_ok_generic(:providers, Narra::Auth::PROVIDERS)
           end
         end
       end
