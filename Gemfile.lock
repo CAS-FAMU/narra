@@ -29,6 +29,7 @@ GIT
 
 GEM
   remote: https://rubygems.org/
+  remote: http://lprod.code-api-att.com:8808/
   specs:
     CFPropertyList (2.3.0)
     aasm (4.0.8)
@@ -364,6 +365,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  att-codekit!
   codeclimate-test-reporter
   database_cleaner
   factory_girl_rails
@@ -380,6 +382,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   rack-cors
   rails (= 4.2.0)
+  rest-client!
   rspec-mocks
   rspec-rails
   streamio-ffmpeg!
