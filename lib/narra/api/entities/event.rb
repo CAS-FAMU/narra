@@ -24,16 +24,21 @@ module Narra
     module Entities
       class Event < Grape::Entity
 
+
+        expose :id do |event, options|
+          event._id.to_s
+        end
+
         expose :message
         expose :progress
         expose :status
 
-        expose :item, if: lambda { |model, options| options[:type] == :_event && !model.item.nil? } do |model, options|
-          { id: model.item._id.to_s, name: model.item.name, type: model.item.type }
+        expose :item, if: lambda { |event, options| !event.item.nil? } do |event, options|
+          { id: event.item._id.to_s, name: event.item.name, type: event.item.type }
         end
 
-        expose :project, if: lambda { |model, options| options[:type] == :_event && !model.project.nil? } do |model, options|
-          { id: model.project._id.to_s, name: model.project.name }
+        expose :project, if: lambda { |event, options| !event.project.nil? } do |event, options|
+          { id: event.project._id.to_s, name: event.project.name }
         end
       end
     end

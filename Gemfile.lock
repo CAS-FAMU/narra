@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: ff83ed05b5ead019759512c774ec671199f9ed34
+  revision: 75028ce68b24697573356055d9f03a83af28e4d5
   specs:
     narra-core (0.0.1)
       aasm
@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/CAS-FAMU/narra-speech.git
-  revision: e5627f3fda8c559972e21f3595bfd40c3dbe29e4
+  revision: f2cac55ab7cafc975fd878b59611663950cc27d1
   specs:
     narra-speech (0.0.1)
       att-codekit
@@ -138,7 +138,7 @@ GEM
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.27.3)
+    fog-core (1.27.4)
       builder
       excon (~> 0.38)
       formatador (~> 0.2)
