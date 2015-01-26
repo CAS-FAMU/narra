@@ -24,7 +24,7 @@ module Narra
     module Entities
       class Project < Grape::Entity
 
-        expose :name, :title, :description, :generators
+        expose :name, :title, :description
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}
         end

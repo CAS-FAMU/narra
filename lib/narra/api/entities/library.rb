@@ -28,7 +28,7 @@ module Narra
           model._id.to_s
         end
 
-        expose :name, :description
+        expose :name, :description, :generators
 
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}

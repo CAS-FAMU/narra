@@ -41,23 +41,6 @@ module Narra
               present_ok(project.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
             end
           end
-
-          desc 'Return project item.'
-          get ':name/items/:item' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
-              # Get item
-              items = Item.where(name: params[:item]).any_in(library_id: project.library_ids)
-              # Check for the first and the last
-              items |= [project.items.first] if params[:item].equal?('first')
-              items |= [project.items.last] if params[:item].equal?('last')
-              # Check if the item is part of the project
-              if items.empty?
-                error_not_found!
-              else
-                present_ok(items.first, Item, Narra::API::Entities::Item, 'detail', project: project)
-              end
-            end
-          end
         end
       end
     end

@@ -51,14 +51,11 @@ module Narra
             # check for the author
             author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
             # check for contributors
-            contributors = []
-            # iterate through
-            unless params[:contributors].nil?
-              params[:contributors].each do |author|
-                contributors << User.find_by(username: author)
-              end
-            end
-            new_one(Library, Narra::API::Entities::Library, :name, {name: params[:name], description: params[:description], author: author, contributors: contributors}, [:admin, :author]) do |library|
+            contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
+            # check for generators
+            generators = params[:generators].nil? ? [] : params[:generators].select { |g| Narra::Core.generators_identifiers.include?(g.to_sym) }
+            # create library
+            new_one(Library, Narra::API::Entities::Library, :name, {name: params[:name], description: params[:description], author: author, contributors: contributors, generators: generators}, [:admin, :author]) do |library|
               # check for the project if any
               project = Project.find_by(name: params[:project]) unless params[:project].nil?
               # authorize the owner
@@ -77,15 +74,13 @@ module Narra
               library.update_attributes(description: params[:description]) unless params[:description].nil? || library.description.equal?(params[:description])
               library.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || library.author.username.equal?(params[:author])
               # gather contributors if exist
-              contributors = []
-              # iterate through
-              unless params[:contributors].nil?
-                params[:contributors].each do |contributor|
-                  contributors << User.find_by(username: contributor)
-                end
-              end
+              contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
               # push them if changed
               library.update_attributes(contributors: contributors) unless contributors.sort == library.contributors.sort
+              # gather generators if exist
+              generators = params[:generators].nil? ? [] : params[:generators].select { |g| Narra::Core.generators_identifiers.include?(g.to_sym) }
+              # push them if changed
+              library.update_attributes(generators: generators) unless generators.sort == library.generators.sort
             end
           end
 

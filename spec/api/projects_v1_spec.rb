@@ -178,22 +178,6 @@ describe Narra::API::Modules::ProjectsV1 do
       end
     end
 
-    describe 'GET /v1/projects/[:name]/items/[:name]' do
-      it 'returns projects item' do
-        get '/v1/projects/' + @project.name + '/items/' + @item_01.name
-
-            # check response status
-        expect(response.status).to match(401)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
-      end
-    end
-
     describe 'GET /v1/projects/[:name]/sequences' do
       it 'returns projects sequences' do
         get '/v1/projects/' + @project.name + '/sequences'
@@ -327,22 +311,6 @@ describe Narra::API::Modules::ProjectsV1 do
     describe 'GET /v1/projects/[:name]/items' do
       it 'returns projects items' do
         get '/v1/projects/' + @project_admin.name + '/items' + '?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(403)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authorized')
-      end
-    end
-
-    describe 'GET /v1/projects/[:name]/items/[:name]' do
-      it 'returns projects item' do
-        get '/v1/projects/' + @project_admin.name + '/items/' + @item_01.name + '?token=' + @author_token
 
         # check response status
         expect(response.status).to match(403)
@@ -545,26 +513,6 @@ describe Narra::API::Modules::ProjectsV1 do
         # check received data
         expect(data['status']).to match('OK')
         expect(data['items'].count).to match(2)
-      end
-    end
-
-    describe 'GET /v1/projects/[:name]/items/[:name]' do
-      it 'returns projects item' do
-        get '/v1/projects/' + @project.name + '/items/' + @item_01.name + '?token=' + @author_token
-
-        # check response status
-        expect(response.status).to match(200)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data format
-        expect(data).to have_key('status')
-        expect(data).to have_key('item')
-
-        # check received data
-        expect(data['status']).to match('OK')
-        expect(data['item']['name']).to match(@item_01.name)
       end
     end
 

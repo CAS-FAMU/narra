@@ -49,4 +49,7 @@ Narra::Application.configure do
   # Mongoid logging setup
   Mongoid.logger.level = Logger::DEBUG
   Moped.logger.level = Logger::DEBUG
+
+  # Narra logging setup
+  Narra::Tools::Logger.default_logger.level = Logger::DEBUG
 end
