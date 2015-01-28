@@ -44,20 +44,20 @@ module Narra
 
           desc 'Create a new metadata for a specific item.'
           post ':id/metadata/new' do
-            required_attributes! [:name, :value]
+            required_attributes! [:meta, :value, :generator]
             return_one_custom(Item, :id, [:admin, :author]) do |item|
               # add metadata
-              meta = item.add_meta(name: params[:name], value: params[:value], generator: :user)
+              meta = item.add_meta(name: params[:meta], value: params[:value], generator: params[:generator].to_sym)
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
             end
           end
 
           desc 'Return a specific metadata for a specific item.'
-          get ':id/metadata/:name' do
+          get ':id/metadata/:meta' do
             return_one_custom(Item, :id, [:admin, :author]) do |item|
               # get meta
-              meta = item.get_meta(name: params[:name])
+              meta = item.get_meta(name: params[:meta])
               # check existence
               error_not_found! if meta.nil?
               # otherwise present
@@ -66,11 +66,11 @@ module Narra
           end
 
           desc 'Update a specific metadata for a specific item.'
-          post ':id/metadata/:name/update' do
+          post ':id/metadata/:meta/update' do
             required_attributes! [:value, :generator]
             return_one_custom(Item, :id, [:admin, :author]) do |item|
               # add metadata
-              meta = item.update_meta(name: params[:name], value: params[:value], generator: params[:generator])
+              meta = item.update_meta(name: params[:meta], value: params[:value], generator: params[:generator])
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
             end

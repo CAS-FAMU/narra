@@ -59,7 +59,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
       end
     end
 
-    describe 'GET /v1/items/[:id]/metadata/[:name]' do
+    describe 'GET /v1/items/[:id]/metadata/[:meta]' do
       it 'returns a specific meta' do
         get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name
 
@@ -77,7 +77,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
 
     describe 'POST /v1/items/[:id]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/items/' + @item._id + '/metadata/new', {name: 'test', value: 'test'}
+        post '/v1/items/' + @item._id + '/metadata/new', {meta: 'test', value: 'test', generator: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -91,7 +91,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
       end
     end
 
-    describe 'POST /v1/items/[:id]/metadata/update' do
+    describe 'POST /v1/items/[:id]/metadata/[:meta]/update' do
       it 'updates specific meta' do
         post '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '/update', {value: 'updated', generator: @meta_src_01.generator}
 
@@ -125,7 +125,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
       end
     end
 
-    describe 'GET /v1/items/[:id]/metadata/[:name]' do
+    describe 'GET /v1/items/[:id]/metadata/[:meta]' do
       it 'returns a specific meta' do
         get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name + '?token=' + @unroled_token
 
@@ -143,7 +143,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
 
     describe 'POST /v1/items/[:id]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/items/' + @item._id + '/metadata/new' + '?token=' + @unroled_token, {name: 'test', value: 'test'}
+        post '/v1/items/' + @item._id + '/metadata/new' + '?token=' + @unroled_token, {meta: 'test', value: 'test', generator: 'test'}
 
         # check response status
         expect(response.status).to match(403)
@@ -195,7 +195,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
       end
     end
 
-    describe 'GET /v1/items/[:id]/metadata/[:name]' do
+    describe 'GET /v1/items/[:id]/metadata/[:meta]' do
       it 'returns a specific meta' do
         get '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '?token=' + @author_token
 
@@ -216,7 +216,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
 
     describe 'POST /v1/items/[:id]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/items/' + @item_meta._id + '/metadata/new' + '?token=' + @author_token, {name: 'test', value: 'test'}
+        post '/v1/items/' + @item_meta._id + '/metadata/new' + '?token=' + @author_token, {meta: 'test', value: 'test', generator: 'test'}
 
         # parse response
         data = JSON.parse(response.body)
@@ -229,11 +229,11 @@ describe Narra::API::Modules::ItemsV1Metadata do
         expect(data['status']).to match('OK')
         expect(data['metadata']['name']).to match('test')
         expect(data['metadata']['value']).to match('test')
-        expect(data['metadata']['generator']).to match('user')
+        expect(data['metadata']['generator']).to match('test')
       end
     end
 
-    describe 'POST /v1/items/[:id]/metadata/update' do
+    describe 'POST /v1/items/[:id]/metadata/[:meta]update' do
       it 'updates specific meta' do
         post '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '/update' + '?token=' + @author_token, {value: 'updated', generator: @meta_src_01.generator}
 

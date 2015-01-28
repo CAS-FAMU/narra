@@ -67,7 +67,7 @@ describe Narra::API::Modules::ProjectsV1Metadata do
 
     describe 'POST /v1/projects/[:name]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/projects/' + @project.name + '/metadata/new', {name: 'test', value: 'test'}
+        post '/v1/projects/' + @project.name + '/metadata/new', {meta: 'test', value: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -133,7 +133,7 @@ describe Narra::API::Modules::ProjectsV1Metadata do
 
     describe 'POST /v1/projects/[:name]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/projects/' + @project.name + '/metadata/new' + '?token=' + @unroled_token, {name: 'test', value: 'test'}
+        post '/v1/projects/' + @project.name + '/metadata/new' + '?token=' + @unroled_token, {meta: 'test', value: 'test'}
 
         # check response status
         expect(response.status).to match(403)
@@ -147,7 +147,7 @@ describe Narra::API::Modules::ProjectsV1Metadata do
       end
     end
 
-    describe 'POST /v1/projects/[:name]/metadata/update' do
+    describe 'POST /v1/projects/[:name]/metadata/[:meta]/update' do
       it 'updates specific meta' do
         post '/v1/projects/' + @project.name + '/metadata/' + @meta_01.name + '/update' + '?token=' + @unroled_token, {value: 'updated'}
 
@@ -185,7 +185,7 @@ describe Narra::API::Modules::ProjectsV1Metadata do
       end
     end
 
-    describe 'GET /v1/projects/[:name]/metadata/[:name]' do
+    describe 'GET /v1/projects/[:name]/metadata/[:meta]' do
       it 'returns a specific meta' do
         get '/v1/projects/' + @project.name + '/metadata/' + @meta_01.name + '?token=' + @author_token
 
@@ -205,7 +205,7 @@ describe Narra::API::Modules::ProjectsV1Metadata do
 
     describe 'POST /v1/projects/[:name]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/projects/' + @project.name + '/metadata/new' + '?token=' + @author_token, {name: 'test', value: 'test'}
+        post '/v1/projects/' + @project.name + '/metadata/new' + '?token=' + @author_token, {meta: 'test', value: 'test'}
 
         # parse response
         data = JSON.parse(response.body)

@@ -44,10 +44,10 @@ module Narra
 
           desc 'Create a new metadata for a specific library.'
           post ':id/metadata/new' do
-            required_attributes! [:name, :value]
+            required_attributes! [:meta, :value]
             return_one_custom(Library, :id, [:admin, :author]) do |library|
               # add metadata
-              meta = library.add_meta(name: params[:name], value: params[:value])
+              meta = library.add_meta(name: params[:meta], value: params[:value])
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
             end
@@ -66,11 +66,11 @@ module Narra
           end
 
           desc 'Update a specific metadata for a specific library.'
-          post ':id/metadata/:name/update' do
+          post ':id/metadata/:meta/update' do
             required_attributes! [:value]
             return_one_custom(Library, :id, [:admin, :author]) do |library|
               # add metadata
-              meta = library.update_meta(name: params[:name], value: params[:value])
+              meta = library.update_meta(name: params[:meta], value: params[:value])
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
             end

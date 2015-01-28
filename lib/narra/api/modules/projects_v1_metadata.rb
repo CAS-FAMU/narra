@@ -44,10 +44,10 @@ module Narra
 
           desc 'Create a new metadata for a specific project.'
           post ':name/metadata/new' do
-            required_attributes! [:name, :value]
+            required_attributes! [:meta, :value]
             return_one_custom(Project, :name, [:admin, :author]) do |project|
               # add metadata
-              meta = project.add_meta(name: params[:name], value: params[:value])
+              meta = project.add_meta(name: params[:meta], value: params[:value])
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaProject, type: 'project'})
             end

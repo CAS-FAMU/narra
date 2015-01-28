@@ -67,7 +67,7 @@ describe Narra::API::Modules::LibrariesV1Metadata do
 
     describe 'POST /v1/libraries/[:id]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/libraries/' + @library._id + '/metadata/new', {name: 'test', value: 'test'}
+        post '/v1/libraries/' + @library._id + '/metadata/new', {meta: 'test', value: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -81,7 +81,7 @@ describe Narra::API::Modules::LibrariesV1Metadata do
       end
     end
 
-    describe 'POST /v1/libraries/[:id]/metadata/update' do
+    describe 'POST /v1/libraries/[:id]/metadata/[:meta]/update' do
       it 'updates specific meta' do
         post '/v1/libraries/' + @library._id + '/metadata/' + @meta_01.name + '/update', {value: 'updated'}
 
@@ -133,7 +133,7 @@ describe Narra::API::Modules::LibrariesV1Metadata do
 
     describe 'POST /v1/libraries/[:id]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/libraries/' + @library._id + '/metadata/new' + '?token=' + @unroled_token, {name: 'test', value: 'test'}
+        post '/v1/libraries/' + @library._id + '/metadata/new' + '?token=' + @unroled_token, {meta: 'test', value: 'test'}
 
         # check response status
         expect(response.status).to match(403)
@@ -205,7 +205,7 @@ describe Narra::API::Modules::LibrariesV1Metadata do
 
     describe 'POST /v1/libraries/[:id]/metadata/new' do
       it 'creates new meta' do
-        post '/v1/libraries/' + @library._id + '/metadata/new' + '?token=' + @author_token, {name: 'test', value: 'test'}
+        post '/v1/libraries/' + @library._id + '/metadata/new' + '?token=' + @author_token, {meta: 'test', value: 'test'}
 
         # parse response
         data = JSON.parse(response.body)
