@@ -54,14 +54,28 @@ module Narra
           end
 
           desc 'Return a specific metadata for a specific library.'
-          get ':id/metadata/:name' do
+          get ':id/metadata/:meta' do
             return_one_custom(Library, :id, [:admin, :author]) do |library|
               # get meta
-              meta = library.get_meta(name: params[:name])
+              meta = library.get_meta(name: params[:meta])
               # check existence
               error_not_found! if meta.nil?
               # otherwise present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
+            end
+          end
+
+          desc 'Delete a specific metadata in a specific library.'
+          get ':id/metadata/:meta/delete' do
+            return_one_custom(Library, :id, [:admin, :author]) do |library|
+              # get meta
+              meta = library.get_meta(name: params[:meta])
+              # check existence
+              error_not_found! if meta.nil?
+              # destroy
+              meta.destroy
+              # present
+              present_ok
             end
           end
 

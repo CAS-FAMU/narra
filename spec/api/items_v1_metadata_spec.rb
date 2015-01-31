@@ -61,7 +61,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
 
     describe 'GET /v1/items/[:id]/metadata/[:meta]' do
       it 'returns a specific meta' do
-        get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name
+        get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name, {generator: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -127,7 +127,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
 
     describe 'GET /v1/items/[:id]/metadata/[:meta]' do
       it 'returns a specific meta' do
-        get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name + '?token=' + @unroled_token
+        get '/v1/items/' + @item._id + '/metadata/' + @meta_src_01.name + '?token=' + @unroled_token, {generator: 'test'}
 
         # check response status
         expect(response.status).to match(403)
@@ -197,7 +197,7 @@ describe Narra::API::Modules::ItemsV1Metadata do
 
     describe 'GET /v1/items/[:id]/metadata/[:meta]' do
       it 'returns a specific meta' do
-        get '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '?token=' + @author_token
+        get '/v1/items/' + @item_meta._id + '/metadata/' + @meta_src_01.name + '?token=' + @author_token, {generator: 'source'}
 
         # parse response
         data = JSON.parse(response.body)

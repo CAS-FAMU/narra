@@ -46,8 +46,16 @@ module Narra
           post ':id/metadata/new' do
             required_attributes! [:meta, :value, :generator]
             return_one_custom(Item, :id, [:admin, :author]) do |item|
+              # prepare marks
+              marks = []
+              # process marks
+              if !params[:marks].nil? && !params[:marks].empty?
+                params[:marks].each do |mark|
+                  marks << { in: mark[:in], out: mark[:out] }
+                end
+              end
               # add metadata
-              meta = item.add_meta(name: params[:meta], value: params[:value], generator: params[:generator].to_sym)
+              meta = item.add_meta(name: params[:meta], value: params[:value], generator: params[:generator].to_sym, marks: marks)
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
             end
@@ -55,9 +63,10 @@ module Narra
 
           desc 'Return a specific metadata for a specific item.'
           get ':id/metadata/:meta' do
+            required_attributes! [:generator]
             return_one_custom(Item, :id, [:admin, :author]) do |item|
               # get meta
-              meta = item.get_meta(name: params[:meta])
+              meta = item.get_meta(name: params[:meta], generator: params[:generator])
               # check existence
               error_not_found! if meta.nil?
               # otherwise present
@@ -65,12 +74,35 @@ module Narra
             end
           end
 
+          desc 'Delete a specific metadata in a specific library.'
+          get ':id/metadata/:meta/delete' do
+            required_attributes! [:generator]
+            return_one_custom(Item, :id, [:admin, :author]) do |item|
+              # get meta
+              meta = item.get_meta(name: params[:meta], generator: params[:generator])
+              # check existence
+              error_not_found! if meta.nil?
+              # destroy
+              meta.destroy
+              # present
+              present_ok
+            end
+          end
+
           desc 'Update a specific metadata for a specific item.'
           post ':id/metadata/:meta/update' do
             required_attributes! [:value, :generator]
             return_one_custom(Item, :id, [:admin, :author]) do |item|
-              # add metadata
-              meta = item.update_meta(name: params[:meta], value: params[:value], generator: params[:generator])
+              # prepare marks
+              marks = []
+              # process marks
+              if !params[:marks].nil? && !params[:marks].empty?
+                params[:marks].each do |mark|
+                  marks << { in: mark[:in], out: mark[:out] }
+                end
+              end
+              # update metadata
+              meta = item.update_meta(name: params[:meta], value: params[:value], generator: params[:generator], marks: marks)
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
             end

@@ -30,7 +30,7 @@ module Narra
 
         expose :name, :description
 
-        expose :generators do |library, options|
+        expose :generators, if: {type: :detail_library} do |library, options|
           library.generators.collect { |generator| Narra::Core.generator(generator)}
         end
 

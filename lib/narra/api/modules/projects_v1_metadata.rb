@@ -65,6 +65,20 @@ module Narra
             end
           end
 
+          desc 'Delete a specific metadata in a specific project.'
+          get ':name/metadata/:meta/delete' do
+            return_one_custom(Project, :name, [:admin, :author]) do |project|
+              # get meta
+              meta = project.get_meta(name: params[:meta])
+              # check existence
+              error_not_found! if meta.nil?
+              # destroy
+              meta.destroy
+              # present
+              present_ok
+            end
+          end
+
           desc 'Update a specific metadata for a specific project.'
           post ':name/metadata/:meta/update' do
             required_attributes! [:value]
