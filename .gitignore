@@ -39,3 +39,9 @@ pickle-email-*.html
 .project
 .idea
 dump.rdb
+
+#LaTeX files
+doc/*.aux
+doc/*.log
+doc/*.toc
+doc/*.synctex.gz

@@ -1,0 +1,1292 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{book}
+
+%%% PACKAGES
+\usepackage[utf8]{inputenc}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{booktabs} % for much better looking tables
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+\newcommand{\requests}[2]{{\color{blue}\vskip 1em\hrule\texttt{#1} (#2)}}
+\newcommand{\request}[2]{{\color{blue}\texttt{#1} (#2)}}
+
+\newcommand{\reqexample}[1]{{\color{blue}\textbf{Example:} \texttt{#1}}}
+\newcommand{\reqpost}[2]{{\color{blue}\textbf{Example:} \texttt{#1}\\\textbf{Payload:}\\ \texttt{#2}}}
+\newcommand{\required}{{\color{red}!}}
+
+%%% DOCUMENT
+\title{NARRA}
+\author{Petr Pulc\\
+Faculty of information technology, CTU in Prague\\
+~\\
+Michal Mocňák, Kryštof Pešek\\
+Centre of audiovisual studies, FAMU in Prague}
+
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\chapter{API v1}
+Instance of NARRA software can be controlled only through an API interface provided by the \texttt{narra} package. All other components (even the user interface) have to use resources provided by this API. Following text will provide basic information about initialization requirements as well as currently supported ways of authentication and access to resources in NARRA.
+
+Individual resources are described in this part as follows:
+
+\request{REQUEST\_TYPE URN/with/<variable1>/<variable2>}{accessible by}
+
+In case of request with variables, simple example is attached:
+
+\reqexample{GET URN/with/filled/value}
+
+In case of POST requests, parsed JSON payload example is attached as well. Required parameters in data payload are marked with exclamation mark:
+
+\reqpost{POST URN}{required: "value" \required\\other: "value"}
+
+All request descriptions are companied by example JSON response from server.
+
+\section{Topology and initialization}
+NARRA API serves as a standard connector between the NARRA core and all plugins and extensions that want to access data stored in NARRA.
+
+We do not use local identities in NARRA, users have to authenticate using an OAuth identity. In time of writing of this document, Google and GitHub identity providers were supported. But to list all providers, please visit API resource \texttt{/auth/providers} of your instance.
+
+However to make these providers work, Client IDs and Client Secrets have to be provided as an environment variables.
+
+Standard naming scheme of OAuth environment variables is \texttt{\{PROVIDER\}\_CLIENT\_[ID,SECRET]}. For example to make Google OAuth work, environment variables \texttt{GOOGLE\_CLIENT\_ID} and \texttt{GOOGLE\_\allowbreak{}CLIENT\_SECRET} have to be set correctly.
+
+\paragraph{Note:} Please make sure, that the requested data (email address and basic profile info) are really provided by the API. Especially in case of Google, where individual Google APIs have to be turned on. In our case it is a Google Contacts API and Google+ API.
+
+\paragraph{Reminder:} In case of a docker container, environment variables can be passed by an \texttt{-e} parameter.
+
+\section{Authorization levels}
+\label{toc:alevels}
+Four basic levels of authorization are present in NARRA API:
+
+\begin{description}
+\item[public] Everyone can access freely this resource, without even presenting its identity.
+\item[user] Only authenticated users can access this resource.
+\item[author] Only authenticated users with Author role can access this resource.
+\item[admin] Only authenticated users with Admin role can access this resource.
+\end{description}
+
+User roles can be added only by Admin, with call of \texttt{POST v1/users/<username>/update}. See \ref{toc:user_update}.
+
+\section{Authentication}
+To access vast majority of resources, user has to be signed in to the instance. If environment variables for selected identity provider(s) are set in accordance to previous text, whole process of authentication should be carried out in following way.
+
+\subsection{Selection of identity provider}
+User should be provided with selection of identity providers. The list of supported identity providers can be gathered on:
+
+\request{GET auth/providers}{public}
+
+Response can look like:
+
+\begin{verbatim}
+{"status":"OK","providers":["google","github"]}
+\end{verbatim}
+
+\subsection{Authentication request}
+For every provider the API has a way to initialize authentication request. If Google OAuth is supported, URL
+
+\request{GET auth/google}{public}
+
+will redirect us to authentication landing page of Google OAuth identity provider.
+
+After successful authentication, user will be redirected to a NARRA API login callback URL (\texttt{auth/google/callback}) and presented with a token to keep authentication valid.
+
+\request{GET auth/google/callback}{public}\\
+\request{POST auth/google/callback}{public}
+
+Responds with user token to access NARRA resources:
+
+\begin{verbatim}
+{"status":"OK","token":"MTRzNjc2MhAxNDYzORk0NTgwAjUv"}
+\end{verbatim}
+
+At least first request to NARRA API has to contain copy this token in data payload. Other requests should have the token present as long as some Cookie storage is enabled.
+
+\subsection{Authentication cancelling}
+If we want to sign user out, we should navigate him to URL \texttt{v1/users/me/signout}, however this resource will be discussed in section \ref{toc:signout}.
+
+\section{User-related resources}
+As discussed before, user accounts are linked to identity providers and therefore, no registration process is involved. User accounts are constructed on first authentication form hash returned by the OAuth service.
+
+Resource Users also provides information about user roles.
+
+\request{GET v1/users}{author, admin}
+
+Returns list of all users in system:
+
+\begin{verbatim}
+{"status":"OK","users":[
+  {"username":"alice",
+   "name":"Alice Example",
+   "email":"alice@example.org",
+   "image":"https://avatars.githubusercontent.com/u/1111111?v=3",
+   "roles":["admin"],
+   "identities":["github"]},
+  {"username":"bob",
+   "name":"Bob Example",
+   "email":"bob@example.org",
+   "image":"https://lh3.googleusercontent.com/.../photo.jpg?sz=50",
+   "roles":["author","admin"],
+   "identities":["google"]}
+]}
+\end{verbatim}
+
+\requests{GET v1/users/<username>}{admin only}
+
+\reqexample{GET v1/users/alice}
+
+Returns information on one selected user:
+
+\begin{verbatim}
+{"status":"OK","user":{
+  "username":"alice",
+  "name":"Alice Example",
+  "email":"alice@example.org",
+  "image":"https://avatars.githubusercontent.com/u/1111111?v=3",
+  "roles":["admin"],
+  "identities":["github"]}
+}
+\end{verbatim}
+
+\requests{GET v1/users/<username>/delete}{admin only}
+
+\reqexample{GET v1/users/alice/delete}
+
+Deletes the user account and returns status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\requests{POST v1/users/<username>/update}{author, admin}\footnote{Only admin can change roles. Email and username can be changed by author as well.}
+\label{toc:user_update}
+
+\reqpost{POST v1/users/alice/update}{roles: ["author","admin"] \required\\
+email: "alice2@example.org"\\
+new\_username: "alice2"}
+
+Updates user information and returns the new values:
+
+\begin{verbatim}
+{"status":"OK","user":{
+  "username":"alice2",
+  "name":"Alice Example",
+  "email":"alice2@example.org",
+  "image":"https://avatars.githubusercontent.com/u/1111111?v=3",
+  "roles":["author","admin"],
+  "identities":["github"]}
+}
+\end{verbatim}
+
+
+\subsection{Current user}
+Part of Users resource is also used to gather information about currently signed-in user and manipulate him. However all initial information about user is given by the identity provider.
+
+\request{GET v1/users/me}{user}
+
+Returns information about currently signed-in user:
+
+\begin{verbatim}
+{"status":"OK","user":{
+  "username":"bob",
+  "name":"Bob Example",
+  "email":"bob@example.org",
+  "image":"https://lh3.googleusercontent.com/.../photo.jpg?sz=50",
+  "roles":["author","admin"],
+  "identities":["google"]}
+}
+\end{verbatim}
+
+\requests{GET v1/users/me/signout}{user}
+\label{toc:signout}
+
+Signs out current user and clears current session. Returns status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Roles}
+As described in section \ref{toc:alevels}, there are currently two system-defined user roles -- author and admin. However this can be changed in future. For information on roles in your instance of NARRA, please see:
+
+\request{GET v1/users/roles}{author, admin}
+
+\begin{verbatim}
+{"status":"OK","roles":["admin","author"]}
+\end{verbatim}
+
+
+\section{System-related resources}
+To gather information about running instance of NARRA, \texttt{system}, \texttt{settings}, \texttt{generators}, \texttt{synthesizers} and \texttt{events} resources are available in the API.
+
+\subsection{System information}
+System resource provides basic information about NARRA instance.
+
+\request{GET v1/system/version}{public}
+
+Responds with version number of NARRA instance:
+
+\begin{verbatim}
+{"status":"OK","version":"dev"}
+\end{verbatim}
+
+\requests{GET v1/system/modules}{public}
+
+Responds with list of modules (ruby gems) loaded added to NARRA core:
+
+\begin{verbatim}
+{"status":"OK",
+"modules":[
+  {"name":"narra-core",
+   "version":"0.0.1",
+   "summary":"NARRA Core functionality",
+   "description":"NARRA Core functionality which covers all the NARRA data model,
+    logic and SPI.",
+   "authors":["Michal Mocnak","Krystof Pesek"],
+   "email":["info@narra.eu"],
+   "homepage":"http://www.narra.eu",
+   "license":"GPL-3.0"},
+  {"name":"narra-speech",
+   "version":"0.0.1",
+   "summary":"AT\u0026T Speech To Text",
+   "description":"Speech To Text Generator using AT\u0026T Speech API to
+    transcribe audio tracks",
+   "authors":["Michal Mocnak"],
+   "email":["info@narra.eu"],
+   "homepage":"http://www.narra.eu",
+   "license":"GPL-3.0"}
+]}
+\end{verbatim}
+
+\subsection{Settings}
+Settings resource enables to view and modify system settings.
+
+\request{GET v1/settings}{admin only}
+
+Responds with list of current settings:
+
+\begin{verbatim}
+{"status":"OK","settings":[
+  {"name":"storage_temp","value":"/tmp/narra"},
+  {"name":"storage_local_path","value":"/opt/narra/storage"},
+  {"name":"storage_local_endpoint","value":"http://narra-storage"},
+  {"name":"storage_s3_items","value":"narra-items"},
+  {"name":"thumbnail_extension","value":"png"},
+  {"name":"thumbnail_resolution","value":"350x250"},
+  {"name":"thumbnail_count","value":"5"},
+  {"name":"video_proxy_extension","value":"webm"},
+  {"name":"video_proxy_lq_resolution","value":"320x180"},
+  {"name":"video_proxy_lq_bitrate","value":"300"},
+  {"name":"video_proxy_hq_resolution","value":"1280x720"},
+  {"name":"video_proxy_hq_bitrate","value":"1000"},
+  {"name":"image_proxy_extension","value":"png"},
+  {"name":"image_proxy_lq_resolution","value":"320x180"},
+  {"name":"image_proxy_hq_resolution","value":"1280x720"},
+  {"name":"audio_proxy_extension","value":"ogg"},
+  {"name":"audio_proxy_bitrate","value":"112"},
+  {"name":"items_probe_interval","value":"60"}
+]}
+\end{verbatim}
+
+\requests{GET v1/settings/defaults}{user}
+
+Responds with system default settings in different format:
+
+\begin{verbatim}
+{"status":"OK","defaults":{
+  "storage_temp":"/tmp/narra",
+  "storage_local_path":"/opt/narra/storage",
+  "storage_local_endpoint":"http://narra-storage",
+  "storage_s3_items":"narra-items",
+  "thumbnail_extension":"png",
+  "thumbnail_resolution":"350x250",
+  "thumbnail_count":"5",
+  "video_proxy_extension":"webm",
+  "video_proxy_lq_resolution":"320x180",
+  "video_proxy_lq_bitrate":"300",
+  "video_proxy_hq_resolution":"1280x720",
+  "video_proxy_hq_bitrate":"1000",
+  "image_proxy_extension":"png",
+  "image_proxy_lq_resolution":"320x180",
+  "image_proxy_hq_resolution":"1280x720",
+  "audio_proxy_extension":"ogg",
+  "audio_proxy_bitrate":"112",
+  "items_probe_interval":"60"}}
+\end{verbatim}
+
+\requests{GET v1/settings/<name>}{user}
+
+\reqexample{GET v1/settings/storage\_temp}
+
+Responds with current value of one selected setting:
+
+\begin{verbatim}
+{"status":"OK","setting":{"name":"storage_temp","value":"/tmp/narra"}}
+\end{verbatim}
+
+\requests{POST v1/settings/<name>/update}{admin only}
+
+\reqpost{POST v1/settings/storage\_temp/update}{value: "/tmp/narra" \required}
+
+Updates a value of one selected setting and returns status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Generators}
+\label{toc:generators}
+
+Generators are modules or integral parts of NARRA, that provide easily processable data from multimedia content. For example audio transcription, recognition of any kind, classification of any kind etc.
+
+\request{GET v1/generators}{author, admin}
+
+Responds with a list of all generators currently running on NARRA:
+
+\begin{verbatim}
+{"status":"OK","generators":[
+  {"identifier":"att_speech",
+   "title":"AT\u0026T Speech To Text",
+   "description":"Speech To Text Generator using AT\u0026T Speech API to
+    transcribe audio tracks"
+  }
+]}
+\end{verbatim}
+
+\subsection{Synthesizers}
+
+Synthesizers are modules, that creates junctions between individual items in NARRA. Junction is a basic unit of Open Narrative principle, as it provides suggestions how the narration should or can continue.
+
+\request{GET v1/synthesizers}{author, admin}
+
+Responds with list of all synthesizers running on NARRA (currently none):
+
+\begin{verbatim}
+{"status":"OK","synthesizers":[]}
+\end{verbatim}
+
+\subsection{Events}
+\label{toc:events}
+NARRA uses an event-driven approach for item ingestion, metadata generation and basically all user actions that are assumed to take longer time to complete.
+
+\request{GET v1/events}{admin only}
+
+Responds with list of all currently running events:
+
+\begin{verbatim}
+{"status":"OK","events":[
+  {"id":"5538da553533632e3c0d0000",
+   "message":"narra::transcoder::5538da553533632e3c070000",
+   "progress":0.3016603214890017,
+   "status":"running",
+   "item":{"id":"5538da553533632e3c070000","name":"0003H1-003","type":"video"}},
+  {"id":"5548da553533632e3c0d0000",
+   "message":"narra::transcoder::5548da553533632e3c070000",
+   "progress":0.6937596037485183,
+   "status":"running",
+   "item":{"id":"5548da553533632e3c070000","name":"0004H1-003","type":"video"}}
+]}
+\end{verbatim}
+
+\requests{GET v1/events/user/<username>}{author, admin}
+
+\reqexample{GET v1/events/user/alice}
+
+Responds with list of events associated with selected user:
+
+\begin{verbatim}
+{"status":"OK","events":[
+  {"id":"5538da553533632e3c0d0000",
+   "message":"narra::transcoder::5538da553533632e3c070000",
+   "progress":0.3016603214890017,
+   "status":"running",
+   "item":{"id":"5538da553533632e3c070000","name":"0003H1-003","type":"video"}}
+]}
+\end{verbatim}
+
+
+\section{Item-related resources}
+Item is the individual video clip, image, sound file or any piece of data supported by NARRA. Item is a building block of Open Narrative as well as finalized multimedia sequences.
+
+Every item has to be organized in library.
+
+\request{GET v1/items}{admin}
+
+Responds with list of all items in NARRA instance:
+
+\begin{verbatim}
+{"status":"OK","items":[
+  {"id":"552a33df61633249940c0000",
+   "name":"00129O-051",
+   "url":"http://example.org/00129O-051.mov",
+   "type":"video",
+   "prepared":true,
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/552a33df61633249940c0000/thumbnail_00000.png"
+   ],
+   "video_proxy_hq":
+    "http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_hq.webm",
+   "video_proxy_lq":
+    "http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_lq.webm",
+   "audio_proxy":
+    "http://narra-storage/my-narra-items/552a33df61633249940c0000/audio_proxy.ogg"},
+  {"id":"552a33df61633276b1090000",
+   "name":"0013D2-013-2",
+   "url":"http://example.org/0013D2-013-2.mov",
+   "type":"video",
+   "prepared":true,
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/552a33df61633276b1090000/thumbnail_00000.png",
+    "http://narra-storage/my-narra-items/552a33df61633276b1090000/thumbnail_00004.png"
+   ],
+   "video_proxy_hq":
+    "http://narra-storage/my-narra-items/552a33df61633276b1090000/video_proxy_hq.webm",
+   "video_proxy_lq":
+    "http://narra-storage/my-narra-items/552a33df61633276b1090000/video_proxy_lq.webm",
+   "audio_proxy":
+    "http://narra-storage/my-narra-items/552a33df61633276b1090000/audio_proxy.ogg"}
+]}
+
+\end{verbatim}
+
+\requests{GET v1/items/<id>}{author, admin}
+
+\reqexample{GET v1/items/552a33df61633249940c0000}
+
+Responds with all information about one specific item, including metadata:
+
+\begin{verbatim}
+{"status":"OK","item":{
+  "id":"552a33df61633249940c0000",
+  "name":"00129O-051",
+  "url":"http://example.org/00129O-051.mov",
+  "type":"video",
+  "prepared":true,
+  "library":{"id":"552a328961633276b1000000","name":"Example Library"},
+  "thumbnails":[
+   "http://narra-storage/my-narra-items/552a33df61633249940c0000/thumbnail_00000.png"
+  ],
+  "video_proxy_hq":
+   "http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_hq.webm",
+  "video_proxy_lq":
+   "http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_lq.webm",
+  "audio_proxy":
+   "http://narra-storage/my-narra-items/552a33df61633249940c0000/audio_proxy.ogg",
+  "metadata":[
+   {"name":"type","value":"video","generator":"source"},
+   {"name":"name","value":"00129O-051","generator":"source"},
+   {"name":"url","value":"http://example.org/00129O-051.mov","generator":"source"},
+   {"name":"library","value":"Example Library","generator":"source"},
+   {"name":"author","value":"Bob Example","generator":"source"},
+   {"name":"thumbnail_00000",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/thumbnail_00000.png",
+    "generator":"thumbnail",
+    "marks":[{"in":0.0}]},
+   {"name":"video_proxy_lq",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_lq.webm",
+    "generator":"transcoder"},
+   {"name":"video_proxy_hq",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_hq.webm",
+    "generator":"transcoder"},
+   {"name":"size","value":"1305753","generator":"source"},
+   {"name":"duration","value":"2.88","generator":"source"},
+   {"name":"timecode","value":"12:19:20:00","generator":"source"},
+   {"name":"bitrate","value":"3627","generator":"source"},
+   {"name":"video_codec","value":"h264 (Main) (avc1 / 0x31637661)","generator":"source"},
+   {"name":"colorspace","value":"yuv420p(tv, bt709)","generator":"source"},
+   {"name":"resolution","value":"1280x720","generator":"source"},
+   {"name":"width","value":"1280","generator":"source"},
+   {"name":"height","value":"720","generator":"source"},
+   {"name":"frame_rate","value":"25.0","generator":"source"},
+   {"name":"audio_codec","value":"aac (LC) (mp4a / 0x6134706D)","generator":"source"},
+   {"name":"audio_sample_rate","value":"48000","generator":"source"},
+   {"name":"audio_channels","value":"2","generator":"source"},
+   {"name":"audio_proxy",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/audio_proxy.ogg",
+    "generator":"transcoder"}
+  ]
+}}
+\end{verbatim}
+
+\requests{POST v1/items/new}{author, admin}
+
+\reqpost{POST v1/items/new}{url: "http://example.org/00329O-051.mov"\required\\
+library: "552a328961633276b1000000" \required\\
+author: "Camera Guy"\\
+metadata: \{"description": "Some interesting description"\}}
+
+Creates new item in selected library, starts item ingestion (thumbnail and proxy files generation). Responds with basic information about currently created item:
+
+\begin{verbatim}
+{"status":"OK","item":{
+  "id":"552a338961633277b1000000",
+  "name":"00329O-051",
+  "url":"http://example.org/00329O-051.mov",
+  "type":"video",
+  "prepared":false,
+  "library":{"id":"552a328961633276b1000000","name":"Example Library"},
+  "metadata":[
+   {"name":"type","value":"video","generator":"source"},
+   {"name":"name","value":"00329O-051","generator":"source"},
+   {"name":"url","value":"http://example.org/00329O-051.mov","generator":"source"},
+   {"name":"library","value":"test","generator":"source"},
+   {"name":"author","value":"testovaci","generator":"source"},
+   {"name":"description","value":"test","generator":"bob"}
+  ]
+}}
+\end{verbatim}
+
+\requests{GET v1/items/<id>/delete}{author, admin}
+
+\reqexample{GET v1/items/552a338961633277b1000000/delete}
+
+Deletes selected item.
+
+\subsection{Item events}
+Events, mentioned in \ref{toc:events} can be gathered also for individual items:
+
+\request{GET v1/items/<id>/events}{author, admin}
+
+\reqexample{GET v1/items/5538da553533632e3c070000/events}
+
+\begin{verbatim}
+{"status":"OK","events":[
+  {"id":"5538da553533632e3c0d0000",
+   "message":"narra::transcoder::5538da553533632e3c070000",
+   "progress":0.3016603214890017,
+   "status":"running",
+   "item":{"id":"5538da553533632e3c070000","name":"0003H1-003","type":"video"}}
+]}
+\end{verbatim}
+
+\subsection{Item generators}
+Generators, mentioned in \ref{toc:generators}, can be run again on individual items:
+
+\request{GET v1/items/<id>/regenerate/<generator>}{author, admin}
+
+\reqexample{GET v1/items/5538da553533632e3c070000/regenerate/att\_speech}
+
+Runs again a metadata generator and responds with status message:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Item metadata}
+Metadata describe the contents of item, technical parameters or provide basically any human-readable and computer-processable information about the item.
+
+Metadata can be either generated on import of the item or added / edited afterwards.
+
+\request{GET v1/items/<id>/metadata}{author, admin}
+
+\reqexample{GET v1/items/552a33df61633249940c0000/metadata}
+
+Returns all metadata attached to selected item:
+
+\begin{verbatim}
+{"status":"OK","metadata":[
+   {"name":"type","value":"video","generator":"source"},
+   {"name":"name","value":"00129O-051","generator":"source"},
+   {"name":"url","value":"http://example.org/00129O-051.mov","generator":"source"},
+   {"name":"library","value":"Example Library","generator":"source"},
+   {"name":"author","value":"Bob Example","generator":"source"},
+   {"name":"thumbnail_00000",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/thumbnail_00000.png",
+    "generator":"thumbnail",
+    "marks":[{"in":0.0}]},
+   {"name":"video_proxy_lq",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_lq.webm",
+    "generator":"transcoder"},
+   {"name":"video_proxy_hq",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/video_proxy_hq.webm",
+    "generator":"transcoder"},
+   {"name":"size","value":"1305753","generator":"source"},
+   {"name":"duration","value":"2.88","generator":"source"},
+   {"name":"timecode","value":"12:19:20:00","generator":"source"},
+   {"name":"bitrate","value":"3627","generator":"source"},
+   {"name":"video_codec","value":"h264 (Main) (avc1 / 0x31637661)","generator":"source"},
+   {"name":"colorspace","value":"yuv420p(tv, bt709)","generator":"source"},
+   {"name":"resolution","value":"1280x720","generator":"source"},
+   {"name":"width","value":"1280","generator":"source"},
+   {"name":"height","value":"720","generator":"source"},
+   {"name":"frame_rate","value":"25.0","generator":"source"},
+   {"name":"audio_codec","value":"aac (LC) (mp4a / 0x6134706D)","generator":"source"},
+   {"name":"audio_sample_rate","value":"48000","generator":"source"},
+   {"name":"audio_channels","value":"2","generator":"source"},
+   {"name":"audio_proxy",
+    "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/audio_proxy.ogg",
+    "generator":"transcoder"}
+]}
+\end{verbatim}
+
+\requests{GET v1/items/<id>/metadata/<meta>?generator=<generator>}{author, admin}
+
+\reqexample{GET v1/items/552a33df61633249940c0000/metadata/thumbnail\_00000?generator=thumbnail}
+
+Returns value of one selected meta of one item.
+
+\begin{verbatim}
+{"status":"OK","metadata":{
+  "name":"thumbnail_00000",
+  "value":"http://narra-storage/my-narra-items/552a33df61633249940c0000/thumbnail_00000.png",
+  "generator":"thumbnail",
+  "marks":[{"in":0.0}]
+}}
+\end{verbatim}
+
+
+\requests{POST v1/items/<id>/metadata/new}{author, admin}
+
+\reqpost{POST v1/items/552a33df61633249940c0000/metadata/new}{meta: "thumbnail\_00004" \required\\
+value: "http://narra-storage/my-narra-items/tmp/thumbnail\_00004.png" \required\\
+generator: "thumbnail" \required\\
+marks: [\{"in": 4.0\}]}
+
+Adds new metadata to the selected item and returns status and added value:
+
+\begin{verbatim}
+{"status":"OK","metadata":{
+  "name":"thumbnail_00004",
+  "value":"http://narra-storage/my-narra-items/tmp/thumbnail_00004.png",
+  "generator":"thumbnail",
+  "marks":[{"in":4.0}]
+}}
+\end{verbatim}
+
+
+\requests{POST v1/items/<id>/metadata/<meta>/update}{author, admin}
+
+\reqpost{POST v1/items/552a33df61633249940c0000/metadata/thumbnail\_00004/update}{value: "http://narra-storage/my-narra-items/final/thumbnail\_00004.png" \required\\
+generator: "thumbnail" \required\\
+marks: [\{"in": 4.5\}]}
+
+Updates selected metadata for chosen item and returns new value of this metadata:
+
+\begin{verbatim}
+{"status":"OK","metadata":{
+  "name":"thumbnail_00004",
+  "value":"http://narra-storage/my-narra-items/final/thumbnail_00004.png",
+  "generator":"thumbnail",
+  "marks":[{"in":4.5}]
+}}
+\end{verbatim}
+
+
+\requests{GET v1/items/<id>/metadata/<meta>/delete?generator=<generator>}{author, admin}
+
+\reqexample{GET v1/items/552a33df61633249940c0000/metadata/thumbnail\_00004/delete?generator=thumbnail}
+
+Deletes selected metadata for chosen item and returns status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Item thumbnails}
+For easy retrieval of random thumbnails, a dedicated resource is available.
+
+Please note that thumbnails are in principle metadata attached to the item with generator "thumbnail".
+
+\request{GET v1/items/thumbnails/<count>}{public}
+
+\reqexample{GET v1/items/thumbnails/2}
+
+\begin{verbatim}
+{"status":"OK","thumbnails":[
+  "http://narra-storage/my-narra-items/5536e3a33533636175070000/thumbnail_00020.png",
+  "http://narra-storage/my-narra-items/5536dfc23533635f4e010000/thumbnail_00004.png"
+]}
+\end{verbatim}
+
+
+\section{Library-related resources}
+Library is a basic way how to organize individual items into easily manageable units. Library can be shared across multiple projects and multiple users, herein called contributors.
+
+\request{GET v1/libraries}{author, admin}
+
+Returns list of all accessible libraries:
+
+\begin{verbatim}
+{"status":"OK","libraries":[
+  {"id":"5538da453533632e3c060000",
+   "name":"Example Library",
+   "description":"This is an example",
+   "author":{"username":"alice","name":"Alice Example"},
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00012.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00006.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00018.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00030.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00024.png"
+   ],
+   "contributors":[{"username":"bob","name":"Bob Example"}]},
+  {"id":"5838da453533632e3c060000",
+   "name":"My example",
+   "description":"This is my example",
+   "author":{"username":"bob","name":"Bob Example"},
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/583a00e33533631e90000000/thumbnail_00006.png",
+    "http://narra-storage/my-narra-items/583a00e33533631e90000000/thumbnail_00012.png",
+   ],
+   "contributors":[]}
+]}
+\end{verbatim}
+
+\requests{GET v1/libraries/<id>}{author, admin}
+
+\reqexample{GET v1/libraries/5538da453533632e3c060000}
+
+Returns all information about selected library:
+
+\begin{verbatim}
+{"status":"OK","library":{
+  "id":"5538da453533632e3c060000",
+  "name":"Example Library",
+  "description":"This is an example",
+  "generators":[
+   {"identifier":"att_speech",
+    "title":"AT&T Speech To Text",
+    "description":"Speech To Text Generator using AT&T Speech API to transcribe audio tracks"}
+  ],
+  "author":{"username":"alice","name":"Alice Example"},
+  "thumbnails":[
+   "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00012.png",
+   "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00006.png",
+   "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00018.png",
+   "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00030.png",
+   "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00024.png"
+  ],
+  "contributors":[{"username":"bob","name":"Bob Example"}],
+  "projects":[
+   {"id":"552a31cd6163324994020000",
+    "name":"my_project",
+    "title":"Example Project",
+    "author":{"username":"bob","name":"Bob Example"}}
+   ],
+  "metadata":[
+   {"name":"Location","value":"FAMU"},
+   {"name":"Source","value":"SD_0320"}
+  ]
+}}
+\end{verbatim}
+
+\requests{POST v1/libraries/new}{author, admin}
+
+\reqpost{POST v1/libraries/new}{name: "Example 2" \required\\
+author: "alice"\\
+contributors: ["bob"]\\
+generators: ["att\_speech"]\\
+description: "Another example library"\\
+project: "my\_project"}
+
+Creates a new library and returns all information:
+
+\begin{verbatim}
+{"status":"OK","library":{
+  "id":"553e76853533637a41010000",
+  "name":"Example 2",
+  "description":"Another example library",
+  "generators":[
+   {"identifier":"att_speech",
+    "title":"AT&T Speech To Text",
+    "description":"Speech To Text Generator using AT&T Speech API to transcribe audio tracks"}
+  ],
+  "author":{"username":"alice","name":"Alice Example"},
+  "contributors":[{"username":"bob","name":"Bob Example"}],
+  "projects":[
+   {"id":"552a31cd6163324994020000",
+    "name":"my_project",
+    "title":"Example Project",
+    "author":{"username":"bob","name":"Bob Example"}}
+   ],
+  "metadata":[]
+}}
+\end{verbatim}
+
+
+\requests{POST v1/libraries/<id>/update}{author, admin}
+
+\reqpost{POST v1/libraries/553e76853533637a41010000/update}{name: "Castle"\\
+author: "bob"\\
+contributors: ["bob","alice"]\\
+generators: []\\
+description: "Castle footage"\\
+project: "my\_project"}
+
+Updates information about the selected library and returns new information:
+
+\begin{verbatim}
+{"status":"OK","library":{
+  "id":"553e76853533637a41010000",
+  "name":"Castle",
+  "description":"Castle footage",
+  "generators":[],
+  "author":{"username":"bob","name":"Bob Example"},
+  "contributors":[
+   {"username":"bob","name":"Bob Example"},
+   {"username":"alice","name":"Alice Example"}
+  ],
+  "projects":[
+   {"id":"552a31cd6163324994020000",
+    "name":"my_project",
+    "title":"Example Project",
+    "author":{"username":"bob","name":"Bob Example"}}
+   ],
+  "metadata":[]
+}}
+\end{verbatim}
+
+\requests{GET v1/libraries/<id>/delete}{author, admin}
+
+\reqexample{GET v1/libraries/553e76853533637a41010000/delete}
+
+Deletes the selected library with all its content. Returns only status:
+
+\begin{verbatim}
+ {"status":"OK"}
+\end{verbatim}
+
+\subsection{Library generators}
+As a generator can be assigned to our library and the generator itself can extend its features, it makes sense to sometimes regenerate the data generated by the selected generator.
+
+\request{GET v1/libraries/<id>/regenerate/<generator>}{author, admin}
+
+\reqexample{GET v1/libraries/5538da453533632e3c060000/regenerate/att\_speech}
+
+Deletes and starts generation of new metadata generated by one selected generator. Returns system status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Library items}
+A list of items organized in selected library can be retrieved as well. Either as a whole list or a limited list.
+
+\request{GET v1/libraries/<id>/items?limit=<limit>}{author, admin}
+
+\reqexample{GET v1/libraries/5538da453533632e3c060000/items}
+
+Returns list of items within selected library:
+
+\begin{verbatim}
+{"status":"OK","items":[
+  {"id":"553a00e33533631e90000000",
+   "name":"0003H1-003",
+   "url":"http://example.org/0003H1-003.mov",
+   "type":"video",
+   "prepared":true,
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00018.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00030.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00024.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00012.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00006.png"
+   ],
+   "video_proxy_hq":
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/video_proxy_hq.webm",
+   "video_proxy_lq":
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/video_proxy_lq.webm",
+   "audio_proxy":
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/audio_proxy.ogg"}
+]}
+\end{verbatim}
+
+\subsection{Library metadata}
+
+Metadata can be added to whole libraries, however they are not meant to be propagated to individual items, so they would not be possibly available in editing software connected to Narra.
+
+\request{GET v1/libraries/<id>/metadata}{author, admin}
+
+\reqexample{GET v1/libraries/5538da453533632e3c060000/metadata}
+
+Returns all metadata attached to library:
+
+\begin{verbatim}
+{"status":"OK","metadata":[
+  {"name":"Location","value":"FAMU"},
+  {"name":"Source","value":"SD_0320"}
+]}
+\end{verbatim}
+
+\requests{GET v1/libraries/<id>/metadata/<meta>}{author, admin}
+
+\reqexample{GET v1/libraries/5538da453533632e3c060000/metadata/Location}
+
+Returns value of one selected metadata:
+
+\begin{verbatim}
+{"status":"OK","metadata":{"name":"Location","value":"FAMU"}}
+\end{verbatim}
+
+\requests{POST v1/libraries/<id>/metadata/new}{author, admin}
+
+\reqpost{POST v1/libraries/5538da453533632e3c060000/metadata/new}{meta: "Camera" \required\\
+value: "Dave Example" \required}
+
+Adds new metadata and returns only the sent one:
+
+\begin{verbatim}
+{"status":"OK","metadata":{"name":"Camera","value":"Dave Example"}}
+\end{verbatim}
+
+\requests{POST v1/libraries/<id>/metadata/<meta>/update}{author, admin}
+
+\reqpost{POST v1/libraries/5538da453533632e3c060000/metadata/Camera/update}{value: "Zoe Example" \required}
+
+Updates value of selected metadata and returns only the updated one:
+
+\begin{verbatim}
+{"status":"OK","metadata":{"name":"Camera","value":"Zoe Example"}}
+\end{verbatim}
+
+\requests{GET v1/libraries/<id>/metadata/<meta>/delete}{author, admin}
+
+\reqexample{GET v1/libraries/5538da453533632e3c060000/metadata/Camera/delete}
+
+Deletes the selected metadata and returns status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\section{Project-related resources}
+Project is a top level of item organization. The main purpose of project is to keep organized all media involved in single piece of audiovisual work.
+
+Whole project can be shared across contributors or even made fully public.
+
+\request{GET v1/projects}{public}
+
+Returns list of all projects:
+
+\begin{verbatim}
+{"status":"OK","projects":[
+  {"name":"my_project",
+   "title":"Example Project",
+   "description":"This is an example project.",
+   "author":{"username":"bob","name":"Bob Example"},
+   "public":"false",
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/5536dfc23533635f4e010000/thumbnail_00012.png",
+    "http://narra-storage/my-narra-items/552a33df6163324994130000/thumbnail_00020.png",
+    "http://narra-storage/my-narra-items/552a33df6163324994050000/thumbnail_00018.png",
+    "http://narra-storage/my-narra-items/5536e3a335336361ae000000/thumbnail_00008.png",
+    "http://narra-storage/my-narra-items/552a33df6163324994210000/thumbnail_00020.png"
+   ],
+   "contributors":[
+    {"username":"bob","name":"Bob Example"},
+    {"username":"alice","name":"Alice Example"}
+   ]},
+  {"name":"another",
+   "title":"Another Example",
+   "description":"This is yet another example project.",
+   "author":{"username":"bob","name":"Bob Example"},
+   "public":"false",
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/5536dfc23533635f4e010000/thumbnail_00012.png",
+    "http://narra-storage/my-narra-items/552a33df6163324994130000/thumbnail_00020.png",
+    "http://narra-storage/my-narra-items/552a33df6163324994050000/thumbnail_00018.png",
+    "http://narra-storage/my-narra-items/5536e3a335336361ae000000/thumbnail_00008.png",
+    "http://narra-storage/my-narra-items/552a33df6163324994210000/thumbnail_00020.png"
+   ],
+   "contributors":[]}
+]}
+\end{verbatim}
+
+\requests{GET v1/projects/<name>}{admin, author}
+
+\reqexample{GET v1/projects/my\_project}
+
+Returns all properties of selected project:
+
+\begin{verbatim}
+{"status":"OK","project":{
+  "name":"my_project",
+  "title":"Example Project",
+  "description":"This is an example project.",
+  "author":{"username":"bob","name":"Bob Example"},
+  "public":"false",
+  "thumbnails":[
+   "http://narra-storage/my-narra-items/5536dfc23533635f4e010000/thumbnail_00012.png",
+   "http://narra-storage/my-narra-items/552a33df6163324994130000/thumbnail_00020.png",
+   "http://narra-storage/my-narra-items/552a33df6163324994050000/thumbnail_00018.png",
+   "http://narra-storage/my-narra-items/5536e3a335336361ae000000/thumbnail_00008.png",
+   "http://narra-storage/my-narra-items/552a33df6163324994210000/thumbnail_00020.png"
+  ],
+  "contributors":[
+   {"username":"bob","name":"Bob Example"},
+   {"username":"alice","name":"Alice Example"}
+  ],
+  "libraries":[
+   {"id":"5538da453533632e3c060000",
+    "name":"Example Library",
+    "description":"This in an example",
+    "author":{"username":"alice","name":"Alice Example"},
+    "thumbnails":[
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00012.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00006.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00018.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00030.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00024.png"
+    ],
+    "contributors":[{"username":"bob","name":"Bob Example"}]}
+  ],
+  "metadata":[
+   {"name":"public","value":"false"},
+   {"name":"Editor","value":"Zoe Example"}
+  ]
+}}
+\end{verbatim}
+
+\requests{POST v1/projects/new}{author, admin}
+
+\reqpost{POST v1/projects/new}{name: "old\_prague" \required\\
+title: "Old Prague Documentary" \required\\
+author: "bob"\\
+contributors: ["alice"]\\
+description: "Some documentary"}
+
+Creates a new project and returns information about it:
+
+\begin{verbatim}
+{"status":"OK","project":{
+  "name":"old_prague",
+  "title":"Old Prague Documentary",
+  "description":"Some wonderful documentary",
+  "author":{"username":"bob","name":"Bob Example"},
+  "public":"false",
+  "contributors":[{"username":"alice","name":"Alice Example"}],
+  "libraries":[],
+  "metadata":[{"name":"public","value":"false"}]
+}}
+\end{verbatim}
+
+\requests{POST v1/projects/<name>/update}{author, admin}
+
+\reqpost{POST v1/projects/old\_prague/update}{new\_name: "prague"\\
+title: "Prague Documentary"\\
+author: "alice"\\
+contributors: ["alice","bob"]\\
+description: "Some documentary"}
+
+Updates attributes of the project and returns information about updated project:
+
+\begin{verbatim}
+{"status":"OK","project":{
+  "name":"prague",
+  "title":"Prague Documentary",
+  "description":"Some documentary",
+  "author":{"username":"alice","name":"Alice Example"},
+  "public":"false",
+  "contributors":[
+   {"username":"alice","name":"Alice Example"}
+   {"username":"bob","name":"Bob Example"}
+  ],
+  "libraries":[],
+  "metadata":[{"name":"public","value":"false"}]
+}}
+\end{verbatim}
+
+\requests{GET v1/projects/<name>/delete}{author, admin}
+
+\reqexample{GET v1/projects/prague/delete}
+
+Deletes the project (libraries are kept but can be orphaned and become inaccessible) and returns status: 
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Project items}
+Although items are organized in libraries and that is a preferred way how to retrieve them, project can list them as well.
+
+\request{GET v1/projects/<name>/items}{author, admin}
+
+\reqexample{GET v1/project/my\_project/items}
+
+Returns list of items in project, note that the structure is the same as a list of library items:
+
+\begin{verbatim}
+{"status":"OK","items":[
+  {"id":"553a00e33533631e90000000",
+   "name":"0003H1-003",
+   "url":"http://example.org/0003H1-003.mov",
+   "type":"video",
+   "prepared":true,
+   "thumbnails":[
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00018.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00030.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00024.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00012.png",
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00006.png"
+   ],
+   "video_proxy_hq":
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/video_proxy_hq.webm",
+   "video_proxy_lq":
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/video_proxy_lq.webm",
+   "audio_proxy":
+    "http://narra-storage/my-narra-items/553a00e33533631e90000000/audio_proxy.ogg"}
+]}
+\end{verbatim}
+
+\subsection{Project libraries}
+Because the connection between projects and libraries is many-to-many, it makes sense to manage adding or removing libraries from the project side as well.
+
+\request{POST v1/projects/<name>/libraries/<action>}{author, admin}
+
+\reqpost{POST v1/projects/my\_project/libraries/remove}{libraries: ["Example Library"] \required}
+
+Removes libraries form project (libraries themselves are not deleted) and returns information about whole project:
+
+\begin{verbatim}
+{"status":"OK","project":{
+  "name":"my_project",
+  "title":"Example Project",
+  "description":"This is an example project.",
+  "author":{"username":"bob","name":"Bob Example"},
+  "public":"false",
+  "thumbnails":[],
+  "contributors":[
+   {"username":"bob","name":"Bob Example"},
+   {"username":"alice","name":"Alice Example"}
+  ],
+  "libraries":[],
+  "metadata":[
+   {"name":"public","value":"false"},
+   {"name":"Editor","value":"Zoe Example"}
+  ]
+}}
+\end{verbatim}
+
+\reqpost{POST v1/projects/my\_project/libraries/add}{libraries: ["Example Library"] \required}
+
+Adds libraries to project and returns information about whole project:
+
+\begin{verbatim}
+{"status":"OK","project":{
+  "name":"my_project",
+  "title":"Example Project",
+  "description":"This is an example project.",
+  "author":{"username":"bob","name":"Bob Example"},
+  "public":"false",
+  "thumbnails":[
+   "http://narra-storage/my-narra-items/5536dfc23533635f4e010000/thumbnail_00012.png",
+   "http://narra-storage/my-narra-items/552a33df6163324994130000/thumbnail_00020.png",
+   "http://narra-storage/my-narra-items/552a33df6163324994050000/thumbnail_00018.png",
+   "http://narra-storage/my-narra-items/5536e3a335336361ae000000/thumbnail_00008.png",
+   "http://narra-storage/my-narra-items/552a33df6163324994210000/thumbnail_00020.png"
+  ],
+  "contributors":[
+   {"username":"bob","name":"Bob Example"},
+   {"username":"alice","name":"Alice Example"}
+  ],
+  "libraries":[
+   {"id":"5538da453533632e3c060000",
+    "name":"Example Library",
+    "description":"This in an example",
+    "author":{"username":"alice","name":"Alice Example"},
+    "thumbnails":[
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00012.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00006.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00018.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00030.png",
+     "http://narra-storage/my-narra-items/553a00e33533631e90000000/thumbnail_00024.png"
+    ],
+    "contributors":[{"username":"bob","name":"Bob Example"}]}
+  ],
+  "metadata":[
+   {"name":"public","value":"false"},
+   {"name":"Editor","value":"Zoe Example"}
+  ]
+}}
+\end{verbatim}
+
+
+\subsection{Project metadata}
+Metadata attached to project are again not propagated to libraries, neither items. Therefore these metadata should only describe things connected to the project itself.
+
+\request{GET v1/projects/<name>/metadata}{author, admin}
+
+\reqexample{GET v1/projects/my\_project/metadata}
+
+Returns list of all metadata:
+
+\begin{verbatim}
+{"status":"OK","metadata":[
+  {"name":"public","value":"false"},
+  {"name":"Editor","value":"Zoe Example"}
+]}
+\end{verbatim}
+
+\requests{GET v1/projects/<name>/metadata/<meta>}{author, admin}
+
+\reqexample{GET v1/projects/my\_project/metadata/Editor}
+
+Returns value of selected metadata:
+
+\begin{verbatim}
+{"status":"OK","metadata":{"name":"Editor","value":"Zoe Example"}}
+\end{verbatim}
+
+\requests{POST v1/projects/<name>/metadata/new}{author, admin}
+
+\reqpost{POST v1/projects/my\_project/metadata/new}{meta: "Started" \required\\
+value: "21. 2. 2014" \required}
+
+Creates new project metadata and returns added metadata:
+
+\begin{verbatim}
+{"status":"OK","metadata":{"name":"Started","value":"21. 2. 2014"}}
+\end{verbatim}
+
+
+\requests{POST v1/projects/<name>/metadata/<meta>/update}{author, admin}
+
+\reqpost{POST v1/projects/my\_project/metadata/Started/update}{value: "20. 2. 2014" \required}
+
+Updates selected metadata and returns it:
+
+\begin{verbatim}
+{"status":"OK","metadata":{"name":"Started","value":"20. 2. 2014"}}
+\end{verbatim}
+
+\requests{GET v1/projects/<name>/metadata/<name>/delete}{author, admin}
+
+\reqexample{GET v1/projects/my\_project/metadata/Started/delete}
+
+Deletes selected metadata from project and returns status:
+
+\begin{verbatim}
+{"status":"OK"}
+\end{verbatim}
+
+\subsection{Project sequences}
+Standard video editing process involves a sequences (sometimes called timelines) that contain information about what parts of multimedia footage are used and in what order. Although this is not standard to Open Narrative structures, most editors are familiar with this approach and require it as a possible workflow for adding new item connections.
+
+This feature is currently under development and will be changed a lot in future releases. Currently there is also no way how to add sequences to NARRA and thus the list is empty:
+
+\request{GET v1/projects/<name>/sequences}{admin, author}
+
+\reqexample{GET v1/projects/my\_project/sequences}
+
+\begin{verbatim}
+{"status":"OK","sequences":[]}
+\end{verbatim}
+
+\end{document}
