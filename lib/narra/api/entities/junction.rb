@@ -22,13 +22,17 @@
 module Narra
   module API
     module Entities
-      class Sequence < Grape::Entity
+      class Junction < Grape::Entity
 
-        expose :id do |model, options|
-          model._id.to_s
+        expose :items do |junction, options|
+          junction.items.collect { |item| {
+              id: item._id.to_s,
+              name: item.name,
+              type: item.type
+          }}
         end
-        expose :name
-        expose :marks, using: Narra::API::Entities::MarkSequence, if: {type: :detail_sequence}
+
+        expose :direction, :weight
       end
     end
   end

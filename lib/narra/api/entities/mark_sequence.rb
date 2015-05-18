@@ -24,9 +24,14 @@ module Narra
     module Entities
       class MarkSequence < Grape::Entity
 
-        expose :index, if: lambda { |model, options| !model.in.nil? }
-        expose :in, if: lambda { |model, options| !model.in.nil? }
-        expose :out, if: lambda { |model, options| !model.out.nil? }
+        expose :row
+
+        expose :clip do |model, options|
+          { id: model.clip._id.to_s, name: model.clip.name }
+        end
+
+        expose :in
+        expose :out
       end
     end
   end

@@ -28,6 +28,9 @@ module Narra
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}
         end
+        expose :synthesizers, if: {type: :detail_project} do |model, options|
+          model.synthesizers.collect { |synthesizer| Narra::Core.synthesizer(synthesizer)}
+        end
         expose :public do |model, options|
           model.get_meta(name: 'public').value
         end

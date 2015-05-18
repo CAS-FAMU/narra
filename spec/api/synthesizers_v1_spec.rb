@@ -77,7 +77,7 @@ describe Narra::API::Modules::SynthesizersV1 do
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['synthesizers'].count).to match(1)
+        expect(data['synthesizers'].count).to match(2)
       end
     end
   end

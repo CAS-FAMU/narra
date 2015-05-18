@@ -40,9 +40,13 @@ describe Narra::API::Modules::ProjectsV1 do
     @project = FactoryGirl.create(:project, author: @author_user, libraries: [@library_01, @library_02])
     @project_admin = FactoryGirl.create(:project, author: @admin_user, libraries: [@library_03, @library_04])
 
+    # create marks
+    @mark = FactoryGirl.build(:mark_sequence, clip: @item_01)
+    @mark_admin = FactoryGirl.build(:mark_sequence, clip: @item_02)
+
     # create sequences for testing purpose
-    @sequence = FactoryGirl.create(:sequence, project: @project)
-    @sequence_admin = FactoryGirl.create(:sequence, project: @project_admin)
+    @sequence = FactoryGirl.create(:sequence, project: @project, author: @author_user, marks: [@mark])
+    @sequence_admin = FactoryGirl.create(:sequence, project: @project_admin, author: @admin_user, marks: [@mark_admin])
   end
 
   context 'not authenticated' do

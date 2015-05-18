@@ -38,7 +38,7 @@ module Narra
         end
 
         expose :project, if: lambda { |event, options| !event.project.nil? } do |event, options|
-          { id: event.project._id.to_s, name: event.project.name }
+          { name: event.project.name }
         end
       end
     end

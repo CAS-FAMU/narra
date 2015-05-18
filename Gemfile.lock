@@ -1,9 +1,10 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 12efba35be6a085f72eb6a208b2a1aa925ce6833
+  revision: 84e877e1589134a5b395264a612c5707bf5e41c4
   specs:
     narra-core (0.0.1)
       aasm
+      edl
       fog
       logger-better
       mongoid
@@ -11,6 +12,7 @@ GIT
       sidekiq
       sinatra
       streamio-ffmpeg
+      timecode
       wisper
 
 GIT
@@ -23,12 +25,12 @@ GIT
 
 GIT
   remote: https://github.com/attdevsupport/codekit-ruby.git
-  revision: 2afb6d52f31d58c53b053d8f41985221c857fbc0
+  revision: e687808d6f9f39595e379b753dfa01a67dd3c1f0
   specs:
-    att-codekit (4.3.2)
+    att-codekit (4.4.2)
       immutable_struct
       json
-      rest-client (~> 1.6)
+      rest-client
 
 GIT
   remote: https://github.com/marigan/streamio-ffmpeg.git
@@ -39,8 +41,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.0)
-    aasm (4.0.8)
+    CFPropertyList (2.3.1)
+    aasm (4.1.1)
     actionmailer (4.2.0)
       actionpack (= 4.2.0)
       actionview (= 4.2.0)
@@ -85,19 +87,23 @@ GEM
     builder (3.2.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    codeclimate-test-reporter (0.4.6)
+    codeclimate-test-reporter (0.4.7)
       simplecov (>= 0.7.1, < 1.0.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    connection_pool (2.1.1)
-    database_cleaner (1.4.0)
+    connection_pool (2.2.0)
+    database_cleaner (1.4.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
-    equalizer (0.0.9)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
+    edl (0.1.5)
+      timecode
+    equalizer (0.0.11)
     erubis (2.7.0)
-    excon (0.43.0)
+    excon (0.45.3)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.5.0)
@@ -107,15 +113,19 @@ GEM
       multipart-post (>= 1.2, < 3)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
-    fog (1.27.0)
+    fog (1.30.0)
       fog-atmos
       fog-aws (~> 0.0)
       fog-brightbox (~> 0.4)
-      fog-core (~> 1.27, >= 1.27.3)
+      fog-core (~> 1.27, >= 1.27.4)
       fog-ecloud
+      fog-google (>= 0.0.2)
       fog-json
+      fog-local
+      fog-powerdns (>= 0.1.1)
       fog-profitbricks
       fog-radosgw (>= 0.0.2)
+      fog-riakcs
       fog-sakuracloud (>= 0.0.4)
       fog-serverlove
       fog-softlayer
@@ -129,7 +139,7 @@ GEM
     fog-atmos (0.1.0)
       fog-core
       fog-xml
-    fog-aws (0.0.8)
+    fog-aws (0.2.2)
       fog-core (~> 1.27)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
@@ -138,54 +148,69 @@ GEM
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.27.4)
+    fog-core (1.30.0)
       builder
-      excon (~> 0.38)
+      excon (~> 0.45)
       formatador (~> 0.2)
       mime-types
       net-scp (~> 1.1)
       net-ssh (>= 2.1.3)
-    fog-ecloud (0.0.2)
+    fog-ecloud (0.1.1)
       fog-core
       fog-xml
-    fog-json (1.0.0)
+    fog-google (0.0.5)
+      fog-core
+      fog-json
+      fog-xml
+    fog-json (1.0.1)
+      fog-core (~> 1.0)
       multi_json (~> 1.0)
-    fog-profitbricks (0.0.1)
+    fog-local (0.2.1)
+      fog-core (~> 1.27)
+    fog-powerdns (0.1.1)
+      fog-core (~> 1.27)
+      fog-json (~> 1.0)
+      fog-xml (~> 0.1)
+    fog-profitbricks (0.0.2)
       fog-core
       fog-xml
       nokogiri
-    fog-radosgw (0.0.3)
+    fog-radosgw (0.0.4)
       fog-core (>= 1.21.0)
       fog-json
       fog-xml (>= 0.0.1)
-    fog-sakuracloud (1.0.0)
+    fog-riakcs (0.1.0)
       fog-core
       fog-json
-    fog-serverlove (0.1.1)
+      fog-xml
+    fog-sakuracloud (1.0.1)
       fog-core
       fog-json
-    fog-softlayer (0.4.0)
+    fog-serverlove (0.1.2)
       fog-core
       fog-json
-    fog-storm_on_demand (0.1.0)
+    fog-softlayer (0.4.6)
       fog-core
       fog-json
-    fog-terremark (0.0.3)
+    fog-storm_on_demand (0.1.1)
+      fog-core
+      fog-json
+    fog-terremark (0.1.0)
       fog-core
       fog-xml
-    fog-vmfusion (0.0.1)
+    fog-vmfusion (0.1.0)
       fission
       fog-core
-    fog-voxel (0.0.2)
+    fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-xml (0.1.1)
+    fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
-    globalid (0.3.0)
+    globalid (0.3.5)
       activesupport (>= 4.1.0)
-    grape (0.10.1)
+    grape (0.11.0)
       activesupport
       builder
       hashie (>= 2.1.0)
@@ -195,12 +220,13 @@ GEM
       rack-accept
       rack-mount
       virtus (>= 1.0.0)
-    grape-entity (0.4.4)
+    grape-entity (0.4.5)
       activesupport
       multi_json (>= 1.3.2)
-    hashie (3.3.2)
-    hike (1.2.3)
+    hashie (3.4.1)
     hitimes (1.2.2)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.7.0)
     ice_nine (0.11.1)
     immutable_struct (1.1.1)
@@ -211,37 +237,37 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.2)
-    jwt (1.2.1)
-    logger-better (0.1.2)
-    loofah (2.0.1)
+    jwt (1.5.0)
+    logger-better (0.2.1)
+    loofah (2.0.2)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mime-types (2.4.3)
+    mime-types (2.5)
     mini_portile (0.6.2)
-    minitest (5.5.1)
-    mongoid (4.0.1)
+    minitest (5.6.1)
+    mongoid (4.0.2)
       activemodel (~> 4.0)
       moped (~> 2.0.0)
       origin (~> 2.1)
       tzinfo (>= 0.3.37)
-    mongoid-rspec (2.0.0)
+    mongoid-rspec (2.2.0)
       mongoid (~> 4.0.0)
       rake
       rspec (~> 3.1)
     mongoid-tree (2.0.0)
       mongoid (>= 4.0, <= 5.0)
-    moped (2.0.3)
+    moped (2.0.4)
       bson (~> 2.2)
       connection_pool (~> 2.0)
       optionable (~> 0.2.0)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
-    netrc (0.10.2)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth2 (1.0.0)
@@ -259,17 +285,15 @@ GEM
     omniauth-google-oauth2 (0.2.6)
       omniauth (> 1.0)
       omniauth-oauth2 (~> 1.1)
-    omniauth-oauth2 (1.2.0)
-      faraday (>= 0.8, < 0.10)
-      multi_json (~> 1.3)
+    omniauth-oauth2 (1.3.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
     optionable (0.2.0)
     origin (2.1.1)
-    rack (1.6.0)
+    rack (1.6.1)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-cors (0.3.1)
+    rack-cors (0.4.0)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
     rack-protection (1.5.3)
@@ -289,11 +313,11 @@ GEM
       sprockets-rails
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
-    rails-dom-testing (1.0.5)
+    rails-dom-testing (1.0.6)
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-html-sanitizer (1.0.1)
+    rails-html-sanitizer (1.0.2)
       loofah (~> 2.0)
     railties (4.2.0)
       actionpack (= 4.2.0)
@@ -301,64 +325,67 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
-    redis (3.2.0)
-    redis-namespace (1.5.1)
+    redis (3.2.1)
+    redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
-    rest-client (1.7.2)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    rspec (3.1.0)
-      rspec-core (~> 3.1.0)
-      rspec-expectations (~> 3.1.0)
-      rspec-mocks (~> 3.1.0)
-    rspec-core (3.1.7)
-      rspec-support (~> 3.1.0)
-    rspec-expectations (3.1.2)
+    rspec (3.2.0)
+      rspec-core (~> 3.2.0)
+      rspec-expectations (~> 3.2.0)
+      rspec-mocks (~> 3.2.0)
+    rspec-core (3.2.3)
+      rspec-support (~> 3.2.0)
+    rspec-expectations (3.2.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.1.0)
-    rspec-mocks (3.1.3)
-      rspec-support (~> 3.1.0)
-    rspec-rails (3.1.0)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      railties (>= 3.0)
-      rspec-core (~> 3.1.0)
-      rspec-expectations (~> 3.1.0)
-      rspec-mocks (~> 3.1.0)
-      rspec-support (~> 3.1.0)
-    rspec-support (3.1.2)
-    sidekiq (3.3.1)
+      rspec-support (~> 3.2.0)
+    rspec-mocks (3.2.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.2.0)
+    rspec-rails (3.2.1)
+      actionpack (>= 3.0, < 4.3)
+      activesupport (>= 3.0, < 4.3)
+      railties (>= 3.0, < 4.3)
+      rspec-core (~> 3.2.0)
+      rspec-expectations (~> 3.2.0)
+      rspec-mocks (~> 3.2.0)
+      rspec-support (~> 3.2.0)
+    rspec-support (3.2.2)
+    sidekiq (3.3.4)
       celluloid (>= 0.16.0)
       connection_pool (>= 2.1.1)
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
-    simplecov (0.9.1)
+    simplecov (0.10.0)
       docile (~> 1.1.0)
-      multi_json (~> 1.0)
-      simplecov-html (~> 0.8.0)
-    simplecov-html (0.8.0)
-    sinatra (1.4.5)
+      json (~> 1.8)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
+    sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
-      tilt (~> 1.3, >= 1.3.4)
-    sprockets (2.12.3)
-      hike (~> 1.2)
-      multi_json (~> 1.0)
+      tilt (>= 1.3, < 3)
+    sprockets (3.1.0)
       rack (~> 1.0)
-      tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.2.4)
+    sprockets-rails (2.3.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     thor (0.19.1)
-    thread_safe (0.3.4)
-    tilt (1.4.1)
+    thread_safe (0.3.5)
+    tilt (2.0.1)
+    timecode (1.1.2)
     timers (4.0.1)
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    virtus (1.0.4)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
+    virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)

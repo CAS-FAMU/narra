@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014 CAS / FAMU
+# Copyright (C) 2013 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -21,14 +21,27 @@
 
 module Narra
   module API
-    module Entities
-      class Sequence < Grape::Entity
+    module Modules
+      class ProjectsV1Junctions < Narra::API::Modules::Generic
 
-        expose :id do |model, options|
-          model._id.to_s
+        version 'v1', :using => :path
+        format :json
+
+        helpers Narra::API::Helpers::User
+        helpers Narra::API::Helpers::Error
+        helpers Narra::API::Helpers::Present
+        helpers Narra::API::Helpers::Generic
+        helpers Narra::API::Helpers::Attributes
+
+        resource :projects do
+
+          desc 'Return project junctions based on synthesizer.'
+          get ':name/junctions/:synthesizer' do
+            return_one_custom(Project, :name, [:admin, :author]) do |project|
+              present_ok(project.junctions.where(synthesizer: params[:synthesizer].to_sym).limit(params[:limit]), Junction, Narra::API::Entities::Junction)
+            end
+          end
         end
-        expose :name
-        expose :marks, using: Narra::API::Entities::MarkSequence, if: {type: :detail_sequence}
       end
     end
   end

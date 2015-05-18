@@ -42,6 +42,24 @@ module Narra
             end
           end
 
+          desc 'Add new sequence.'
+          post ':name/sequences/add' do
+            required_attributes! [:type, :title, :file, :params]
+            # Resolve project and add sequence
+            return_one_custom(Project, :name, [:admin, :author]) do |project|
+              # check for the author
+              author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
+              # get file content
+              content = params[:file][:tempfile].read
+              # prepare sequence hash
+              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content}.merge(Hash[params[:params].map{ |k, v| [k.to_sym, v] }])
+              # add sequence
+              Narra::Core.add_sequence(project, author, sequence)
+              # present
+              present_ok
+            end
+          end
+
           desc 'Return project sequence.'
           get ':name/sequences/:sequence' do
             return_one_custom(Project, :name, [:admin, :author]) do |project|
