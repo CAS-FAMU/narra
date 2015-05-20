@@ -27,7 +27,17 @@ module Narra
         expose :row
 
         expose :clip do |model, options|
-          { id: model.clip._id.to_s, name: model.clip.name, thumbnail: model.clip.url_thumbnail }
+          # basic clip output
+          basic = {id: model.clip._id.to_s, name: model.clip.name, type: model.clip.type, thumbnail: model.clip.url_thumbnail}
+          # process
+          case model.clip.type
+            when :video
+              basic.merge({source: model.clip.url_video_proxy_hq})
+            when :image
+              basic.merge({source: model.clip.url_image_proxy_hq})
+            when :audio
+              basic.merge({source: model.clip.url_audio_proxy})
+          end
         end
 
         expose :in
