@@ -28,6 +28,12 @@ module Narra
           model._id.to_s
         end
         expose :name
+        expose :thumbnail do |model, options|
+          model.marks.sample.clip.url_thumbnail
+        end
+        expose :author do |model, options|
+          { username: model.author.username, name: model.author.name}
+        end
         expose :marks, using: Narra::API::Entities::MarkSequence, if: {type: :detail_sequence}
       end
     end

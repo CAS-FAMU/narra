@@ -27,7 +27,7 @@ module Narra
         expose :row
 
         expose :clip do |model, options|
-          { id: model.clip._id.to_s, name: model.clip.name }
+          { id: model.clip._id.to_s, name: model.clip.name, thumbnail: model.clip.url_thumbnail }
         end
 
         expose :in

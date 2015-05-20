@@ -73,7 +73,7 @@ module Narra
               # gather generators if exist
               synthesizers = params[:synthesizers].nil? ? [] : params[:synthesizers].select { |s| !Narra::Core.synthesizer(s.to_sym).nil? }
               # push them if changed
-              project.update_attributes(synthesizers: generators) unless synthesizers.sort == project.synthesizers.sort
+              project.update_attributes(synthesizers: synthesizers) unless synthesizers.sort == project.synthesizers.sort
             end
           end
 

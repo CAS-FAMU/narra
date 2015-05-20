@@ -19,6 +19,8 @@
 # Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
 #
 
+require 'json'
+
 module Narra
   module API
     module Modules
@@ -43,7 +45,7 @@ module Narra
           end
 
           desc 'Add new sequence.'
-          post ':name/sequences/add' do
+          post ':name/sequences/new' do
             required_attributes! [:type, :title, :file, :params]
             # Resolve project and add sequence
             return_one_custom(Project, :name, [:admin, :author]) do |project|
@@ -52,7 +54,7 @@ module Narra
               # get file content
               content = params[:file][:tempfile].read
               # prepare sequence hash
-              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content}.merge(Hash[params[:params].map{ |k, v| [k.to_sym, v] }])
+              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content}.merge(Hash[JSON.parse(params[:params]).map{ |k, v| [k.to_sym, v] }])
               # add sequence
               Narra::Core.add_sequence(project, author, sequence)
               # present
@@ -64,12 +66,29 @@ module Narra
           get ':name/sequences/:sequence' do
             return_one_custom(Project, :name, [:admin, :author]) do |project|
               # Get item
-              sequences = project.sequences.where(id: params[:sequence])
+              sequence = project.sequences.find(params[:sequence])
               # Check if the item is part of the project
-              if sequences.empty?
+              if sequence.nil?
                 error_not_found!
               else
-                present_ok(sequences.first, Sequence, Narra::API::Entities::Sequence, 'detail')
+                present_ok(sequence, Sequence, Narra::API::Entities::Sequence, 'detail')
+              end
+            end
+          end
+
+          desc 'Delete a specific sequence.'
+          get ':name/sequences/:sequence/delete' do
+            return_one_custom(Project, :name, [:admin, :author]) do |project|
+              # Get item
+              sequence = project.sequences.find(params[:sequence])
+              # Check if the item is part of the project
+              if sequence.nil?
+                error_not_found!
+              else
+                # destroy
+                sequence.destroy
+                # present
+                present_ok
               end
             end
           end
