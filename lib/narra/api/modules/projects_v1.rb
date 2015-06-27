@@ -37,12 +37,12 @@ module Narra
 
           desc 'Return all projects.'
           get do
-            return_many(Project, Narra::API::Entities::Project, [], false)
+            return_many(Project, Narra::API::Entities::Project, false, [:author])
           end
 
           desc 'Return a specific project.'
           get ':name' do
-            return_one(Project, Narra::API::Entities::Project, :name, [:admin, :author])
+            return_one(Project, Narra::API::Entities::Project, :name, false, [:author])
           end
 
           desc 'Create new project.'
@@ -52,25 +52,26 @@ module Narra
             author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
             # check for contributors
             contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
-            # check for generators
-            synthesizers = params[:synthesizers].nil? ? [] : params[:synthesizers].select { |s| !Narra::Core.synthesizer(s.to_sym).nil? }
+            # prepare params
+            parameters = {name: params[:name], title: params[:title], description: params[:description], author: author, contributors: contributors}
             # create new project
-            new_one(Project, Narra::API::Entities::Project, :name, {name: params[:name], title: params[:title], description: params[:description], author: author, contributors: contributors, synthesizers: synthesizers}, [:admin, :author])
+            new_one(Project, Narra::API::Entities::Project, true, [:author], parameters)
           end
 
           desc 'Update a specific project.'
           post ':name/update' do
-            update_one(Project, Narra::API::Entities::Project, :name, [:admin, :author]) do |project|
+            update_one(Project, Narra::API::Entities::Project, :name, true, [:author]) do |project|
               # change name if there is a change
               project.update_attributes(name: params[:new_name]) unless params[:new_name].nil? || project.name.equal?(params[:new_name])
               project.update_attributes(title: params[:title]) unless params[:title].nil? || project.title.equal?(params[:title])
               project.update_attributes(description: params[:description]) unless params[:description].nil? || project.description.equal?(params[:description])
               project.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || project.author.username.equal?(params[:author])
+              project.public = params[:public] unless params[:public].nil?
               # gather contributors if exist
               contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
               # push them if changed
               project.update_attributes(contributors: contributors) unless contributors.sort == project.contributors.sort
-              # gather generators if exist
+              # gather synthesizers if exist
               synthesizers = params[:synthesizers].nil? ? [] : params[:synthesizers].select { |s| !Narra::Core.synthesizer(s.to_sym).nil? }
               # push them if changed
               project.update_attributes(synthesizers: synthesizers) unless synthesizers.sort == project.synthesizers.sort
@@ -79,7 +80,7 @@ module Narra
 
           desc 'Delete a specific project.'
           get ':name/delete' do
-            delete_one(Project, :name, [:admin, :author])
+            delete_one(Project, :name, true, [:author])
           end
         end
       end

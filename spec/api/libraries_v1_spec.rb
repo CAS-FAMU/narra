@@ -53,7 +53,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
     describe 'GET /v1/libraries/[:name]' do
       it 'returns a specific library' do
-        get '/v1/libraries/' + @library.name
+        get '/v1/libraries/' + @library._id.to_s
 
         # check response status
         expect(response.status).to match(401)
@@ -69,7 +69,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
     describe 'GET /v1/libraries/[:name]/items' do
       it 'returns a specific library items' do
-        get '/v1/libraries/' + @library.name + '/items'
+        get '/v1/libraries/' + @library._id.to_s + '/items'
 
         # check response status
         expect(response.status).to match(401)
@@ -85,7 +85,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
     describe 'GET /v1/libraries/[:name]/delete' do
       it 'deletes a specific library' do
-        get '/v1/libraries/' + @library.name + '/delete'
+        get '/v1/libraries/' + @library._id.to_s + '/delete'
 
         # check response status
         expect(response.status).to match(401)
@@ -117,7 +117,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
     describe 'POST /v1/libraries/[:name]/update' do
       it 'updates specific library' do
-        post '/v1/libraries/' + @library.name + '/update', {title: 'test'}
+        post '/v1/libraries/' + @library._id.to_s + '/update', {title: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -151,7 +151,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
     describe 'GET /v1/libraries/[:name]' do
       it 'returns a specific library' do
-        get '/v1/libraries/' + @library.name + '?token=' + @unroled_token
+        get '/v1/libraries/' + @library._id.to_s + '?token=' + @unroled_token
 
         # check response status
         expect(response.status).to match(403)
@@ -167,7 +167,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
     describe 'GET /v1/libraries/[:name]/items' do
       it 'returns a specific library items' do
-        get '/v1/libraries/' + @library.name + '/items?token=' + @unroled_token
+        get '/v1/libraries/' + @library._id.to_s + '/items?token=' + @unroled_token
 
         # check response status
         expect(response.status).to match(403)
@@ -249,7 +249,7 @@ describe Narra::API::Modules::LibrariesV1 do
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['libraries'].count).to match(3)
+        expect(data['libraries'].count).to match(2)
       end
     end
 

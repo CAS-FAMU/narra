@@ -37,12 +37,12 @@ module Narra
 
           desc 'Return all libraries.'
           get do
-            return_many(Library, Narra::API::Entities::Library, [:admin, :author])
+            return_many(Library, Narra::API::Entities::Library, true, [:author])
           end
 
           desc 'Return a specific library.'
           get ':id' do
-            return_one(Library, Narra::API::Entities::Library, :id, [:admin, :author])
+            return_one(Library, Narra::API::Entities::Library, :id, true, [:author])
           end
 
           desc 'Create new library.'
@@ -54,13 +54,15 @@ module Narra
             contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
             # check for generators
             generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g.to_sym).nil? }
+            # prepare params
+            parameters = {name: params[:name], description: params[:description], author: author, contributors: contributors, generators: generators}
             # create library
-            new_one(Library, Narra::API::Entities::Library, :name, {name: params[:name], description: params[:description], author: author, contributors: contributors, generators: generators}, [:admin, :author]) do |library|
+            new_one(Library, Narra::API::Entities::Library, true, [:author], parameters) do |library|
               # check for the project if any
               project = Project.find_by(name: params[:project]) unless params[:project].nil?
               # authorize the owner
-              if !project.nil?
-                authorize!([:author], project)
+              unless project.nil?
+                error_not_authorized! unless authorize([:author], project)
                 # update projects if authorized
                 library.projects << project
               end
@@ -69,10 +71,11 @@ module Narra
 
           desc 'Update a specific library.'
           post ':id/update' do
-            update_one(Library, Narra::API::Entities::Library, :id, [:admin, :author]) do |library|
+            update_one(Library, Narra::API::Entities::Library, :id, true, [:author]) do |library|
               library.update_attributes(name: params[:name]) unless params[:name].nil? || library.name.equal?(params[:name])
               library.update_attributes(description: params[:description]) unless params[:description].nil? || library.description.equal?(params[:description])
               library.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || library.author.username.equal?(params[:author])
+              library.shared = params[:shared] unless params[:shared].nil?
               # gather contributors if exist
               contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
               # push them if changed
@@ -86,7 +89,7 @@ module Narra
 
           desc 'Delete a specific library.'
           get ':id/delete' do
-            delete_one(Library, :id, [:admin, :author])
+            delete_one(Library, :id, true, [:author])
           end
         end
       end

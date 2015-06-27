@@ -38,7 +38,7 @@ module Narra
           desc 'Return a specific count of random thumbnails.'
           get 'thumbnails/:count' do
             # resolve random thumbnails
-            thumbnails = Narra::MetaItem.where(generator: :thumbnail).sample(params[:count].to_i).collect { |meta| meta.value }
+            thumbnails = Narra::Thumbnail.all.sample(params[:count].to_i).collect { |thumbnail| thumbnail.file.url }
 
             # present
             present_ok_generic('thumbnails', thumbnails)

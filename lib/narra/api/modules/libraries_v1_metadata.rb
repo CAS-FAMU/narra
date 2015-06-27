@@ -37,7 +37,10 @@ module Narra
 
           desc 'Return all metadata for a specific library.'
           get ':id/metadata' do
-            return_one_custom(Library, :id, [:admin, :author]) do |library|
+            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
+              # present
               present_ok_generic_options('metadata', library.meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
             end
           end
@@ -45,9 +48,13 @@ module Narra
           desc 'Create a new metadata for a specific library.'
           post ':id/metadata/new' do
             required_attributes! [:meta, :value]
-            return_one_custom(Library, :id, [:admin, :author]) do |library|
+            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
+              # check the author field
+              author = params[:author].nil? ? current_user : Narra::User.find_by(username: params[:author])
               # add metadata
-              meta = library.add_meta(name: params[:meta], value: params[:value])
+              meta = library.add_meta(name: params[:meta], value: params[:value], author: author)
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
             end
@@ -55,7 +62,9 @@ module Narra
 
           desc 'Return a specific metadata for a specific library.'
           get ':id/metadata/:meta' do
-            return_one_custom(Library, :id, [:admin, :author]) do |library|
+            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # get meta
               meta = library.get_meta(name: params[:meta])
               # check existence
@@ -67,7 +76,9 @@ module Narra
 
           desc 'Delete a specific metadata in a specific library.'
           get ':id/metadata/:meta/delete' do
-            return_one_custom(Library, :id, [:admin, :author]) do |library|
+            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # get meta
               meta = library.get_meta(name: params[:meta])
               # check existence
@@ -82,7 +93,9 @@ module Narra
           desc 'Update a specific metadata for a specific library.'
           post ':id/metadata/:meta/update' do
             required_attributes! [:value]
-            return_one_custom(Library, :id, [:admin, :author]) do |library|
+            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # add metadata
               meta = library.update_meta(name: params[:meta], value: params[:value])
               # present

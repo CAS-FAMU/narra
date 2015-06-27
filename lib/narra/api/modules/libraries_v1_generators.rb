@@ -37,7 +37,9 @@ module Narra
 
           desc 'Regenerate specified generator. Data will be erased.'
           get ':id/regenerate/:generator' do
-            return_one_custom(Library, :id, [:admin, :author]) do |library|
+            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # check for generator
               generator = Narra::Core.generator(params[:generator])
               # not found if does not exist

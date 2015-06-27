@@ -38,12 +38,12 @@ module Narra
           desc 'Add or remove libraries'
           post ':name/libraries/:action' do
             required_attributes! [:libraries]
-            update_one(Project, Narra::API::Entities::Project, :name, [:admin, :author]) do |project|
+            update_one(Project, Narra::API::Entities::Project, :name, true, [:author]) do |project|
               params[:libraries].each do |library|
                 if params[:action] == 'add'
-                  project.libraries << Library.find_by(name: library)
+                  project.libraries << Narra::Library.find(library)
                 elsif params[:action] == 'remove'
-                  project.libraries.delete(Library.find_by(name: library))
+                  project.libraries.delete(Narra::Library.find(library))
                 end
               end
             end

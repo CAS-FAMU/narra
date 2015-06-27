@@ -37,18 +37,19 @@ module Narra
 
           desc "Return users."
           get do
-            return_many(User, Narra::API::Entities::User, [:admin, :author])
+            return_many(User, Narra::API::Entities::User, true, [:author])
           end
 
           desc "Return logged user in the current session."
           get 'me' do
-            auth!
+            authenticate!
+            # present
             present_ok(current_user, User, Narra::API::Entities::User)
           end
 
           desc "Signout logged user in the current session."
           get 'me/signout' do
-            auth!
+            authenticate!
             # signout
             signout
             # return
@@ -57,29 +58,32 @@ module Narra
 
           desc "Return roles."
           get 'roles' do
-            auth! [:admin, :author]
+            authenticate!
+            # get authorized
+            error_not_authorized! unless authorize([:author])
+            # present
             present_ok_generic(:roles, present(User.all_roles))
           end
 
           desc "Return a specific user."
           get ':username' do
-            return_one(User, Narra::API::Entities::User, :username, [:admin])
+            return_one(User, Narra::API::Entities::User, :username, true, [:admin])
           end
 
           desc "Delete a specific user."
           get ':username/delete' do
-            delete_one(User, :username, [:admin])
+            delete_one(User, :username, true, [:admin])
           end
 
           desc "Update a user."
           post ':username/update' do
             required_attributes! [:roles]
-            update_one(User, Narra::API::Entities::User, :username, [:admin, :author]) do |user|
+            update_one(User, Narra::API::Entities::User, :username, true, [:author]) do |user|
               # gather new roles
               new_roles = params[:roles].collect { |role| role.to_sym }
               if user.roles.sort != new_roles.sort
                 # authorize for admin to change roles
-                authorize!([:admin])
+                error_not_authorized! unless authorize([:admin])
                 # change roles
                 user.update_attributes(roles: new_roles)
               end

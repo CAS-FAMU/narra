@@ -31,11 +31,16 @@ module Narra
         expose :synthesizers, if: {type: :detail_project} do |model, options|
           model.synthesizers.collect { |synthesizer| Narra::Core.synthesizer(synthesizer)}
         end
+        expose :visualizations, using: Narra::API::Entities::Visualization, if: {type: :detail_project}
         expose :public do |model, options|
-          model.get_meta(name: 'public').value
+          model.is_public?
         end
         expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
-          model.url_thumbnails
+          if options[:type] == :detail_project
+            model.url_thumbnails
+          else
+            model.url_thumbnails.sample(Narra::Tools::Settings.thumbnail_count_preview.to_i)
+          end
         end
         expose :contributors do |model, options|
           model.contributors.collect { |user| { username: user.username, name: user.name} }

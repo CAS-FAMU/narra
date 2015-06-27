@@ -28,19 +28,38 @@ module Narra
           error_not_authenticated! unless current_user
         end
 
-        def authorize!(roles, object = nil)
+        def authorize(roles, object = nil)
+          # do not authorize when public or no roles
+          return false if current_user.nil? || roles.empty?
+
+          # resolve
           if object.nil?
-            error_not_authorized! unless current_user.is?(roles)
+            current_user.is?([:admin]) || current_user.is?(roles)
           else
-            # check if the object is an item
-            object = object.library if object.is_a?(Narra::Item)
-            # test against
-            if object.has_attribute?('author_id') || object.has_attribute?('contributor_ids')
-              if !current_user.is?([:admin]) && current_user.is?(roles)
-                error_not_authorized! unless (object.author_id == current_user._id || object.contributor_ids.include?(current_user._id))
-              end
-            end
+            # if the object supports authors or contributors resolve
+            is_author?(object)
           end
+        end
+
+        def is_author?(object)
+          # admin is author
+          return true if is_admin?
+          # check if the object is an item
+          object = object.library if object.is_a?(Narra::Item)
+          # process permissions
+          if object.has_attribute?('author_id')
+            # resolve permissions
+            object.author_id == current_user._id
+          elsif object.has_attribute?('contributor_ids')
+            object.author_id == object.contributor_ids.include?(current_user._id)
+          else
+            # there is no support for authorship
+            return false
+          end
+        end
+
+        def is_admin?
+          return true if current_user.is?([:admin])
         end
 
         def current_user

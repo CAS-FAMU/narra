@@ -32,11 +32,11 @@ module Narra
           # process
           case model.clip.type
             when :video
-              basic.merge({source: model.clip.url_video_proxy_hq})
+              basic.merge({source: model.clip.video.url})
             when :image
-              basic.merge({source: model.clip.url_image_proxy_hq})
+              basic.merge({source: model.clip.image.url})
             when :audio
-              basic.merge({source: model.clip.url_audio_proxy})
+              basic.merge({source: model.clip.audio.url})
           end
         end
 

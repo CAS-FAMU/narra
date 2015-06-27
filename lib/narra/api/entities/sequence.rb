@@ -31,6 +31,9 @@ module Narra
         expose :thumbnail do |model, options|
           model.marks.sample.clip.url_thumbnail
         end
+        expose :public do |model, options|
+          model.get_meta(name: 'public').value
+        end
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}
         end

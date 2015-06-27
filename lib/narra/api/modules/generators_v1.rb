@@ -36,7 +36,9 @@ module Narra
 
           desc "Return all active generators."
           get do
-            auth! [:admin, :author]
+            authenticate!
+            # get authorized
+            error_not_authorized! unless authorize([:author])
             # present
             present_ok_generic(:generators, present(Narra::Core.generators))
           end

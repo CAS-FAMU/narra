@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014 CAS / FAMU
+# Copyright (C) 2015 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -24,70 +24,75 @@ module Narra
     module Helpers
       module Generic
 
-        # generic auth process
-        def auth!(authorization = [], authentication = true)
-          authenticate! if authentication
-          authorize!(authorization) unless authorization.empty?
-        end
-
         # generic method for returning of the specific object based on the owner
-        def return_many(model, entity = nil, authorization = [], authentication = true)
-          auth!(authorization, authentication)
+        def return_many(model, entity, authentication, authorization = [])
+          authenticate! if authentication
+          # check for user and authorize
+          author = authorize(authorization)
+          # check for public
+          public = model.method_defined?(:is_public?)
           # get items
-          items = params[:author].nil? ? model.limit(params[:limit]) : model.where(author: ::User.find(params[:owner])).limit(params[:limit])
+          if author
+            if is_admin?
+              objects = model.limit(params[:limit])
+            elsif public
+              objects = model.all.select { |o| is_author?(o) || o.is_public? }
+            else
+              objects = model.all.select { |o| is_author?(o) }
+            end
+          else
+            if public
+              objects = model.all.select { |o| o.is_public? }
+            else
+              error_not_authorized!
+            end
+          end
           # present
-          present_ok(items, model, entity)
+          present_ok(objects, model, entity)
         end
 
         # Generic method for returning of the specific object based on the owner
-        def return_one(model, entity, key, authorization = [], authentication = true)
-          return_one_custom(model, key, authorization, authentication) do |object|
-            # present
-            present_ok(object, model, entity, 'detail')
+        def return_one(model, entity, key, authentication, authorization = [])
+          return_one_custom(model, key, authentication, authorization) do |object, authorized, public|
+            # resolve
+            if authorized || public
+              present_ok(object, model, entity, 'detail')
+            else
+              error_not_authorized!
+            end
           end
         end
 
-        def return_one_custom(model, key, authorization = [], authentication = true)
-          auth!(authorization, authentication)
-          # get project
-          object = model.find_by(key => params[key])
-          # present or not found
-          if (object.nil?)
-            error_not_found!
-          else
-            # authorize the owner
-            authorize!([:author], object) unless authorization.empty?
-            # custom action
-            yield object if block_given?
-          end
-        end
-
-        def new_one(model, entity, key, parameters, authorization = [], authentication = true)
-          auth!(authorization, authentication)
+        def return_one_custom(model, key, authentication, authorization = [])
+          authenticate! if authentication
           # get object
           object = model.find_by(key => params[key])
           # present or not found
-          if (object.nil?)
-            # create new object
-            object = model.new(parameters)
-            # object specified code
-            yield object if block_given?
-            # save
-            object.save!
-            # probe
-            object.probe if object.is_a? Narra::Tools::Probeable
-            # present
-            present_ok(object, model, entity, 'detail')
+          if object.nil?
+            error_not_found!
           else
-            error_already_exists!
+            # is public
+            public = model.method_defined?(:is_public?) && object.is_public?
+            # custom action
+            yield object, authorize(authorization, object), public if block_given?
           end
         end
 
-        def new_one_custom(model, entity, authorization = [], authentication = true)
-          auth!(authorization, authentication)
-            # object specified code
+        def new_one(model, entity, authentication, authorization = [], parameters = {})
+          authenticate! if authentication
+          # authorization
+          error_not_authorized! unless authorize(authorization)
+          # object specified code
+          if parameters.empty?
             object = yield if block_given?
-          if not object.nil?
+          else
+            # create object
+            object = model.create(parameters)
+            # block
+            yield object if block_given?
+          end
+          # check for
+          unless object.nil?
             # probe
             object.probe if object.is_a? Narra::Tools::Probeable
             # present
@@ -97,16 +102,10 @@ module Narra
           end
         end
 
-        def update_one(model, entity, key, authorization = [], authentication = true)
-          auth!(authorization, authentication)
-          # get object
-          object = model.find_by(key => params[key])
-          # present or not found
-          if (object.nil?)
-            error_not_found!
-          else
-            # authorize the owner
-            authorize!([:author], object) unless authorization.empty?
+        def update_one(model, entity, key, authentication, authorization = [])
+          return_one_custom(model, key, authentication, authorization) do |object, authorized, public|
+            # authorization
+            error_not_authorized! unless authorized
             # update custom code
             yield object if block_given?
             # save
@@ -119,17 +118,13 @@ module Narra
         end
 
         # Generic method for deleting of the specific object based on the owner
-        def delete_one(model, key, authorization = [], authentication = true)
-          auth!(authorization, authentication)
-          # get object
-          object = model.find_by(key => params[key])
-          # present or not found
-          if (object.nil?)
-            error_not_found!
-          else
-            # authorize the owner
-            authorize!([:author], object) unless authorization.empty?
-            # destroy
+        def delete_one(model, key, authentication, authorization = [])
+          return_one_custom(model, key, authentication, authorization) do |object, authorized, public|
+            # authorization
+            error_not_authorized! unless authorized
+            # update custom code
+            yield object if block_given?
+            # save
             object.destroy
             # present
             present_ok

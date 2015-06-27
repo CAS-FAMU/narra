@@ -93,7 +93,7 @@ describe Narra::API::Modules::ItemsV1 do
 
     describe 'POST /v1/items/new' do
       it 'creates new item' do
-        post '/v1/items/new', {url: 'test', library: 'test'}
+        post '/v1/items/new', {url: 'test', library: 'test', connector: 'testing'}
 
         # check response status
         expect(response.status).to match(401)
@@ -175,7 +175,7 @@ describe Narra::API::Modules::ItemsV1 do
 
     describe 'POST /v1/items/new' do
       it 'creates new item' do
-        post '/v1/items/new' + '?token=' + @unroled_token, {url: 'test', library: 'test'}
+        post '/v1/items/new' + '?token=' + @unroled_token, {url: 'test', library: 'test', connector: 'testing'}
 
         # check response status
         expect(response.status).to match(403)
@@ -276,7 +276,7 @@ describe Narra::API::Modules::ItemsV1 do
     describe 'POST /v1/items/new' do
       it 'creates new item' do
         # send request
-        post '/v1/items/new' + '?token=' + @author_token, {url: 'http://test', library: @library_01._id.to_s, metadata: {meta_01: 'Meta 01', meta_02: 'Meta 02'}}
+        post '/v1/items/new' + '?token=' + @author_token, {url: 'http://test', library: @library_01._id.to_s, connector: 'testing', metadata: {meta_01: 'Meta 01', meta_02: 'Meta 02'}}
 
         # check response status
         expect(response.status).to match(201)

@@ -38,8 +38,16 @@ module Narra
           { username: model.author.username, name: model.author.name}
         end
 
+        expose :shared do |model, options|
+          model.is_shared?
+        end
+
         expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
-          model.url_thumbnails
+          if options[:type] == :detail_library
+            model.url_thumbnails
+          else
+            model.url_thumbnails.sample(Narra::Tools::Settings.thumbnail_count_preview.to_i)
+          end
         end
 
         expose :contributors do |model, options|

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2014 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -19,27 +19,31 @@
 # Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
 #
 
-Rails.application.config.middleware.use OmniAuth::Builder do
+module Narra
+  module API
+    module Entities
+      class Visualization < Grape::Entity
 
-  # Developer provider
-  if Rails.env.development?
-    # Developer Provider
-    provider :developer
-    # register
-    Narra::Auth::PROVIDERS << 'developer'
-  end
+        expose :id do |model, options|
+          model._id.to_s
+        end
 
-  # Google OAuth2 Provider
-  if ENV['GOOGLE_CLIENT_ID'] && ENV['GOOGLE_CLIENT_SECRET']
-    provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], {:name => 'google'}
-    # register
-    Narra::Auth::PROVIDERS << 'google'
-  end
+        expose :name, :type
 
-  if ENV['GITHUB_CLIENT_ID'] && ENV['GITHUB_CLIENT_SECRET']
-    # Github OAuth2 Provider
-    provider :github, ENV['GITHUB_CLIENT_ID'], ENV['GITHUB_CLIENT_SECRET']
-    # register
-    Narra::Auth::PROVIDERS << 'github'
+        expose :description, if: {type: :detail_visualization}
+
+        expose :public do |model, options|
+          model.is_public?
+        end
+
+        expose :author do |model, options|
+          { username: model.author.username, name: model.author.name}
+        end
+
+        expose :script do |model, options|
+          model.script.url
+        end
+      end
+    end
   end
 end

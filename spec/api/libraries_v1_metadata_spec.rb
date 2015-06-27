@@ -181,7 +181,7 @@ describe Narra::API::Modules::LibrariesV1Metadata do
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['metadata'].count).to match(2)
+        expect(data['metadata'].count).to match(3)
       end
     end
 

@@ -29,16 +29,20 @@ describe Narra::API::Modules::ProjectsV1 do
     @item_02 = FactoryGirl.create(:item)
     @item_03 = FactoryGirl.create(:item)
     @item_04 = FactoryGirl.create(:item)
+    @item_05 = FactoryGirl.create(:item)
 
     # create libraries
     @library_01 = FactoryGirl.create(:library, author: @author_user, items: [@item_01])
     @library_02 = FactoryGirl.create(:library, author: @author_user, items: [@item_02])
     @library_03 = FactoryGirl.create(:library, author: @author_user, items: [@item_03])
     @library_04 = FactoryGirl.create(:library, author: @author_user, items: [@item_04])
+    @library_05 = FactoryGirl.create(:library, author: @author_user, items: [@item_05])
 
     # create projects for testing purpose
     @project = FactoryGirl.create(:project, author: @author_user, libraries: [@library_01, @library_02])
     @project_admin = FactoryGirl.create(:project, author: @admin_user, libraries: [@library_03, @library_04])
+    @project_public = FactoryGirl.create(:project, author: @author_user, libraries: [@library_05])
+    @project_public.public = true
 
     # create marks
     @mark = FactoryGirl.build(:mark_sequence, clip: @item_01)
@@ -66,7 +70,7 @@ describe Narra::API::Modules::ProjectsV1 do
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['projects'].count).to match(2)
+        expect(data['projects'].count).to match(1)
       end
     end
 
@@ -75,14 +79,14 @@ describe Narra::API::Modules::ProjectsV1 do
         get '/v1/projects/' + @project.name
 
         # check response status
-        expect(response.status).to match(401)
+        expect(response.status).to match(403)
 
         # parse response
         data = JSON.parse(response.body)
 
         # check received data
         expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
+        expect(data['message']).to match('Not Authorized')
       end
     end
 
@@ -171,30 +175,34 @@ describe Narra::API::Modules::ProjectsV1 do
         get '/v1/projects/' + @project.name + '/items'
 
         # check response status
-        expect(response.status).to match(401)
+        expect(response.status).to match(403)
 
         # parse response
         data = JSON.parse(response.body)
 
         # check received data
         expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
+        expect(data['message']).to match('Not Authorized')
       end
     end
 
     describe 'GET /v1/projects/[:name]/sequences' do
       it 'returns projects sequences' do
-        get '/v1/projects/' + @project.name + '/sequences'
+        get '/v1/projects/' + @project_public.name + '/sequences'
 
         # check response status
-        expect(response.status).to match(401)
+        expect(response.status).to match(200)
 
         # parse response
         data = JSON.parse(response.body)
 
+        # check received data format
+        expect(data).to have_key('status')
+        expect(data).to have_key('sequences')
+
         # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
+        expect(data['status']).to match('OK')
+        expect(data['sequences'].count).to match(0)
       end
     end
 
@@ -381,7 +389,7 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['status']).to match('OK')
         expect(data['project']['name']).to match(@project.name)
         expect(data['project']['title']).to match(@project.title)
-        expect(data['project']['public']).to match('false')
+        expect(data['project']['public']).to match(false)
       end
     end
 
@@ -426,7 +434,7 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['status']).to match('OK')
         expect(data['project']['name']).to match('test_project')
         expect(data['project']['title']).to match('Test Project')
-        expect(data['project']['public']).to match('false')
+        expect(data['project']['public']).to match(false)
         expect(data['project']['description']).to match('Test Project Description')
         expect(data['project']['author']['name']).to match(@author_user.name)
       end
@@ -459,7 +467,7 @@ describe Narra::API::Modules::ProjectsV1 do
     describe 'POST /v1/projects/[:name]/libraries/add' do
       it 'adds specific libraries' do
         # send request
-        post '/v1/projects/' + @project.name + '/libraries/add' + '?token=' + @author_token, {libraries: [@library_03.name, @library_04.name]}
+        post '/v1/projects/' + @project.name + '/libraries/add' + '?token=' + @author_token, {libraries: [@library_03._id.to_s, @library_04._id.to_s]}
 
         # check response status
         expect(response.status).to match(201)
@@ -481,7 +489,7 @@ describe Narra::API::Modules::ProjectsV1 do
     describe 'POST /v1/projects/[:name]/libraries/remove' do
       it 'removes specific libraries' do
         # send request
-        post '/v1/projects/' + @project.name + '/libraries/remove' + '?token=' + @author_token, {libraries: [@library_01.name, @library_02.name]}
+        post '/v1/projects/' + @project.name + '/libraries/remove' + '?token=' + @author_token, {libraries: [@library_01._id.to_s, @library_02._id.to_s]}
 
         # check response status
         expect(response.status).to match(201)

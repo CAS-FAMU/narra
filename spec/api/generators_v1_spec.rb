@@ -77,7 +77,7 @@ describe Narra::API::Modules::GeneratorsV1 do
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['generators'].count).to match(2)
+        expect(data['generators'].count).to match(1)
       end
     end
   end

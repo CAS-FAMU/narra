@@ -37,18 +37,29 @@ module Narra
 
           desc 'Return all items.'
           get do
-            return_many(Item, Narra::API::Entities::Item, [:admin])
+            return_many(Item, Narra::API::Entities::Item, true, [:admin])
           end
 
           desc 'Return a specific item.'
           get ':id' do
-            return_one(Item, Narra::API::Entities::Item, :id, [:admin, :author])
+            return_one(Item, Narra::API::Entities::Item, :id, true, [:author])
+          end
+
+          desc 'Check new item.'
+          post 'check' do
+            required_attributes! [:url]
+            # parse url to get appropriate object
+            object = Narra::Core.check_item(params[:url])
+            # if nil return error
+            error_not_found! if object.nil?
+            # otherwise return proper item proxy
+            present_ok_generic(:item, present({name: object.name, url: object.source_url, type: object.type, connector: object.class.identifier, thumbnail: object.thumbnail_url}))
           end
 
           desc 'Create new item.'
           post 'new' do
-            required_attributes! [:url, :library]
-            new_one_custom(Item, Narra::API::Entities::Item, [:admin, :author]) do
+            required_attributes! [:url, :library, :connector]
+            new_one(Item, Narra::API::Entities::Item, true, [:author]) do
               # trying to get library
               library = Library.find(params[:library])
               # check the author field
@@ -63,14 +74,18 @@ module Narra
                   metadata << {name: key, value: value}
                 end
               end
+              # parse connector
+              connector = params[:connector].to_sym
+              # check for options
+              options = (params[:options].nil? ? {} : params[:options]).merge({metadata: metadata})
               # add new item
-              Narra::Core.add_item(params[:url], author, current_user, library, metadata)
+              Narra::Core.add_item(params[:url], author, current_user, library, connector, options)
             end
           end
 
           desc 'Delete a specific item.'
           get ':id/delete' do
-            delete_one(Item, :id, [:admin, :author])
+            delete_one(Item, :id, true, [:author])
           end
         end
       end

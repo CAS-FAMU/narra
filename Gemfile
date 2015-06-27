@@ -21,7 +21,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.0'
+gem 'rails', '4.2.2'
 gem 'jquery-rails'
 gem 'grape'
 gem 'grape-entity'
@@ -32,7 +32,6 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 gem 'rack-cors'
 gem 'narra-core', git: 'https://github.com/CAS-FAMU/narra-core.git'
-gem 'narra-speech', git: 'https://github.com/CAS-FAMU/narra-speech.git'
 gem 'rspec-rails', :group => [:test, :development]
 gem 'rspec-mocks', :group => [:test, :development]
 gem 'database_cleaner', :group => :test
@@ -40,4 +39,3 @@ gem 'mongoid-rspec', :group => :test
 gem 'factory_girl_rails', :group => :test
 gem 'codeclimate-test-reporter', :group => :test, :require => nil
 gem 'streamio-ffmpeg', git: 'https://github.com/marigan/streamio-ffmpeg.git'
-gem 'att-codekit', git: 'https://github.com/attdevsupport/codekit-ruby.git'

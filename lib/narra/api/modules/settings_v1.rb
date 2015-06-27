@@ -37,23 +37,27 @@ module Narra
 
           desc "Return settings."
           get do
-            auth! [:admin]
+            authenticate!
+            # get authorized
+            error_not_authorized! unless authorize([:admin])
+            # present
             present_ok_generic(:settings, Narra::Tools::Settings.all)
           end
 
           desc "Return defaults."
           get 'defaults' do
-            auth!
+            authenticate!
+            # present
             present_ok_generic(:defaults, Narra::Tools::Settings.defaults)
           end
 
           desc "Return a specific setting."
           get ':name' do
-            auth!
+            authenticate!
             # get settings
             setting = Narra::Tools::Settings.get(params[:name])
             # present
-            if (setting.nil?)
+            if setting.nil?
               error_not_found
             else
               present_ok_generic(:setting, present({name: params[:name], value: setting}))
@@ -62,8 +66,11 @@ module Narra
 
           desc "Update a specific setting."
           post ':name/update' do
-            auth! [:admin]
             required_attributes! [:value]
+            # authentication
+            authenticate!
+            # get authorized
+            error_not_authorized! unless authorize([:admin])
             # update
             Narra::Tools::Settings.set(params[:name], params[:value])
             # present

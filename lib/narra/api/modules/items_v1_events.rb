@@ -37,7 +37,10 @@ module Narra
 
           desc 'Return item events.'
           get ':id/events' do
-            return_one_custom(Item, :id, [:admin, :author]) do |item|
+            return_one_custom(Item, :id, true, [:author]) do |item, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
+              # presnet
               present_ok(item.events, Event, Narra::API::Entities::Event, 'item')
             end
           end

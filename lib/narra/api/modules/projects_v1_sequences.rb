@@ -39,8 +39,17 @@ module Narra
 
           desc 'Return project sequences.'
           get ':name/sequences' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
-              present_ok(project.sequences.limit(params[:limit]), Sequence, Narra::API::Entities::Sequence)
+            return_one_custom(Project, :name, false, [:author]) do |project, authorized, public|
+              # if not authenticated or nto contributor or author return just public otherwise return all
+              if authorized
+                present_ok(project.sequences.limit(params[:limit]), Sequence, Narra::API::Entities::Sequence)
+              else
+                if public
+                  present_ok(project.sequences.select { |s| s.get_meta(name: 'public').value == 'true' }, Sequence, Narra::API::Entities::Sequence)
+                else
+                  error_not_authorized!
+                end
+              end
             end
           end
 
@@ -48,13 +57,15 @@ module Narra
           post ':name/sequences/new' do
             required_attributes! [:type, :title, :file, :params]
             # Resolve project and add sequence
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
+            return_one_custom(Project, :name, true, [:author]) do |project, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # check for the author
               author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
               # get file content
               content = params[:file][:tempfile].read
               # prepare sequence hash
-              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content}.merge(Hash[JSON.parse(params[:params]).map{ |k, v| [k.to_sym, v] }])
+              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content}.merge(Hash[JSON.parse(params[:params]).map { |k, v| [k.to_sym, v] }])
               # add sequence
               Narra::Core.add_sequence(project, author, sequence)
               # present
@@ -64,7 +75,9 @@ module Narra
 
           desc 'Return project sequence.'
           get ':name/sequences/:sequence' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
+            return_one_custom(Project, :name, true, [:author]) do |project, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # Get item
               sequence = project.sequences.find(params[:sequence])
               # Check if the item is part of the project
@@ -78,7 +91,9 @@ module Narra
 
           desc 'Delete a specific sequence.'
           get ':name/sequences/:sequence/delete' do
-            return_one_custom(Project, :name, [:admin, :author]) do |project|
+            return_one_custom(Project, :name, true, [:author]) do |project, authorized, public|
+              # get authorized
+              error_not_authorized! unless authorized
               # Get item
               sequence = project.sequences.find(params[:sequence])
               # Check if the item is part of the project

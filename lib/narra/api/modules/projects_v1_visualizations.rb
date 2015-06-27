@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2015 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Narra Core. If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
+# Authors: Michal Mocnak <michal@marigan.net>
 #
 
 module Narra
   module API
     module Modules
-      class EventsV1 < Narra::API::Modules::Generic
+      class ProjectsV1Visualizations < Narra::API::Modules::Generic
 
         version 'v1', :using => :path
         format :json
@@ -33,21 +33,20 @@ module Narra
         helpers Narra::API::Helpers::Generic
         helpers Narra::API::Helpers::Attributes
 
-        resource :events do
-
-          desc 'Return all events.'
-          get do
-            return_many(Event, Narra::API::Entities::Event, true, [:admin])
-          end
-
-          desc 'Return all events by user scope.'
-          get '/user/:username' do
-            # get user
-            user = User.find_by(username: params[:username])
-            # check
-            error_not_found! if user.nil?
-            # return events
-            return_many(Event.user(user), Narra::API::Entities::Event, true, [:author])
+        resource :projects do
+          
+          desc 'Add or remove visualizations'
+          post ':name/visualizations/:action' do
+            required_attributes! [:visualizations]
+            update_one(Project, Narra::API::Entities::Project, :name, true, [:author]) do |project|
+              params[:visualizations].each do |visualization|
+                if params[:action] == 'add'
+                  project.visualizations << Narra::Visualization.find(visualization)
+                elsif params[:action] == 'remove'
+                  project.visualizations.delete(Narra::Visualization.find(visualization))
+                end
+              end
+            end
           end
         end
       end

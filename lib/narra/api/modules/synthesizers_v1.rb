@@ -36,7 +36,9 @@ module Narra
 
           desc "Return all active synthesizers."
           get do
-            auth! [:admin, :author]
+            authenticate!
+            # get authorized
+            error_not_authorized! unless authorize([:author])
             # present
             present_ok_generic(:synthesizers, present(Narra::Core.synthesizers))
           end

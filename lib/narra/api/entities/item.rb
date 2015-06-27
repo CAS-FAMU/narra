@@ -40,28 +40,37 @@ module Narra
           {id: library._id.to_s, name: library.name}
         end
 
-        expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
-          model.url_thumbnails
+        expose :thumbnails, if: lambda { |model, options| !model.thumbnails.nil? && !model.thumbnails.empty? } do |model, options|
+          if options[:type] == :detail_item
+            model.url_thumbnails
+          else
+            model.url_thumbnails.sample(Narra::Tools::Settings.thumbnail_count_preview.to_i)
+          end
         end
 
         expose :video_proxy_hq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
-          model.url_video_proxy_hq
+          model.video.url
         end
 
         expose :video_proxy_lq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
-          model.url_video_proxy_lq
+          model.video.lq.url
         end
 
         expose :image_proxy_hq, if: lambda { |model, options| model.type == :image && model.prepared? } do |model, options|
-          model.url_image_proxy_hq
+          model.image.url
         end
 
         expose :image_proxy_lq, if: lambda { |model, options| model.type == :image && model.prepared? } do |model, options|
-          model.url_image_proxy_lq
+          model.image.lq.url
         end
 
         expose :audio_proxy, if: lambda { |model, options| (model.type == :audio || model.type == :video) && model.prepared? } do |model, options|
-          model.url_audio_proxy
+          case model.type
+            when :video
+              model.video.audio.url
+            when :audio
+              model.audio.url
+          end
         end
 
         expose :meta, as: :metadata, using: Narra::API::Entities::MetaItem, if: {type: :detail_item}
