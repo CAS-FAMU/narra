@@ -34,9 +34,8 @@ gem 'rack-cors'
 gem 'narra-core', git: 'https://github.com/CAS-FAMU/narra-core.git'
 gem 'rspec-rails', :group => [:test, :development]
 gem 'rspec-mocks', :group => [:test, :development]
-gem 'database_cleaner', :group => :test
 gem 'mongoid-rspec', :group => :test
 gem 'factory_girl_rails', :group => :test
 gem 'codeclimate-test-reporter', :group => :test, :require => nil
 gem 'streamio-ffmpeg', git: 'https://github.com/marigan/streamio-ffmpeg.git'
-gem 'database_cleaner', git: 'https://github.com/DatabaseCleaner/database_cleaner.git'
+gem 'database_cleaner', git: 'https://github.com/DatabaseCleaner/database_cleaner.git', :group => :test
