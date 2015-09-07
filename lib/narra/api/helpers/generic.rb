@@ -90,6 +90,8 @@ module Narra
             object = model.create(parameters)
             # block
             yield object if block_given?
+            # save
+            object.save!
           end
           # check for
           unless object.nil?

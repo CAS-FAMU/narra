@@ -64,7 +64,7 @@ module Narra
               unless project.nil?
                 error_not_authorized! unless authorize([:author], project)
                 # update projects if authorized
-                library.projects << project
+                project.libraries << library
               end
             end
           end
