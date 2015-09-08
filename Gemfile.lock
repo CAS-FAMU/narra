@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: dca42edc4ba904649846d967e9e205330592dbf4
+  revision: 45a108adae4d81e7cb969d708998303770d7e5bf
   specs:
     narra-core (0.0.2)
       aasm
@@ -8,7 +8,6 @@ GIT
       carrierwave-video
       edl
       fog
-      fog-google
       logger-better
       mini_magick
       mongoid
@@ -415,7 +414,7 @@ GEM
       tilt (>= 1.3, < 3)
     sprockets (3.3.4)
       rack (~> 1.0)
-    sprockets-rails (2.3.2)
+    sprockets-rails (2.3.3)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
@@ -458,4 +457,4 @@ DEPENDENCIES
   streamio-ffmpeg!
 
 BUNDLED WITH
-   1.10.4
+   1.10.6

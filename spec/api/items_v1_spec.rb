@@ -292,7 +292,7 @@ describe Narra::API::Modules::ItemsV1 do
         expect(data['status']).to match('OK')
         expect(data['item']['name']).to match('test_item')
         expect(data['item']['url']).to match('http://test')
-        expect(data['item']['metadata'].count).to match(9)
+        expect(data['item']['metadata'].count).to match(10)
       end
     end
 

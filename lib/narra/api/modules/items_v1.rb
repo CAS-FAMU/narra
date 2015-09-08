@@ -49,11 +49,11 @@ module Narra
           post 'check' do
             required_attributes! [:url]
             # parse url to get appropriate object
-            object = Narra::Core.check_item(params[:url])
+            proxies = Narra::Core.check_item(params[:url])
             # if nil return error
-            error_not_found! if object.nil?
+            error_not_found! if proxies.nil? or proxies.empty?
             # otherwise return proper item proxy
-            present_ok_generic(:item, present({name: object.name, url: object.source_url, type: object.type, connector: object.class.identifier, thumbnail: object.thumbnail_url}))
+            present_ok_generic(:items, present(proxies))
           end
 
           desc 'Create new item.'
