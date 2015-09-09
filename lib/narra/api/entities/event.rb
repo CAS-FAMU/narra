@@ -24,7 +24,6 @@ module Narra
     module Entities
       class Event < Grape::Entity
 
-
         expose :id do |event, options|
           event._id.to_s
         end
@@ -39,6 +38,10 @@ module Narra
 
         expose :project, if: lambda { |event, options| !event.project.nil? } do |event, options|
           { name: event.project.name }
+        end
+
+        expose :library, if: lambda { |event, options| !event.library.nil? } do |event, options|
+          { id: event.library._id.to_s, name: event.library.name }
         end
       end
     end

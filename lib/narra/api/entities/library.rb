@@ -42,6 +42,8 @@ module Narra
           model.is_shared?
         end
 
+        expose :purged, if: lambda { |model, options| model.purged }
+
         expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
           if options[:type] == :detail_library
             model.url_thumbnails

@@ -34,6 +34,10 @@ module Narra
           model.prepared?
         end
 
+        expose :purged, if: lambda { |model, options| model.library.purged } do |item|
+          item.library.purged
+        end
+
         expose :library, format_with: :library, if: {type: :detail_item}
 
         format_with :library do |library|

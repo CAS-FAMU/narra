@@ -19,9 +19,10 @@
 # Authors: Michal Mocnak <michal@marigan.net>
 #
 
-:concurrency: 1
+:concurrency: 2
 :queues:
   - transcodes
   - generators
   - synthesizers
   - sequences
+  - purge

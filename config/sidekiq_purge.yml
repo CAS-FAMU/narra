@@ -21,4 +21,4 @@
 
 :concurrency: 2
 :queues:
-  - generators
+  - purge

@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 45a108adae4d81e7cb969d708998303770d7e5bf
+  revision: cf803b628aa7b6c53e5ee5e2838ed59555fce276
   specs:
-    narra-core (0.0.2)
+    narra-core (0.0.3)
       aasm
       carrierwave-mongoid
       carrierwave-video
@@ -229,7 +229,7 @@ GEM
       fog-core
       fog-json
       fog-xml
-    fog-sakuracloud (1.1.0)
+    fog-sakuracloud (1.1.1)
       fog-core
       fog-json
     fog-serverlove (0.1.2)
@@ -287,7 +287,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.6.1)
-    mini_magick (4.3.2)
+    mini_magick (4.3.3)
     mini_portile (0.6.2)
     minitest (5.8.0)
     mongoid (4.0.2)
