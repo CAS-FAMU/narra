@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: cf803b628aa7b6c53e5ee5e2838ed59555fce276
+  revision: c3da88df5ae117cd4dac0367bd43536653ccee1a
   specs:
     narra-core (0.0.3)
       aasm
@@ -16,6 +16,7 @@ GIT
       sinatra
       streamio-ffmpeg
       timecode
+      viddl-rb
       wisper
 
 GIT
@@ -34,7 +35,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.1)
-    aasm (4.2.0)
+    aasm (4.3.0)
     actionmailer (4.2.2)
       actionpack (= 4.2.2)
       actionview (= 4.2.2)
@@ -82,9 +83,9 @@ GEM
       activesupport (>= 3.2.0)
       json (>= 1.7)
       mime-types (>= 1.16)
-    carrierwave-mongoid (0.7.1)
+    carrierwave-mongoid (0.8.0)
       carrierwave (>= 0.8.0, < 0.11.0)
-      mongoid (>= 3.0, < 5.0)
+      mongoid (>= 3.0, <= 6.0)
       mongoid-grid_fs (>= 1.3, < 3.0)
     carrierwave-video (0.5.6)
       carrierwave
@@ -270,7 +271,7 @@ GEM
       activesupport
       multi_json (>= 1.3.2)
     hashie (3.4.2)
-    hitimes (1.2.2)
+    hitimes (1.2.3)
     i18n (0.7.0)
     ice_nine (0.11.1)
     inflecto (0.0.2)
@@ -295,9 +296,9 @@ GEM
       moped (~> 2.0.0)
       origin (~> 2.1)
       tzinfo (>= 0.3.37)
-    mongoid-grid_fs (2.1.0)
+    mongoid-grid_fs (2.2.0)
       mime-types (>= 1.0, < 3.0)
-      mongoid (>= 3.0, < 5.0)
+      mongoid (>= 3.0, <= 6.0)
     mongoid-rspec (2.2.0)
       mongoid (~> 4.0.0)
       rake
@@ -337,6 +338,7 @@ GEM
       omniauth (~> 1.2)
     optionable (0.2.0)
     origin (2.1.1)
+    progressbar (0.21.0)
     rack (1.6.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -426,6 +428,11 @@ GEM
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    viddl-rb (1.0.1)
+      mime-types
+      multi_json
+      nokogiri
+      progressbar
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -455,6 +462,3 @@ DEPENDENCIES
   rspec-mocks
   rspec-rails
   streamio-ffmpeg!
-
-BUNDLED WITH
-   1.10.6
