@@ -47,7 +47,8 @@ Narra::Application.configure do
   #config.active_record.migration_error = :page_load
 
   # Mongoid logging setup
-  Mongoid.logger.level = Logger::DEBUG
+  Mongoid.logger.level = Logger::INFO
+  Mongo::Logger.logger.level = Logger::INFO
 
   # Narra logging setup
   Narra::Tools::Logger.default_logger.level = Logger::DEBUG
