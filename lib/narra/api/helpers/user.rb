@@ -30,32 +30,44 @@ module Narra
 
         def authorize(roles, object = nil)
           # do not authorize when public or no roles
-          return false if current_user.nil? || roles.empty?
-
+          return [] if current_user.nil? || roles.empty?
+          # prepare resolution
+          resolution = []
           # resolve
-          if object.nil?
-            current_user.is?([:admin]) || current_user.is?(roles)
-          else
-            # if the object supports authors or contributors resolve
-            is_author?(object)
-          end
+          resolution << :admin if is_admin?
+          resolution << :user if current_user.is?(roles)
+          # get affinity
+          resolution = (resolution + get_affinity(object)).uniq unless object.nil?
+          # not authorized
+          return resolution
         end
 
-        def is_author?(object)
-          # admin is author
-          return true if is_admin?
+        def get_affinity(object)
           # check if the object is an item
           object = object.library if object.is_a?(Narra::Item)
-          # process permissions
+          # prepare resolution
+          resolution = []
+          # check for authorship
           if object.has_attribute?('author_id')
             # resolve permissions
-            object.author_id == current_user._id
-          elsif object.has_attribute?('contributor_ids')
-            object.author_id == object.contributor_ids.include?(current_user._id)
-          else
-            # there is no support for authorship
-            return false
+            resolution << :author if object.author_id == current_user._id
           end
+          # check for contribution
+          if object.has_attribute?('contributor_ids')
+            resolution << :contributor if object.contributor_ids.include?(current_user._id)
+          end
+          # check for parents contributor or author
+          if object.has_attribute?('project_ids')
+            object.projects.each do |parent|
+              resolution << :parent_author if parent.author_id == current_user._id
+              resolution << :parent_contributor if parent.contributor_ids.include?(current_user._id)
+            end
+          elsif object.has_attribute?('project_id')
+            resolution << :parent_author if object.project.author_id == current_user._id
+            resolution << :parent_contributor if object.project.contributor_ids.include?(current_user._id)
+          end
+          # return
+          return resolution
         end
 
         def is_admin?

@@ -31,7 +31,12 @@ describe Narra::API::Modules::LibrariesV1 do
     # create libraries
     @library = FactoryGirl.create(:library, author: @author_user)
     @library_admin = FactoryGirl.create(:library, author: @admin_user)
+    @library_contributor = FactoryGirl.create(:library, author: @author_user, contributors: [@contributor_user])
+    @library_project_contributor = FactoryGirl.create(:library, author: @author_user)
     @library_items = FactoryGirl.create(:library, author: @author_user, items: [@item_01, @item_02])
+
+    # create projects for testing purpose
+    @project_contributor = FactoryGirl.create(:project, author: @author_user, contributors: [@contributor_user], libraries: [@library_project_contributor])
   end
 
   context 'not authenticated' do
@@ -198,6 +203,22 @@ describe Narra::API::Modules::LibrariesV1 do
       end
     end
 
+    describe 'GET /v1/libraries/[:name]/delete' do
+      it 'deletes a specific library as a contributor' do
+        get '/v1/libraries/' + @library_contributor._id.to_s + '/delete' + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(403)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data
+        expect(data['status']).to match('ERROR')
+        expect(data['message']).to match('Not Authorized')
+      end
+    end
+
     describe 'POST /v1/libraries/new' do
       it 'creates new library' do
         post '/v1/libraries/new' + '?token=' + @unroled_token, {name: 'test', title: 'test'}
@@ -249,6 +270,27 @@ describe Narra::API::Modules::LibrariesV1 do
 
         # check received data
         expect(data['status']).to match('OK')
+        expect(data['libraries'].count).to match(4)
+      end
+    end
+
+    describe 'GET /v1/libraries' do
+      it 'returns libraries as contributor' do
+        # send request
+        get '/v1/libraries' + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(200)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data format
+        expect(data).to have_key('status')
+        expect(data).to have_key('libraries')
+
+        # check received data
+        expect(data['status']).to match('OK')
         expect(data['libraries'].count).to match(2)
       end
     end
@@ -271,6 +313,27 @@ describe Narra::API::Modules::LibrariesV1 do
         # check received data
         expect(data['status']).to match('OK')
         expect(data['library']['name']).to match(@library.name)
+      end
+    end
+
+    describe 'GET /v1/libraries/[:name]' do
+      it 'returns a specific library as a parent contributor' do
+        # send request
+        get '/v1/libraries/' + @library_project_contributor._id.to_s + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(200)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data format
+        expect(data).to have_key('status')
+        expect(data).to have_key('library')
+
+        # check received data
+        expect(data['status']).to match('OK')
+        expect(data['library']['name']).to match(@library_project_contributor.name)
       end
     end
 

@@ -37,9 +37,9 @@ module Narra
 
           desc 'Return a specific library items.'
           get ':id/items' do
-            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+            return_one_custom(Library, :id, true, [:author]) do |library, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0
               # present
               present_ok(library.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
             end

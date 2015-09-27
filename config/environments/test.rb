@@ -57,7 +57,6 @@ Narra::Application.configure do
 
   # Mongoid logging setup
   Mongoid.logger.level = Logger::INFO
-  Moped.logger.level = Logger::INFO
 
   # Narra logging setup
   Narra::Tools::Logger.default_logger.level = Logger::INFO

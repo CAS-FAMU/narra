@@ -38,7 +38,7 @@ module Narra
           get do
             authenticate!
             # get authorized
-            error_not_authorized! unless authorize([:author])
+            error_not_authorized! unless authorize([:author]).size > 0
             # present
             present_ok_generic(:synthesizers, present(Narra::Core.synthesizers))
           end

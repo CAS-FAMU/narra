@@ -37,9 +37,9 @@ module Narra
 
           desc 'Return project junctions based on synthesizer.'
           get ':name/junctions/:synthesizer' do
-            return_one_custom(Project, :name, false, [:author]) do |project, authorized, public|
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
               # get authorized
-              error_not_authorized! unless authorized || public
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0 || public
               # present
               present_ok(project.junctions.where(synthesizer: params[:synthesizer].to_sym).limit(params[:limit]), Junction, Narra::API::Entities::Junction)
             end
@@ -47,9 +47,9 @@ module Narra
 
           desc 'Return junction items based on synthesizer.'
           get ':name/junctions/:synthesizer/items' do
-            return_one_custom(Project, :name, false, [:author]) do |project, authorized, public|
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
               # get authorized
-              error_not_authorized! unless authorized || public
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0 || public
               # present
               present_ok(project.junctions.where(synthesizer: params[:synthesizer].to_sym).collect { |junction| junction.items}.flatten, Item, Narra::API::Entities::Item)
             end

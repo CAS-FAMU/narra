@@ -35,9 +35,9 @@ module Narra
 
         helpers do
           def metadata_new
-            return_one_custom(Item, :id, true, [:author]) do |item, authorized, public|
+            return_one_custom(Item, :id, true, [:author]) do |item, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
               # prepare marks
               marks = []
               # process marks
@@ -49,7 +49,7 @@ module Narra
               # check the author field
               author = params[:author].nil? ? current_user : Narra::User.find_by(username: params[:author])
               # add metadata
-              meta = item.add_meta(name: params[:meta], value: params[:value], generator: params[:generator].to_sym, marks: marks, author: author)
+              item.add_meta(name: params[:meta], value: params[:value], generator: params[:generator].to_sym, marks: marks, author: author)
             end
           end
         end
@@ -58,9 +58,9 @@ module Narra
 
           desc 'Return all metadata for a specific item.'
           get ':id/metadata' do
-            return_one_custom(Item, :id, true, [:author]) do |item, authorized, public|
+            return_one_custom(Item, :id, true, [:author]) do |item, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0
               # present
               present_ok_generic_options('metadata', item.meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
             end
@@ -78,9 +78,9 @@ module Narra
           desc 'Return a specific metadata for a specific item.'
           get ':id/metadata/:meta' do
             required_attributes! [:generator]
-            return_one_custom(Item, :id, true, [:author]) do |item, authorized, public|
+            return_one_custom(Item, :id, true, [:author]) do |item, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0
               # get meta
               meta = item.get_meta(name: params[:meta], generator: params[:generator])
               # check existence
@@ -93,9 +93,9 @@ module Narra
           desc 'Delete a specific metadata in a specific library.'
           get ':id/metadata/:meta/delete' do
             required_attributes! [:generator]
-            return_one_custom(Item, :id, true, [:author]) do |item, authorized, public|
+            return_one_custom(Item, :id, true, [:author]) do |item, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
               # get meta
               meta = item.get_meta(name: params[:meta], generator: params[:generator])
               # check existence
@@ -110,9 +110,9 @@ module Narra
           desc 'Update a specific metadata for a specific item.'
           post ':id/metadata/:meta/update' do
             required_attributes! [:value, :generator]
-            return_one_custom(Item, :id, true, [:author]) do |item, authorized, public|
+            return_one_custom(Item, :id, true, [:author]) do |item, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
               # prepare marks
               marks = []
               # process marks

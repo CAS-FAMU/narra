@@ -204,7 +204,7 @@ describe Narra::API::Modules::UsersV1 do
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['users'].count).to match(3)
+        expect(data['users'].count).to match(4)
       end
     end
 

@@ -25,7 +25,7 @@ require 'spec_helper'
 describe Narra::API::Modules::ItemsV1 do
   before(:each) do
     # create libraries
-    @library_01 = FactoryGirl.create(:library, author: @author_user)
+    @library_01 = FactoryGirl.create(:library, author: @author_user, contributors: [@contributor_user])
     @library_02 = FactoryGirl.create(:library, author: @author_user)
     @library_03 = FactoryGirl.create(:library, author: @admin_user)
 
@@ -37,6 +37,9 @@ describe Narra::API::Modules::ItemsV1 do
     @item = FactoryGirl.create(:item, library: @library_01)
     @item_admin = FactoryGirl.create(:item, library: @library_03)
     @item_meta = FactoryGirl.create(:item, library: @library_02, meta: [@meta_src_01, @meta_src_02])
+
+    # create projects for testing purpose
+    @project = FactoryGirl.create(:project, author: @author_user, contributors: [@contributor_user], libraries: [@library_03])
 
     # create events
     @event = FactoryGirl.create(:event, item: @item)
@@ -157,6 +160,22 @@ describe Narra::API::Modules::ItemsV1 do
       end
     end
 
+    describe 'GET /v1/items/[:id]' do
+      it 'returns a specific item as contributor' do
+        get '/v1/items/' + @item_meta._id + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(403)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data
+        expect(data['status']).to match('ERROR')
+        expect(data['message']).to match('Not Authorized')
+      end
+    end
+
     describe 'GET /v1/items/[:id]/delete' do
       it 'deletes a specific item' do
         get '/v1/items/' + @item_admin._id + '/delete' + '?token=' + @author_token
@@ -248,6 +267,52 @@ describe Narra::API::Modules::ItemsV1 do
         expect(data['item']['name']).to match(@item_meta.name)
         expect(data['item']['url']).to match(@item_meta.url)
         expect(data['item']['metadata'].count).to match(2)
+      end
+    end
+
+    describe 'GET /v1/items/[:id]' do
+      it 'returns a specific item as contributor' do
+        # send request
+        get '/v1/items/' + @item._id + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(200)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data format
+        expect(data).to have_key('status')
+        expect(data).to have_key('item')
+
+        # check received data
+        expect(data['status']).to match('OK')
+        expect(data['item']['name']).to match(@item.name)
+        expect(data['item']['url']).to match(@item.url)
+        expect(data['item']['metadata'].count).to match(0)
+      end
+    end
+
+    describe 'GET /v1/items/[:id]' do
+      it 'returns a specific item as contributor of parent' do
+        # send request
+        get '/v1/items/' + @item_admin._id + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(200)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data format
+        expect(data).to have_key('status')
+        expect(data).to have_key('item')
+
+        # check received data
+        expect(data['status']).to match('OK')
+        expect(data['item']['name']).to match(@item_admin.name)
+        expect(data['item']['url']).to match(@item_admin.url)
+        expect(data['item']['metadata'].count).to match(0)
       end
     end
 

@@ -60,7 +60,7 @@ module Narra
           get 'roles' do
             authenticate!
             # get authorized
-            error_not_authorized! unless authorize([:author])
+            error_not_authorized! unless authorize([:author]).size > 0
             # present
             present_ok_generic(:roles, present(User.all_roles))
           end
@@ -83,7 +83,7 @@ module Narra
               new_roles = params[:roles].collect { |role| role.to_sym }
               if user.roles.sort != new_roles.sort
                 # authorize for admin to change roles
-                error_not_authorized! unless authorize([:admin])
+                error_not_authorized! unless authorize([:admin]).size > 0
                 # change roles
                 user.update_attributes(roles: new_roles)
               end

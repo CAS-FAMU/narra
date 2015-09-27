@@ -45,7 +45,7 @@ module Narra
                 info[:image] = auth['info']['image']
               when :github
                 info[:username] = auth['info']['nickname']
-                info[:name] = auth['info']['name']
+                info[:name] = auth['info']['name'].nil? ? auth['info']['nickname'] : auth['info']['name']
                 info[:email] = auth['info']['email']
                 info[:image] = auth['info']['image']
             end

@@ -59,10 +59,12 @@ RSpec.configure do |config|
     # testing hashes
     admin_hash = { uid: 'admin@narra.eu', provider: 'test', username: 'admin', name: 'Admin', email: 'admin@narra.eu', image: nil }
     author_hash = { uid: 'author@narra.eu', provider: 'test', username: 'author', name: 'Author', email: 'author@narra.eu', image: nil }
+    contributor_hash = { uid: 'contributor@narra.eu', provider: 'test', username: 'contributor', name: 'Contributor', email: 'contributor@narra.eu', image: nil }
     unroled_hash = { uid: 'unroled@narra.eu', provider: 'test', username: 'unroled', name: 'Unroled', email: 'unroled@narra.eu', image: nil }
     # create user and its identity
     Narra::Identity.create_from_hash(admin_hash)
     Narra::Identity.create_from_hash(author_hash)
+    Narra::Identity.create_from_hash(contributor_hash)
     Narra::Identity.create_from_hash(unroled_hash)
     # get admin token and user
     @admin_token = CGI::escape(Base64.urlsafe_encode64(admin_hash[:uid]))
@@ -70,6 +72,9 @@ RSpec.configure do |config|
     # get author token and user
     @author_token = CGI::escape(Base64.urlsafe_encode64(author_hash[:uid]))
     @author_user = Narra::User.find_by(name: 'Author')
+    # get contributor token and user
+    @contributor_token = CGI::escape(Base64.urlsafe_encode64(contributor_hash[:uid]))
+    @contributor_user = Narra::User.find_by(name: 'Contributor')
     # get guest token and user
     @unroled_token = CGI::escape(Base64.urlsafe_encode64(unroled_hash[:uid]))
     @unroled_user = Narra::User.find_by(name: 'Unroled')

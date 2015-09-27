@@ -28,17 +28,17 @@ module Narra
         def return_many(model, entity, authentication, authorization = [])
           authenticate! if authentication
           # check for user and authorize
-          author = authorize(authorization)
+          roles = authorize(authorization)
           # check for public
           public = model.method_defined?(:is_public?)
           # get items
-          if author
-            if is_admin?
+          if roles.size > 0
+            if roles.include?(:admin)
               objects = model.limit(params[:limit])
+            elsif roles.include?(:user)
+              objects = model.all.select { |o| (authorize(authorization, o) & [:author, :contributor, :parent_author, :parent_contributor]).size > 0 }
             elsif public
-              objects = model.all.select { |o| is_author?(o) || o.is_public? }
-            else
-              objects = model.all.select { |o| is_author?(o) }
+              objects = model.all.select { |o| (authorize(authorization, o) & [:author, :contributor, :parent_author, :parent_contributor]).size > 0 || o.is_public? }
             end
           else
             if public
@@ -53,9 +53,9 @@ module Narra
 
         # Generic method for returning of the specific object based on the owner
         def return_one(model, entity, key, authentication, authorization = [])
-          return_one_custom(model, key, authentication, authorization) do |object, authorized, public|
+          return_one_custom(model, key, authentication, authorization) do |object, roles, public|
             # resolve
-            if authorized || public
+            if (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0 || public
               present_ok(object, model, entity, 'detail')
             else
               error_not_authorized!
@@ -81,7 +81,7 @@ module Narra
         def new_one(model, entity, authentication, authorization = [], parameters = {})
           authenticate! if authentication
           # authorization
-          error_not_authorized! unless authorize(authorization)
+          error_not_authorized! unless authorize(authorization).size > 0
           # object specified code
           if parameters.empty?
             object = yield if block_given?
@@ -105,9 +105,9 @@ module Narra
         end
 
         def update_one(model, entity, key, authentication, authorization = [])
-          return_one_custom(model, key, authentication, authorization) do |object, authorized, public|
+          return_one_custom(model, key, authentication, authorization) do |object, roles, public|
             # authorization
-            error_not_authorized! unless authorized
+            error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
             # update custom code
             yield object if block_given?
             # save
@@ -121,9 +121,9 @@ module Narra
 
         # Generic method for deleting of the specific object based on the owner
         def delete_one(model, key, authentication, authorization = [])
-          return_one_custom(model, key, authentication, authorization) do |object, authorized, public|
+          return_one_custom(model, key, authentication, authorization) do |object, roles, public|
             # authorization
-            error_not_authorized! unless authorized
+            error_not_authorized! unless (roles & [:admin, :author]).size > 0
             # update custom code
             yield object if block_given?
             # save

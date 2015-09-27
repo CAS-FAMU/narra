@@ -39,13 +39,13 @@ module Narra
 
           desc 'Return project sequences.'
           get ':name/sequences' do
-            return_one_custom(Project, :name, false, [:author]) do |project, authorized, public|
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
               # if not authenticated or nto contributor or author return just public otherwise return all
-              if authorized
+              if (roles & [:admin, :author, :contributor]).size > 0
                 present_ok(project.sequences.limit(params[:limit]), Sequence, Narra::API::Entities::Sequence)
               else
                 if public
-                  present_ok(project.sequences.select { |s| s.get_meta(name: 'public').value == 'true' }, Sequence, Narra::API::Entities::Sequence)
+                  present_ok(project.sequences.select { |s| s.is_public? }, Sequence, Narra::API::Entities::Sequence)
                 else
                   error_not_authorized!
                 end
@@ -57,9 +57,9 @@ module Narra
           post ':name/sequences/new' do
             required_attributes! [:type, :title, :file, :params]
             # Resolve project and add sequence
-            return_one_custom(Project, :name, true, [:author]) do |project, authorized, public|
+            return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
               # check for the author
               author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
               # get file content
@@ -75,25 +75,28 @@ module Narra
 
           desc 'Return project sequence.'
           get ':name/sequences/:sequence' do
-            return_one_custom(Project, :name, true, [:author]) do |project, authorized, public|
-              # get authorized
-              error_not_authorized! unless authorized
-              # Get item
+            return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
+              # get sequence
               sequence = project.sequences.find(params[:sequence])
               # Check if the item is part of the project
               if sequence.nil?
                 error_not_found!
               else
-                present_ok(sequence, Sequence, Narra::API::Entities::Sequence, 'detail')
+                # if not authenticated or not contributor or author or not public
+                if (roles & [:admin, :author, :contributor]).size > 0 || (public && sequence.is_public?)
+                  present_ok(sequence, Sequence, Narra::API::Entities::Sequence, 'detail')
+                else
+                  error_not_authorized!
+                end
               end
             end
           end
 
           desc 'Delete a specific sequence.'
           get ':name/sequences/:sequence/delete' do
-            return_one_custom(Project, :name, true, [:author]) do |project, authorized, public|
+            return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
               # Get item
               sequence = project.sequences.find(params[:sequence])
               # Check if the item is part of the project

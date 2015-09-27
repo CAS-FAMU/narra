@@ -89,9 +89,9 @@ module Narra
 
           desc 'Delete a specific library.'
           get ':id/delete' do
-            return_one_custom(Library, :id, true, [:author]) do |library, authorized, public|
+            return_one_custom(Library, :id, true, [:author]) do |library, roles, public|
               # get authorized
-              error_not_authorized! unless authorized
+              error_not_authorized! unless (roles & [:admin, :author]).size > 0
               # set purged flag
               library.update_attributes(purged: true)
               # execute

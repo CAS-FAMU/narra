@@ -37,9 +37,9 @@ module Narra
 
           desc 'Return project items.'
           get ':name/items' do
-            return_one_custom(Project, :name, false, [:author]) do |project, authorized, public|
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
               # get authorized
-              error_not_authorized! unless authorized || public
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0 || public
               # present
               present_ok(project.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
             end

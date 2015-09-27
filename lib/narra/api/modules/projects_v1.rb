@@ -82,6 +82,16 @@ module Narra
           get ':name/delete' do
             delete_one(Project, :name, true, [:author])
           end
+
+          desc 'Check if a specific project exists.'
+          get ':name/check' do
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
+              # get authorized
+              error_not_authorized! unless roles.size > 0
+              # present
+              present_ok
+            end
+          end
         end
       end
     end

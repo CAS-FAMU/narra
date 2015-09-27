@@ -62,8 +62,6 @@ module Narra
             new_one(Item, Narra::API::Entities::Item, true, [:author]) do
               # trying to get library
               library = Library.find(params[:library])
-              # check the author field
-              author = params[:author].nil? ? current_user.name : params[:author]
               # input metadata container
               metadata = []
               # check for metadata
@@ -79,13 +77,20 @@ module Narra
               # check for options
               options = (params[:options].nil? ? {} : params[:options]).merge({metadata: metadata})
               # add new item
-              Narra::Core.add_item(params[:url], author, current_user, library, connector, options)
+              Narra::Core.add_item(params[:url], current_user, library, connector, options)
             end
           end
 
           desc 'Delete a specific item.'
           get ':id/delete' do
-            delete_one(Item, :id, true, [:author])
+            return_one_custom(Item, :id, true, [:author]) do |object, roles, public|
+              # authorization
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
+              # save
+              object.destroy
+              # present
+              present_ok
+            end
           end
         end
       end

@@ -39,7 +39,7 @@ module Narra
           get do
             authenticate!
             # get authorized
-            error_not_authorized! unless authorize([:admin])
+            error_not_authorized! unless authorize([:admin]).size > 0
             # present
             present_ok_generic(:settings, Narra::Tools::Settings.all)
           end
@@ -70,7 +70,7 @@ module Narra
             # authentication
             authenticate!
             # get authorized
-            error_not_authorized! unless authorize([:admin])
+            error_not_authorized! unless authorize([:admin]).size > 0
             # update
             Narra::Tools::Settings.set(params[:name], params[:value])
             # present

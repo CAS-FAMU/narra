@@ -37,10 +37,13 @@ describe Narra::API::Modules::ProjectsV1 do
     @library_03 = FactoryGirl.create(:library, author: @author_user, items: [@item_03])
     @library_04 = FactoryGirl.create(:library, author: @author_user, items: [@item_04])
     @library_05 = FactoryGirl.create(:library, author: @author_user, items: [@item_05])
+    @library_06 = FactoryGirl.create(:library, author: @author_user, items: [@item_04])
+    @library_07 = FactoryGirl.create(:library, author: @author_user, items: [@item_05])
 
     # create projects for testing purpose
     @project = FactoryGirl.create(:project, author: @author_user, libraries: [@library_01, @library_02])
     @project_admin = FactoryGirl.create(:project, author: @admin_user, libraries: [@library_03, @library_04])
+    @project_contributor = FactoryGirl.create(:project, author: @author_user, contributors: [@contributor_user], libraries: [@library_06, @library_07])
     @project_public = FactoryGirl.create(:project, author: @author_user, libraries: [@library_05])
     @project_public.public = true
 
@@ -241,6 +244,22 @@ describe Narra::API::Modules::ProjectsV1 do
     end
 
     describe 'GET /v1/projects/[:name]/delete' do
+      it 'deletes a specific project as a contributor' do
+        get '/v1/projects/' + @project_contributor.name + '/delete' + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(403)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data
+        expect(data['status']).to match('ERROR')
+        expect(data['message']).to match('Not Authorized')
+      end
+    end
+
+    describe 'GET /v1/projects/[:name]/delete' do
       it 'deletes a specific project' do
         get '/v1/projects/' + @project.name + '/delete' + '?token=' + @unroled_token
 
@@ -370,6 +389,29 @@ describe Narra::API::Modules::ProjectsV1 do
   end
 
   context 'authenticated & authorized' do
+    describe 'GET /v1/projects/[:name]' do
+      it 'returns a project as contributor' do
+        # send request
+        get '/v1/projects/' + @project_contributor.name + '?token=' + @contributor_token
+
+        # check response status
+        expect(response.status).to match(200)
+
+        # parse response
+        data = JSON.parse(response.body)
+
+        # check received data format
+        expect(data).to have_key('status')
+        expect(data).to have_key('project')
+
+        # check received data
+        expect(data['status']).to match('OK')
+        expect(data['project']['name']).to match(@project_contributor.name)
+        expect(data['project']['title']).to match(@project_contributor.title)
+        expect(data['project']['public']).to match(false)
+      end
+    end
+
     describe 'GET /v1/projects/[:name]' do
       it 'returns a specific project' do
         # send request
