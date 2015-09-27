@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 753a99a169499099e117951c612d703949e01ec2
+  revision: ac941584c0c32f59c6e9496a8bbc43a27d4f3ffc
   specs:
     narra-core (0.0.3)
       aasm

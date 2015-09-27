@@ -44,13 +44,7 @@ module Narra
           {id: library._id.to_s, name: library.name}
         end
 
-        expose :thumbnails, if: lambda { |model, options| !model.thumbnails.nil? && !model.thumbnails.empty? } do |model, options|
-          if options[:type] == :detail_item
-            model.url_thumbnails
-          else
-            model.url_thumbnails.sample(Narra::Tools::Settings.thumbnail_count_preview.to_i)
-          end
-        end
+        include Narra::API::Entities::Thumbnails
 
         expose :video_proxy_hq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
           model.video.url

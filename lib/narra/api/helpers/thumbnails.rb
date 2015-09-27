@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2015 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -16,20 +16,36 @@
 # You should have received a copy of the GNU General Public License
 # along with Narra Core. If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
+# Authors: Michal Mocnak <michal@marigan.net>
 #
 
 module Narra
   module API
-    module Entities
-      class User < Grape::Entity
+    module Helpers
+      module Thumbnails
 
-        expose :username, :name
+        def thumbnail_text
+          thumbnail(:text)
+        end
 
-        expose :email, :image, :roles, if: lambda { |model, options| options[:type] == :admin_user || options[:type] == :detail_user}
+        def thumbnail_video
+          thumbnail(:video)
+        end
 
-        expose :identities, if: lambda { |model, options| options[:type] == :admin_user || options[:type] == :detail_user} do |user, options|
-          user.identities.collect { |identity| identity.provider }
+        def thumbnail_audio
+          thumbnail(:audio)
+        end
+
+        def thumbnail_image
+          thumbnail(:image)
+        end
+
+        def thumbnail_empty
+          thumbnail(:empty)
+        end
+
+        def thumbnail(type)
+          "http://#{options[:env]['HTTP_HOST']}/images/item_#{type.to_s}.png"
         end
       end
     end

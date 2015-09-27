@@ -40,14 +40,11 @@ module Narra
             return_many(Event, Narra::API::Entities::Event, true, [:admin])
           end
 
-          desc 'Return all events by user scope.'
-          get '/user/:username' do
-            # get user
-            user = User.find_by(username: params[:username])
-            # check
-            error_not_found! if user.nil?
+          desc 'Return all events by current user scope.'
+          get '/me' do
+            authenticate!
             # return events
-            return_many(Event.user(user), Narra::API::Entities::Event, true, [:author])
+            present_ok(Event.user(current_user), Event, Narra::API::Entities::Event)
           end
         end
       end

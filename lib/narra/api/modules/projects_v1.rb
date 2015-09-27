@@ -40,6 +40,18 @@ module Narra
             return_many(Project, Narra::API::Entities::Project, false, [:author])
           end
 
+          desc 'Validation if a specific project exists.'
+          post 'validate' do
+            authenticate!
+            # prepare
+            validation = false
+            # check if there is a project by the name or title
+            validation = true if params[:name] && Narra::Project.where(name: params[:name]).count == 0
+            validation = true if params[:title] && Narra::Project.where(title: params[:title]).count == 0
+            # if the project exists return ok
+            present_ok_generic(:validation, validation)
+          end
+
           desc 'Return a specific project.'
           get ':name' do
             return_one(Project, Narra::API::Entities::Project, :name, false, [:author])
@@ -81,16 +93,6 @@ module Narra
           desc 'Delete a specific project.'
           get ':name/delete' do
             delete_one(Project, :name, true, [:author])
-          end
-
-          desc 'Check if a specific project exists.'
-          get ':name/check' do
-            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
-              # get authorized
-              error_not_authorized! unless roles.size > 0
-              # present
-              present_ok
-            end
           end
         end
       end

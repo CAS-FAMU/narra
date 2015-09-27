@@ -37,14 +37,18 @@ module Narra
 
           desc "Return users."
           get do
-            return_many(User, Narra::API::Entities::User, true, [:author])
+            authenticate!
+            # authorize
+            type = authorize([:admin]).size > 0 ? 'admin' : ''
+            # present
+            present_ok(User.all, User, Narra::API::Entities::User, type)
           end
 
           desc "Return logged user in the current session."
           get 'me' do
             authenticate!
             # present
-            present_ok(current_user, User, Narra::API::Entities::User)
+            present_ok(current_user, User, Narra::API::Entities::User, 'admin')
           end
 
           desc "Signout logged user in the current session."

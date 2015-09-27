@@ -40,6 +40,17 @@ module Narra
             return_many(Library, Narra::API::Entities::Library, true, [:author])
           end
 
+          desc 'Validation if a specific project exists.'
+          post 'validate' do
+            authenticate!
+            # prepare
+            validation = false
+            # check if there is a project by the name or title
+            validation = true if params[:name] && Narra::Library.where(name: params[:name]).count == 0
+            # if the project exists return ok
+            present_ok_generic(:validation, validation)
+          end
+
           desc 'Return a specific library.'
           get ':id' do
             return_one(Library, Narra::API::Entities::Library, :id, true, [:author])

@@ -35,13 +35,9 @@ module Narra
         expose :public do |model, options|
           model.is_public?
         end
-        expose :thumbnails, if: lambda { |model, options| !model.url_thumbnails.nil? && !model.url_thumbnails.empty? } do |model, options|
-          if options[:type] == :detail_project
-            model.url_thumbnails
-          else
-            model.url_thumbnails.sample(Narra::Tools::Settings.thumbnail_count_preview.to_i)
-          end
-        end
+
+        include Narra::API::Entities::Thumbnails
+
         expose :contributors do |model, options|
           model.contributors.collect { |user| { username: user.username, name: user.name} }
         end
