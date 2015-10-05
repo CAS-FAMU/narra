@@ -1,9 +1,10 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 612a65d8f7c2dac7243adacbdb85817b48fce0a2
+  revision: ebadfd6654898153e1ab160d5a4c80ea294f6662
   specs:
-    narra-core (0.0.4)
+    narra-core (0.0.6)
       aasm
+      activesupport
       carrierwave-mongoid
       carrierwave-video
       edl
@@ -21,12 +22,12 @@ GIT
       wisper
 
 GIT
-  remote: https://github.com/CAS-FAMU/narra-youtube.git
-  revision: 7b75afc47aaff629a5a91d1ad085163313bc5f8d
+  remote: https://github.com/CAS-FAMU/narra-lemmatizer.git
+  revision: 67f2779bbd50d340c9347436e28fdebdcba42283
   specs:
-    narra-youtube (0.0.1)
-      multi_json
-      rest-client
+    narra-lemmatizer (0.0.1)
+      narra-core
+      nokogiri
 
 GIT
   remote: https://github.com/DatabaseCleaner/database_cleaner.git
@@ -283,7 +284,7 @@ GEM
       faraday (~> 0.9, >= 0.9.0)
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
     mime-types (2.6.2)
-    mini_magick (4.3.4)
+    mini_magick (4.3.5)
     mini_portile (0.6.2)
     minitest (5.8.1)
     mongo (2.1.1)
@@ -308,7 +309,6 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.0.1)
-    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth2 (1.0.0)
@@ -372,10 +372,6 @@ GEM
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
-    rest-client (1.8.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -455,7 +451,7 @@ DEPENDENCIES
   mongoid-rspec
   mongoid-tree
   narra-core!
-  narra-youtube!
+  narra-lemmatizer!
   omniauth
   omniauth-github
   omniauth-google-oauth2

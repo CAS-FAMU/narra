@@ -32,7 +32,7 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 gem 'rack-cors'
 gem 'narra-core', git: 'https://github.com/CAS-FAMU/narra-core.git'
-gem 'narra-youtube', git: 'https://github.com/CAS-FAMU/narra-youtube.git'
+gem 'narra-lemmatizer', git: 'https://github.com/CAS-FAMU/narra-lemmatizer.git'
 gem 'rspec-rails', :group => [:test, :development]
 gem 'rspec-mocks', :group => [:test, :development]
 gem 'mongoid-rspec', :group => :test

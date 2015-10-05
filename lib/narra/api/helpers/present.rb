@@ -28,7 +28,6 @@ module Narra
           if model.nil?
             present({:status => 'OK'})
           else
-            a = object.kind_of?(Array)
             # prepare key
             key = (object.kind_of?(Array) || object.kind_of?(Mongoid::Criteria)) ? Narra::Extensions::Class.class_name_to_s(model).pluralize.to_sym : Narra::Extensions::Class.class_name_to_sym(model)
             # present

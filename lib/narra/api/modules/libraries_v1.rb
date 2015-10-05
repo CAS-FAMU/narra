@@ -64,7 +64,7 @@ module Narra
             # check for contributors
             contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
             # check for generators
-            generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g.to_sym).nil? }
+            generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
             # prepare params
             parameters = {name: params[:name], description: params[:description], author: author, contributors: contributors, generators: generators}
             # create library
@@ -92,7 +92,7 @@ module Narra
               # push them if changed
               library.update_attributes(contributors: contributors) unless contributors.sort == library.contributors.sort
               # gather generators if exist
-              generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g.to_sym).nil? }
+              generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
               # push them if changed
               library.update_attributes(generators: generators) unless generators.sort == library.generators.sort
             end

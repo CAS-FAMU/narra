@@ -45,7 +45,7 @@ module Narra
               # not found if does not exist
               error_not_found! if generator.nil?
               # get metadata from the specified generator
-              Narra::MetaItem.any_in(item_id: Narra::Library.first.items.collect { |item| item._id}, generator: generator.identifier).each do |meta|
+              Narra::MetaItem.any_in(item_id: library.items.collect { |item| item._id}, generator: generator.identifier).each do |meta|
                 # destroy each meta
                 meta.destroy!
               end

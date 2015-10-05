@@ -31,11 +31,18 @@ module Narra
         expose :name, :description
 
         expose :generators, if: {type: :detail_library} do |library, options|
-          library.generators.collect { |generator| Narra::Core.generator(generator)}
+          library.generators.collect { |generator|
+            {
+                identifier: generator[:identifier],
+                title: Narra::Core.generator(generator[:identifier]).title,
+                description: Narra::Core.generator(generator[:identifier]).description,
+                options: generator[:options]
+            }
+          }
         end
 
         expose :author do |model, options|
-          { username: model.author.username, name: model.author.name}
+          {username: model.author.username, name: model.author.name}
         end
 
         expose :shared do |model, options|
@@ -47,7 +54,7 @@ module Narra
         include Narra::API::Entities::Thumbnails
 
         expose :contributors do |model, options|
-          model.contributors.collect { |user| { username: user.username, name: user.name} }
+          model.contributors.collect { |user| {username: user.username, name: user.name} }
         end
 
         expose :projects, format_with: :projects, :if => {:type => :detail_library}

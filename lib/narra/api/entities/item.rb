@@ -44,6 +44,10 @@ module Narra
           {id: library._id.to_s, name: library.name}
         end
 
+        expose :keywords, if: lambda { |model, options| !model.get_meta(name: 'keywords').nil? } do |item|
+          item.get_meta(name: 'keywords').value.split(',').first(5).join(', ')
+        end
+
         include Narra::API::Entities::Thumbnails
 
         expose :video_proxy_hq, if: lambda { |model, options| model.type == :video && model.prepared? } do |model, options|
