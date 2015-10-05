@@ -23,7 +23,7 @@ GIT
 
 GIT
   remote: https://github.com/CAS-FAMU/narra-lemmatizer.git
-  revision: 67f2779bbd50d340c9347436e28fdebdcba42283
+  revision: fbc2fbc14f44fdabfbd6d64c4477bb0fe31de025
   specs:
     narra-lemmatizer (0.0.1)
       narra-core
@@ -303,12 +303,13 @@ GEM
       rspec (~> 3.3)
     mongoid-tree (2.0.1)
       mongoid (>= 4.0, < 6.0)
-    multi_json (1.11.2)
+    multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.0.1)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth2 (1.0.0)
@@ -372,6 +373,10 @@ GEM
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -425,11 +430,11 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    viddl-rb (1.0.1)
-      mime-types
-      multi_json
-      nokogiri
-      progressbar
+    viddl-rb (1.1.1)
+      multi_json (~> 1.10.0)
+      nokogiri (~> 1.6.0)
+      progressbar (~> 0.21)
+      rest-client
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -460,3 +465,6 @@ DEPENDENCIES
   rspec-mocks
   rspec-rails
   streamio-ffmpeg!
+
+BUNDLED WITH
+   1.10.6
