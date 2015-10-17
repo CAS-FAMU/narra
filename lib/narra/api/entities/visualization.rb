@@ -28,9 +28,9 @@ module Narra
           model._id.to_s
         end
 
-        expose :name, :type
+        expose :name, :identifier
 
-        expose :description, if: {type: :detail_visualization}
+        expose :description, :options, if: {type: :detail_visualization}
 
         expose :public do |model, options|
           model.is_public?
@@ -38,6 +38,10 @@ module Narra
 
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}
+        end
+
+        expose :contributors do |model, options|
+          model.contributors.collect { |user| {username: user.username, name: user.name} }
         end
 
         expose :script do |model, options|

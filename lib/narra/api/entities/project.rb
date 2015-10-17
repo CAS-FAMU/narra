@@ -26,12 +26,22 @@ module Narra
 
         expose :name, :title, :description
         expose :author do |model, options|
-          { username: model.author.username, name: model.author.name}
+          { username: model.author.username, name: model.author.name }
         end
-        expose :synthesizers, if: {type: :detail_project} do |model, options|
-          model.synthesizers.collect { |synthesizer| Narra::Core.synthesizer(synthesizer)}
+
+        expose :synthesizers, if: {type: :detail_project} do |project, options|
+          project.synthesizers.collect { |synthesizer|
+            {
+                identifier: synthesizer[:identifier],
+                title: Narra::Core.synthesizer(synthesizer[:identifier]).title,
+                description: Narra::Core.synthesizer(synthesizer[:identifier]).description,
+                options: synthesizer[:options]
+            }
+          }
         end
-        expose :visualizations, using: Narra::API::Entities::Visualization, if: {type: :detail_project}
+
+        expose :visualizations, if: {type: :detail_project}
+
         expose :public do |model, options|
           model.is_public?
         end
@@ -39,7 +49,7 @@ module Narra
         include Narra::API::Entities::Thumbnails
 
         expose :contributors do |model, options|
-          model.contributors.collect { |user| { username: user.username, name: user.name} }
+          model.contributors.collect { |user| {username: user.username, name: user.name} }
         end
         expose :libraries, using: Narra::API::Entities::Library, :if => {:type => :detail_project}
 

@@ -80,24 +80,6 @@ module Narra
             end
           end
 
-          desc 'Update a specific library.'
-          post ':id/update' do
-            update_one(Library, Narra::API::Entities::Library, :id, true, [:author]) do |library|
-              library.update_attributes(name: params[:name]) unless params[:name].nil? || library.name.equal?(params[:name])
-              library.update_attributes(description: params[:description]) unless params[:description].nil? || library.description.equal?(params[:description])
-              library.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || library.author.username.equal?(params[:author])
-              library.shared = params[:shared] unless params[:shared].nil?
-              # gather contributors if exist
-              contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
-              # push them if changed
-              library.update_attributes(contributors: contributors) unless contributors.sort == library.contributors.sort
-              # gather generators if exist
-              generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
-              # push them if changed
-              library.update_attributes(generators: generators) unless generators.sort == library.generators.sort
-            end
-          end
-
           desc 'Delete a specific library.'
           get ':id/delete' do
             return_one_custom(Library, :id, true, [:author]) do |library, roles, public|
