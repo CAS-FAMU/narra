@@ -36,7 +36,7 @@ module Narra
                 model.url_thumbnails.sample(count)
               else
                 # grab as much as possible
-                thumbnails = model.items.sample(count).collect { |item| thumbnail(item.type) }
+                thumbnails = model.models.sample(count).collect { |item| thumbnail(item.type) }
                 # refill
                 Array.new(count) { |i| thumbnails[i] || thumbnails.last || thumbnail_empty }
               end

@@ -46,8 +46,9 @@ module Narra
             # get model
             model = Narra::Visualization.find(visualization[:id])
             {
+                id: visualization[:id],
                 name: model.name,
-                identifier: visualization[:identifier],
+                type: visualization[:identifier],
                 description: model.description,
                 options: visualization[:options].nil? ? model.options : visualization[:options]
             }

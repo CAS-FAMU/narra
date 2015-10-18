@@ -53,7 +53,7 @@ module Narra
             # check for the options
             options =params[:options].nil? ? {} : eval(params[:options])
             # prepare params
-            parameters = {name: params[:name], identifier: params[:type].to_sym, description: params[:description], author: author, options: options}
+            parameters = {name: params[:name], type: params[:type].to_sym, description: params[:description], author: author, options: options}
             # create new project
             new_one(Narra::Visualization, Narra::API::Entities::Visualization, true, [:author], parameters) do |visualization|
               # update script file

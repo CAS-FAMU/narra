@@ -28,11 +28,9 @@ module Narra
           model._id.to_s
         end
 
-        expose :name, :identifier
+        expose :name, :type, :description
 
-        expose :description, if: {type: :detail_visualization}
-
-        expose :options, if: {type: :detail_visualization} do |model, options|
+        expose :options  do |model, options|
           model.options
         end
 
@@ -51,6 +49,8 @@ module Narra
         expose :script do |model, options|
           model.script.url
         end
+
+        include Narra::API::Entities::Thumbnails
       end
     end
   end
