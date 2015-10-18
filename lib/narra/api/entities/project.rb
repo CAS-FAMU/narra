@@ -40,7 +40,19 @@ module Narra
           }
         end
 
-        expose :visualizations, if: {type: :detail_project}
+        expose :visualizations, if: {type: :detail_project} do |project, options|
+          # process
+          project.visualizations.collect { |visualization|
+            # get model
+            model = Narra::Visualization.find(visualization[:id])
+            {
+                name: model.name,
+                identifier: visualization[:identifier],
+                description: model.description,
+                options: visualization[:options].nil? ? model.options : visualization[:options]
+            }
+          }
+        end
 
         expose :public do |model, options|
           model.is_public?

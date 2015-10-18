@@ -51,7 +51,7 @@ module Narra
             # check for the author
             author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
             # check for the options
-            options =params[:options].nil? ? {} : params[:options]
+            options =params[:options].nil? ? {} : eval(params[:options])
             # prepare params
             parameters = {name: params[:name], identifier: params[:type].to_sym, description: params[:description], author: author, options: options}
             # create new project
@@ -81,7 +81,7 @@ module Narra
               visualization.update_attributes(name: params[:name]) unless params[:name].nil? || visualization.name.equal?(params[:name])
               visualization.update_attributes(description: params[:description]) unless params[:description].nil? || visualization.description.equal?(params[:description])
               visualization.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || visualization.author.username.equal?(params[:author])
-              visualization.update_attributes(options: params[:options]) unless params[:options].nil? || visualization.options.equal?(params[:options])
+              visualization.update_attributes(options: eval(params[:options])) unless params[:options].nil? || visualization.options.equal?(eval(params[:options]))
               visualization.public = params[:public] unless params[:public].nil?
               # gather contributors if exist
               contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }

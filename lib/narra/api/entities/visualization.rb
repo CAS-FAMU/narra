@@ -30,7 +30,11 @@ module Narra
 
         expose :name, :identifier
 
-        expose :description, :options, if: {type: :detail_visualization}
+        expose :description, if: {type: :detail_visualization}
+
+        expose :options, if: {type: :detail_visualization} do |model, options|
+          model.options
+        end
 
         expose :public do |model, options|
           model.is_public?
