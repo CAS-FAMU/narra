@@ -84,7 +84,7 @@ module Narra
               visualization.update_attributes(options: eval(params[:options])) unless params[:options].nil? || visualization.options.equal?(eval(params[:options]))
               visualization.public = params[:public] unless params[:public].nil?
               # gather contributors if exist
-              contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
+              contributors = params[:contributors].nil? ? [] : JSON.parse(params[:contributors]).collect { |c| User.find_by(username: c) }
               # push them if changed
               visualization.update_attributes(contributors: contributors) unless contributors.sort == visualization.contributors.sort
               # replace file if changed
