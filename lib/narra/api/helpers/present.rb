@@ -29,7 +29,7 @@ module Narra
             present({:status => 'OK'})
           else
             # prepare key
-            key = (object.kind_of?(Array) || object.kind_of?(Mongoid::Criteria)) ? Narra::Extensions::Class.class_name_to_s(model).pluralize.to_sym : Narra::Extensions::Class.class_name_to_sym(model)
+            key = object.respond_to?(:each) ? Narra::Extensions::Class.class_name_to_s(model).pluralize.to_sym : Narra::Extensions::Class.class_name_to_sym(model)
             # present
             present({:status => 'OK', key => present(object, options.merge({with: entity, type: (type + '_' + Narra::Extensions::Class.class_name_to_s(model)).to_sym}))})
           end

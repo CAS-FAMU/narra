@@ -32,6 +32,7 @@ module Narra
         helpers Narra::API::Helpers::Present
         helpers Narra::API::Helpers::Generic
         helpers Narra::API::Helpers::Attributes
+        helpers Narra::API::Helpers::Array
 
         resource :libraries do
 
@@ -42,14 +43,14 @@ module Narra
               library.update_attributes(description: params[:description]) unless params[:description].nil? || library.description.equal?(params[:description])
               library.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || library.author.username.equal?(params[:author])
               library.shared = params[:shared] unless params[:shared].nil?
-              # gather contributors if exist
-              contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
-              # push them if changed
-              library.update_attributes(contributors: contributors) unless contributors.sort == library.contributors.sort
+              # update contributors if exist
+              update_array(library.contributors, params[:contributors].collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
               # gather generators if exist
-              generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
-              # push them if changed
-              library.update_attributes(generators: generators) unless generators.sort == library.generators.sort
+              unless params[:generators].nil?
+                generators = params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
+                # push them if changed
+                library.update_attributes(generators: generators) unless generators.sort == library.generators.sort
+              end
             end
           end
         end

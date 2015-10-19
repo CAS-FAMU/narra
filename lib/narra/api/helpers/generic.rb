@@ -35,14 +35,12 @@ module Narra
           if roles.size > 0
             if roles.include?(:admin)
               objects = model.limit(params[:limit])
-            elsif roles.include?(:user)
-              objects = model.all.select { |o| (authorize(authorization, o) & [:author, :contributor, :parent_author, :parent_contributor]).size > 0 }
-            elsif public
-              objects = model.all.select { |o| (authorize(authorization, o) & [:author, :contributor, :parent_author, :parent_contributor]).size > 0 || o.is_public? }
+            else roles.include?(:user)
+              objects = model.all.select { |o| is_public?(o) || (authorize(authorization, o) & [:author, :contributor, :parent_author, :parent_contributor]).size > 0 }
             end
           else
             if public
-              objects = model.all.select { |o| o.is_public? }
+              objects = model.all.select { |o| is_public?(o) }
             else
               error_not_authorized!
             end
@@ -72,7 +70,7 @@ module Narra
             error_not_found!
           else
             # is public
-            public = model.method_defined?(:is_public?) && object.is_public?
+            public = is_public?(object)
             # custom action
             yield object, authorize(authorization, object), public if block_given?
           end
@@ -131,6 +129,10 @@ module Narra
             # present
             present_ok
           end
+        end
+
+        def is_public?(object)
+          object.respond_to?(:is_public?) && object.is_public? || object.respond_to?(:is_shared?) && object.is_shared?
         end
       end
     end

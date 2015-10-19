@@ -141,38 +141,6 @@ describe Narra::API::Modules::ProjectsV1 do
       end
     end
 
-    describe 'POST /v1/projects/[:name]/libraries/add' do
-      it 'adds specific libraries' do
-        post '/v1/projects/' + @project.name + '/libraries/add', {libraries: [@library_03.name]}
-
-        # check response status
-        expect(response.status).to match(401)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
-      end
-    end
-
-    describe 'POST /v1/projects/[:name]/libraries/remove' do
-      it 'removes specific libraries' do
-        post '/v1/projects/' + @project.name + '/libraries/remove', {libraries: [@library_01.name]}
-
-        # check response status
-        expect(response.status).to match(401)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
-      end
-    end
-
     describe 'GET /v1/projects/[:name]/items' do
       it 'returns projects items' do
         get '/v1/projects/' + @project.name + '/items'
@@ -294,38 +262,6 @@ describe Narra::API::Modules::ProjectsV1 do
     describe 'POST /v1/projects/[:name]/update' do
       it 'updates a specific project' do
         post '/v1/projects/' + @project_admin.name + '/update' + '?token=' + @author_token, {title: 'test'}
-
-        # check response status
-        expect(response.status).to match(403)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authorized')
-      end
-    end
-
-    describe 'POST /v1/projects/[:name]/libraries/add' do
-      it 'adds specific libraries' do
-        post '/v1/projects/' + @project_admin.name + '/libraries/add' + '?token=' + @author_token, {libraries: [@library_01.name]}
-
-        # check response status
-        expect(response.status).to match(403)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data
-        expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authorized')
-      end
-    end
-
-    describe 'POST /v1/projects/[:name]/libraries/remove' do
-      it 'removes specific libraries' do
-        post '/v1/projects/' + @project_admin.name + '/libraries/remove' + '?token=' + @author_token, {libraries: [@library_03.name]}
 
         # check response status
         expect(response.status).to match(403)
@@ -503,50 +439,6 @@ describe Narra::API::Modules::ProjectsV1 do
         expect(data['project']['title']).to match('Test Project Updated')
         expect(data['project']['description']).to match('Test Project Description Updated')
         expect(data['project']['author']['name']).to match(@author_user.name)
-      end
-    end
-
-    describe 'POST /v1/projects/[:name]/libraries/add' do
-      it 'adds specific libraries' do
-        # send request
-        post '/v1/projects/' + @project.name + '/libraries/add' + '?token=' + @author_token, {libraries: [@library_03._id.to_s, @library_04._id.to_s]}
-
-        # check response status
-        expect(response.status).to match(201)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data format
-        expect(data).to have_key('status')
-        expect(data).to have_key('project')
-
-        # check received data
-        expect(data['status']).to match('OK')
-        expect(data['project']['name']).to match(@project.name)
-        expect(data['project']['libraries'].count).to match(4)
-      end
-    end
-
-    describe 'POST /v1/projects/[:name]/libraries/remove' do
-      it 'removes specific libraries' do
-        # send request
-        post '/v1/projects/' + @project.name + '/libraries/remove' + '?token=' + @author_token, {libraries: [@library_01._id.to_s, @library_02._id.to_s]}
-
-        # check response status
-        expect(response.status).to match(201)
-
-        # parse response
-        data = JSON.parse(response.body)
-
-        # check received data format
-        expect(data).to have_key('status')
-        expect(data).to have_key('project')
-
-        # check received data
-        expect(data['status']).to match('OK')
-        expect(data['project']['name']).to match(@project.name)
-        expect(data['project']['libraries'].count).to match(0)
       end
     end
 

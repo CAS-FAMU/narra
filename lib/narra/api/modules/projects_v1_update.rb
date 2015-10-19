@@ -34,6 +34,7 @@ module Narra
         helpers Narra::API::Helpers::Present
         helpers Narra::API::Helpers::Generic
         helpers Narra::API::Helpers::Attributes
+        helpers Narra::API::Helpers::Array
 
         resource :projects do
 
@@ -46,18 +47,22 @@ module Narra
               project.update_attributes(description: params[:description]) unless params[:description].nil? || project.description.equal?(params[:description])
               project.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || project.author.username.equal?(params[:author])
               project.public = params[:public] unless params[:public].nil?
-              # gather contributors if exist
-              contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
-              # push them if changed
-              project.update_attributes(contributors: contributors) unless contributors.sort == project.contributors.sort
+              # update contributors if exist
+              update_array(project.contributors, params[:contributors].collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
+              # update libraries if exist
+              update_array(project.libraries, params[:libraries].collect { |l| Library.find(l) }) unless params[:libraries].nil?
               # gather synthesizers if exist
-              synthesizers = params[:synthesizers].nil? ? [] : params[:synthesizers].select { |s| !Narra::Core.synthesizer(s[:identifier].to_sym).nil? }
-              # push them if changed
-              project.update_attributes(synthesizers: synthesizers) unless synthesizers.sort == project.synthesizers.sort
+              unless params[:synthesizers].nil?
+                synthesizers = params[:synthesizers].select { |s| !Narra::Core.synthesizer(s[:identifier].to_sym).nil? }
+                # push them if changed
+                project.update_attributes(synthesizers: synthesizers) unless synthesizers.sort == project.synthesizers.sort
+              end
               # gather visualizations if exist
-              visualizations = params[:visualizations].nil? ? [] : params[:visualizations].select { |v| !Narra::Visualization.find(v[:id]).nil? }
-              # push them if changed
-              project.update_attributes(visualizations: visualizations) unless visualizations.sort == project.visualizations.sort
+              unless params[:visualizations].nil?
+                visualizations = params[:visualizations].select { |v| !Narra::Visualization.find(v[:id]).nil? }
+                # push them if changed
+                project.update_attributes(visualizations: visualizations) unless visualizations.sort == project.visualizations.sort
+              end
             end
           end
         end

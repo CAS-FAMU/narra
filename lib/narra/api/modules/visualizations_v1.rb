@@ -32,6 +32,7 @@ module Narra
         helpers Narra::API::Helpers::Present
         helpers Narra::API::Helpers::Generic
         helpers Narra::API::Helpers::Attributes
+        helpers Narra::API::Helpers::Array
 
         resource :visualizations do
 
@@ -83,10 +84,8 @@ module Narra
               visualization.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || visualization.author.username.equal?(params[:author])
               visualization.update_attributes(options: eval(params[:options])) unless params[:options].nil? || visualization.options.equal?(eval(params[:options]))
               visualization.public = params[:public] unless params[:public].nil?
-              # gather contributors if exist
-              contributors = params[:contributors].nil? ? [] : JSON.parse(params[:contributors]).collect { |c| User.find_by(username: c) }
-              # push them if changed
-              visualization.update_attributes(contributors: contributors) unless contributors.sort == visualization.contributors.sort
+              # update contributors if exist
+              update_array(visualization.contributors, JSON.parse(params[:contributors]).collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
               # replace file if changed
               if params[:file]
                 # update script file
