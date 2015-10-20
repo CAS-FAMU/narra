@@ -56,31 +56,6 @@ module Narra
             present_ok_generic(:items, present(proxies))
           end
 
-          desc 'Create new item.'
-          post 'new' do
-            required_attributes! [:url, :library, :connector]
-            new_one(Item, Narra::API::Entities::Item, true, [:author]) do
-              # trying to get library
-              library = Library.find(params[:library])
-              # input metadata container
-              metadata = []
-              # check for metadata
-              if !params[:metadata].nil? && !params[:metadata].empty?
-                # iterate through hash
-                params[:metadata].each do |key, value|
-                  # store new source metadata
-                  metadata << {name: key, value: value}
-                end
-              end
-              # parse connector
-              connector = params[:connector].to_sym
-              # check for options
-              options = (params[:options].nil? ? {} : params[:options]).merge({metadata: metadata})
-              # add new item
-              Narra::Core.add_item(params[:url], current_user, library, connector, options)
-            end
-          end
-
           desc 'Delete a specific item.'
           get ':id/delete' do
             return_one_custom(Item, :id, true, [:author]) do |object, roles, public|

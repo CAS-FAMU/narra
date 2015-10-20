@@ -96,7 +96,7 @@ describe Narra::API::Modules::ItemsV1 do
 
     describe 'POST /v1/items/new' do
       it 'creates new item' do
-        post '/v1/items/new', {url: 'test', library: 'test', connector: 'testing'}
+        post '/v1/items/new', {items: [{url: 'test', library: 'test', connector: 'testing'}]}
 
         # check response status
         expect(response.status).to match(401)
@@ -194,7 +194,7 @@ describe Narra::API::Modules::ItemsV1 do
 
     describe 'POST /v1/items/new' do
       it 'creates new item' do
-        post '/v1/items/new' + '?token=' + @unroled_token, {url: 'test', library: 'test', connector: 'testing'}
+        post '/v1/items/new' + '?token=' + @unroled_token, {items: [{url: 'test', library: 'test', connector: 'testing'}]}
 
         # check response status
         expect(response.status).to match(403)
@@ -341,7 +341,7 @@ describe Narra::API::Modules::ItemsV1 do
     describe 'POST /v1/items/new' do
       it 'creates new item' do
         # send request
-        post '/v1/items/new' + '?token=' + @author_token, {url: 'http://test', library: @library_01._id.to_s, connector: 'testing', metadata: {meta_01: 'Meta 01', meta_02: 'Meta 02'}}
+        post '/v1/items/new' + '?token=' + @author_token, {items: [{url: 'http://test', library: @library_01._id.to_s, connector: 'testing', metadata: {meta_01: 'Meta 01', meta_02: 'Meta 02'}}]}
 
         # check response status
         expect(response.status).to match(201)
@@ -351,13 +351,11 @@ describe Narra::API::Modules::ItemsV1 do
 
         # check received data format
         expect(data).to have_key('status')
-        expect(data).to have_key('item')
+        expect(data).to have_key('items')
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['item']['name']).to match('test_item')
-        expect(data['item']['url']).to match('http://test')
-        expect(data['item']['metadata'].count).to match(10)
+        expect(data['items'].count).to match(1)
       end
     end
 

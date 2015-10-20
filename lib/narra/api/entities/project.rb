@@ -48,7 +48,7 @@ module Narra
             {
                 id: visualization[:id],
                 name: model.name,
-                type: visualization[:identifier],
+                type: visualization[:type],
                 description: model.description,
                 options: visualization[:options].nil? ? model.options : visualization[:options]
             }
