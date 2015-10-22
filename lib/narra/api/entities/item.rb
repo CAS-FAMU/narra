@@ -41,7 +41,12 @@ module Narra
         expose :library, format_with: :library, if: {type: :detail_item}
 
         format_with :library do |library|
-          {id: library._id.to_s, name: library.name}
+          {
+              id: library._id.to_s,
+              name: library.name,
+              author: { username: library.author.username, name: library.author.name },
+              contributors: library.contributors.collect { |user| {username: user.username, name: user.name} }
+          }
         end
 
         expose :keywords, if: lambda { |model, options| !model.get_meta(name: 'keywords').nil? } do |item|
