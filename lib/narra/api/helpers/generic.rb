@@ -132,7 +132,7 @@ module Narra
         end
 
         def is_public?(object)
-          object.respond_to?(:is_public?) && object.is_public? || object.respond_to?(:is_shared?) && object.is_shared?
+          object.respond_to?(:is_public?) && object.is_public? || object.respond_to?(:is_shared?) && object.is_shared? || object.respond_to?('library') && object.library.is_shared?
         end
       end
     end
