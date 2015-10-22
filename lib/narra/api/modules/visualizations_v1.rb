@@ -43,7 +43,7 @@ module Narra
 
           desc 'Return a specific visualization.'
           get ':id' do
-            return_one(Narra::Visualization, Narra::API::Entities::Visualization, :id, true, [:author])
+            return_one(Narra::Visualization, Narra::API::Entities::Visualization, :id, false, [:author])
           end
 
           desc 'Add new visualization.'
