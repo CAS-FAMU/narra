@@ -66,10 +66,7 @@ module Narra
         end
         expose :libraries, using: Narra::API::Entities::Library, :if => {:type => :detail_project}
 
-        expose :meta, as: :metadata, using: Narra::API::Entities::MetaProject, if: {type: :detail_project} do |project, options|
-          # get scoped metadata for project
-          Narra::MetaProject.where(project: project)
-        end
+        expose :meta, as: :metadata, using: Narra::API::Entities::Meta, if: {type: :detail_project}
       end
     end
   end

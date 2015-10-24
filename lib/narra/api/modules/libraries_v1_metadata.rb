@@ -41,7 +41,7 @@ module Narra
               # get authorized
               error_not_authorized! unless (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0
               # present
-              present_ok_generic_options('metadata', library.meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
+              present_ok_generic_options('metadata', library.meta, {with: Narra::API::Entities::Meta, type: 'library'})
             end
           end
 
@@ -56,7 +56,7 @@ module Narra
               # add metadata
               meta = library.add_meta(name: params[:meta], value: params[:value], author: author)
               # present
-              present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
+              present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::Meta, type: 'library'})
             end
           end
 
@@ -70,7 +70,7 @@ module Narra
               # check existence
               error_not_found! if meta.nil?
               # otherwise present
-              present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
+              present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::Meta, type: 'library'})
             end
           end
 
@@ -99,7 +99,7 @@ module Narra
               # add metadata
               meta = library.update_meta(name: params[:meta], value: params[:value])
               # present
-              present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaLibrary, type: 'library'})
+              present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::Meta, type: 'library'})
             end
           end
         end

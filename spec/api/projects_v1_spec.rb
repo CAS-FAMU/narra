@@ -48,8 +48,8 @@ describe Narra::API::Modules::ProjectsV1 do
     @project_public.public = true
 
     # create marks
-    @mark = FactoryGirl.build(:mark_sequence, clip: @item_01)
-    @mark_admin = FactoryGirl.build(:mark_sequence, clip: @item_02)
+    @mark = FactoryGirl.build(:mark_flow, clip: @item_01)
+    @mark_admin = FactoryGirl.build(:mark_flow, clip: @item_02)
 
     # create sequences for testing purpose
     @sequence = FactoryGirl.create(:sequence, project: @project, author: @author_user, marks: [@mark])
@@ -182,14 +182,14 @@ describe Narra::API::Modules::ProjectsV1 do
         get '/v1/projects/' + @project.name + '/sequences/' + @sequence._id
 
         # check response status
-        expect(response.status).to match(401)
+        expect(response.status).to match(403)
 
         # parse response
         data = JSON.parse(response.body)
 
         # check received data
         expect(data['status']).to match('ERROR')
-        expect(data['message']).to match('Not Authenticated')
+        expect(data['message']).to match('Not Authorized')
       end
     end
   end

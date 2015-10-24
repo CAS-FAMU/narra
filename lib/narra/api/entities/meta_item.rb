@@ -26,6 +26,10 @@ module Narra
 
         expose :name, :value, :generator
 
+        expose :author, if: lambda { |model, options| !model.author.nil? } do |model, options|
+          { username: model.author.username, name: model.author.name }
+        end
+
         expose :marks, using: Narra::API::Entities::MarkMeta, if: lambda { |model, options| !model.marks.empty? }
       end
     end

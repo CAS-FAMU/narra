@@ -27,17 +27,31 @@ module Narra
         expose :id do |model, options|
           model._id.to_s
         end
-        expose :name
-        expose :thumbnail do |model, options|
-          model.marks.sample.clip.url_thumbnail
-        end
-        expose :public do |model, options|
-          model.get_meta(name: 'public').value
-        end
+        expose :name, :description, :fps
+
         expose :author do |model, options|
           { username: model.author.username, name: model.author.name}
         end
-        expose :marks, using: Narra::API::Entities::MarkSequence, if: {type: :detail_sequence}
+
+        expose :prepared do |model, options|
+          model.prepared?
+        end
+
+        expose :public do |model, options|
+          model.is_public?
+        end
+
+        include Narra::API::Entities::Thumbnails
+
+        expose :contributors do |model, options|
+          model.contributors.collect { |user| {username: user.username, name: user.name} }
+        end
+
+        expose :meta, as: :metadata, using: Narra::API::Entities::Meta, if: {type: :detail_sequence}
+
+        expose :marks, if: {type: :detail_sequence} do |model, options|
+          Narra::API::Entities::MarkSequence.represent model.marks.order_by('row asc'), options.merge(sequence: model)
+        end
       end
     end
   end

@@ -44,6 +44,16 @@ module Narra
               present_ok(project.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
             end
           end
+
+          desc 'Return project item.'
+          get ':name/items/:id' do
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
+              # get authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0 || public
+              # present
+              present_ok(project.items.find(params[:id]), Item, Narra::API::Entities::Item, 'public')
+            end
+          end
         end
       end
     end

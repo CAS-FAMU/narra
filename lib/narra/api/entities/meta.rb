@@ -22,9 +22,13 @@
 module Narra
   module API
     module Entities
-      class MetaProject < Grape::Entity
+      class Meta < Grape::Entity
 
         expose :name, :value
+
+        expose :author, if: lambda { |model, options| !model.author.nil? } do |model, options|
+          { username: model.author.username, name: model.author.name }
+        end
       end
     end
   end

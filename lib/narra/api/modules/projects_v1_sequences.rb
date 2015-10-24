@@ -53,62 +53,47 @@ module Narra
             end
           end
 
+          desc 'Return project sequence.'
+          get ':name/sequences/:id' do
+            return_one(Narra::Sequence, Narra::API::Entities::Sequence, :id, false, [:author])
+          end
+
           desc 'Add new sequence.'
           post ':name/sequences/new' do
-            required_attributes! [:type, :title, :file, :params]
+            required_attributes! [:type, :title, :fps]
             # Resolve project and add sequence
             return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
               # get authorized
               error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
-              # check for the author
-              author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
               # get file content
-              content = params[:file][:tempfile].read
+              if params[:file]
+                content = params[:file][:tempfile].read
+              end
               # prepare sequence hash
-              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content}.merge(Hash[JSON.parse(params[:params]).map { |k, v| [k.to_sym, v] }])
+              sequence = {sequence_type: params[:type].to_sym, sequence_name: params[:title], sequence_content: content, sequence_fps: params[:fps], metadata: params[:metadata]}
               # add sequence
-              Narra::Core.add_sequence(project, author, sequence)
+              Narra::Core.add_sequence(project, current_user, sequence)
               # present
               present_ok
             end
           end
 
-          desc 'Return project sequence.'
-          get ':name/sequences/:sequence' do
-            return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
-              # get sequence
-              sequence = project.sequences.find(params[:sequence])
-              # Check if the item is part of the project
-              if sequence.nil?
-                error_not_found!
-              else
-                # if not authenticated or not contributor or author or not public
-                if (roles & [:admin, :author, :contributor]).size > 0 || (public && sequence.is_public?)
-                  present_ok(sequence, Sequence, Narra::API::Entities::Sequence, 'detail')
-                else
-                  error_not_authorized!
-                end
-              end
+          desc 'Update a specific visualization.'
+          post ':name/sequences/:id/update' do
+            update_one(Narra::Sequence, Narra::API::Entities::Sequence, :id, true, [:author]) do |sequence|
+              # change name if there is a change
+              sequence.update_attributes(name: params[:title]) unless params[:title].nil? || sequence.name.equal?(params[:title])
+              sequence.update_attributes(description: params[:description]) unless params[:description].nil? || sequence.description.equal?(params[:description])
+              sequence.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || sequence.author.username.equal?(params[:author])
+              sequence.public = params[:public] unless params[:public].nil?
+              # update contributors if exist
+              update_array(sequence.contributors, JSON.parse(params[:contributors]).collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
             end
           end
 
-          desc 'Delete a specific sequence.'
-          get ':name/sequences/:sequence/delete' do
-            return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
-              # get authorized
-              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
-              # Get item
-              sequence = project.sequences.find(params[:sequence])
-              # Check if the item is part of the project
-              if sequence.nil?
-                error_not_found!
-              else
-                # destroy
-                sequence.destroy
-                # present
-                present_ok
-              end
-            end
+          desc 'Delete a specific visualization.'
+          get ':name/sequences/:id/delete' do
+            delete_one(Narra::Sequence, :id, true, [:author])
           end
         end
       end

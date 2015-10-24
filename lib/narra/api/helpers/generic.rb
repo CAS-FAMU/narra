@@ -50,11 +50,11 @@ module Narra
         end
 
         # Generic method for returning of the specific object based on the owner
-        def return_one(model, entity, key, authentication, authorization = [])
+        def return_one(model, entity, key, authentication, authorization = [], options = {})
           return_one_custom(model, key, authentication, authorization) do |object, roles, public|
             # resolve
             if (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0 || public
-              present_ok(object, model, entity, 'detail')
+              present_ok(object, model, entity, 'detail', options)
             else
               error_not_authorized!
             end

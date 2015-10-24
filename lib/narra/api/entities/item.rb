@@ -34,6 +34,10 @@ module Narra
           model.prepared?
         end
 
+        expose :hidden, if: lambda { |model, options| model.hidden? } do |item|
+          item.hidden?
+        end
+
         expose :purged, if: lambda { |model, options| model.library.purged } do |item|
           item.library.purged
         end
@@ -80,7 +84,13 @@ module Narra
           end
         end
 
-        expose :meta, as: :metadata, using: Narra::API::Entities::MetaItem, if: {type: :detail_item}
+        expose :meta, as: :metadata, using: Narra::API::Entities::MetaItem, if: lambda { |model, options| options[:type] == :detail_item || options[:type] == :public_item } do |model, options|
+          if options[:type] == :public_item
+            model.meta.select { |meta| meta.public }
+          else
+            model.meta
+          end
+        end
       end
     end
   end

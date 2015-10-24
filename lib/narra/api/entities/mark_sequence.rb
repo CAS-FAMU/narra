@@ -24,20 +24,32 @@ module Narra
     module Entities
       class MarkSequence < Grape::Entity
 
+        include Narra::API::Helpers::Thumbnails
+
         expose :row
 
         expose :clip do |model, options|
+          # get item if exists
+          item = options[:sequence].models.find_by(name: model.clip)
           # basic clip output
-          basic = {id: model.clip._id.to_s, name: model.clip.name, type: model.clip.type, thumbnail: model.clip.url_thumbnail}
-          # process
-          case model.clip.type
-            when :video
-              basic.merge({source: model.clip.video.url})
-            when :image
-              basic.merge({source: model.clip.image.url})
-            when :audio
-              basic.merge({source: model.clip.audio.url})
+          if item.nil?
+            output = {name: model.clip, thumbnail: thumbnail_empty}
+          else
+            output = {id: item._id.to_s, name: model.clip, type: item.type, thumbnail: item.url_thumbnail}
           end
+          # process
+          unless item.nil?
+            case item.type
+              when :video
+                output.merge({source: item.video.url})
+              when :image
+                output.merge({source: item.image.url})
+              when :audio
+                output.merge({source: item.audio.url})
+            end
+          end
+          # output
+          output
         end
 
         expose :in
