@@ -30,7 +30,7 @@ module Narra
         expose :name, :description, :fps
 
         expose :author do |model, options|
-          { username: model.author.username, name: model.author.name}
+          {username: model.author.username, name: model.author.name}
         end
 
         expose :prepared do |model, options|
@@ -45,6 +45,18 @@ module Narra
 
         expose :contributors do |model, options|
           model.contributors.collect { |user| {username: user.username, name: user.name} }
+        end
+
+        expose :project, :if => {:type => :detail_sequence} do |sequence, options|
+          {
+              id: sequence.project._id.to_s,
+              name: sequence.project.name,
+              title: sequence.project.title,
+              author: {
+                  username: sequence.project.author.username,
+                  name: sequence.project.author.name
+              }
+          }
         end
 
         expose :meta, as: :metadata, using: Narra::API::Entities::Meta, if: {type: :detail_sequence}
