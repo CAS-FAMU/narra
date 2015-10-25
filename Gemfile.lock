@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 86ff3b866f8dc9cd2e5c5418020877e711f7efe7
+  revision: b96f45d8c956d8c88ed83923f79662ef587aa958
   specs:
-    narra-core (0.0.7)
+    narra-core (0.0.9)
       aasm
       activesupport
       carrierwave-mongoid
