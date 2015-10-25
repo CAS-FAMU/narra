@@ -44,6 +44,10 @@ module Narra
           thumbnail(:empty)
         end
 
+        def thumbnail_black
+          thumbnail(:black)
+        end
+
         def thumbnail(type)
           "http://#{options[:env]['HTTP_HOST']}/images/item_#{type.to_s}.png"
         end

@@ -33,7 +33,7 @@ module Narra
           item = options[:sequence].models.find_by(name: model.clip)
           # basic clip output
           if item.nil?
-            output = {name: model.clip, thumbnail: thumbnail_empty}
+            output = {name: model.clip, thumbnail: model.clip == 'black' ? thumbnail_black : thumbnail_empty}
           else
             output = {id: item._id.to_s, name: model.clip, type: item.type, thumbnail: item.url_thumbnail}
           end

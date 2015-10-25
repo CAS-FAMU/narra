@@ -96,8 +96,10 @@ module Narra
             return_one_custom(Project, :name, true, [:author]) do |project, roles, public|
               # get authorized
               error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0
-              # add metadata
-              meta = project.update_meta(name: params[:meta], value: params[:value])
+              # check the author field
+              author = params[:author].nil? ? current_user : Narra::User.find_by(username: params[:author])
+              # update metadata
+              meta = project.update_meta(name: params[:meta], value: params[:value], author: author)
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::Meta, type: 'project'})
             end
