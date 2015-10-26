@@ -53,7 +53,7 @@ module Narra
               # get meta values
               metas = library.items.collect { |item| item.get_meta(name: params[:name])}
               values = metas.select { |meta| !meta.nil? }.collect { |meta| meta.respond_to?('each') ? meta.first.value : meta.value }
-              values = values.join(',').collect { |value| value.strip }.uniq
+              values = values.join(',').split(',').collect { |value| value.strip }.uniq
               # present
               present_ok_generic(:values, values)
             end
