@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: dc8999bfedcc56e8e575c5b138c649b6a05d8ed2
+  revision: 1ad0113806af494abf6f0bc13bc64b5da5cdd684
   specs:
-    narra-core (0.0.9)
+    narra-core (0.0.10)
       aasm
       activesupport
       carrierwave-mongoid
@@ -272,7 +272,7 @@ GEM
     grape-entity (0.4.8)
       activesupport
       multi_json (>= 1.3.2)
-    hashie (3.4.2)
+    hashie (3.4.3)
     hitimes (1.2.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)

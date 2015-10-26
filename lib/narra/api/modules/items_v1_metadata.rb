@@ -124,7 +124,7 @@ module Narra
               # check the author field
               author = params[:author].nil? ? current_user : Narra::User.find_by(username: params[:author])
               # update metadata
-              meta = item.update_meta(name: params[:meta], value: params[:value], generator: params[:generator], marks: marks, author: author)
+              meta = item.update_meta(name: params[:meta], value: params[:value], generator: params[:generator], new_generator: params[:new_generator], marks: marks, author: author)
               # present
               present_ok_generic_options('metadata', meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
             end
