@@ -44,6 +44,19 @@ module Narra
               present_ok(library.items.limit(params[:limit]), Item, Narra::API::Entities::Item)
             end
           end
+          
+          desc 'Return all values for specific meta field.'
+          get ':id/items/metadata/:name' do
+            return_one_custom(Library, :id, true, [:author]) do |library, roles, public|
+              # get authorized
+              error_not_authorized! unless public || (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0
+              # get meta values
+              values = library.items.collect { |item| item.get_meta(name: params[:name])}
+              values = values.select { |value| !value.nil? }
+              # present
+              present_ok_generic(:values, values)
+            end
+          end
         end
       end
     end
