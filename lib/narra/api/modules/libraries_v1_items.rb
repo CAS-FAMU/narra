@@ -51,8 +51,8 @@ module Narra
               # get authorized
               error_not_authorized! unless public || (roles & [:admin, :author, :contributor, :parent_author, :parent_contributor]).size > 0
               # get meta values
-              values = library.items.collect { |item| item.get_meta(name: params[:name])}
-              values = values.select { |value| !value.nil? }
+              metas = library.items.collect { |item| item.get_meta(name: params[:name])}
+              values = metas.select { |meta| !meta.nil? }.collect { |meta| meta.value }
               # present
               present_ok_generic(:values, values)
             end
