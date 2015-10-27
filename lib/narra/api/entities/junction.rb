@@ -28,7 +28,8 @@ module Narra
           junction.items.collect { |item| {
               id: item._id.to_s,
               name: item.name,
-              type: item.type
+              type: item.type,
+              thumbnail: item.url_thumbnail
           }}
         end
 

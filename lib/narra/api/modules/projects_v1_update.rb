@@ -55,13 +55,13 @@ module Narra
               unless params[:synthesizers].nil?
                 synthesizers = params[:synthesizers].select { |s| !Narra::Core.synthesizer(s[:identifier].to_sym).nil? }
                 # push them if changed
-                project.update_attributes(synthesizers: synthesizers) unless synthesizers.sort == project.synthesizers.sort
+                project.update_attributes(synthesizers: synthesizers)
               end
               # gather visualizations if exist
               unless params[:visualizations].nil?
                 visualizations = params[:visualizations].select { |v| !Narra::Visualization.find(v[:id]).nil? }
                 # push them if changed
-                project.update_attributes(visualizations: visualizations) unless visualizations.sort == project.visualizations.sort
+                project.update_attributes(visualizations: visualizations)
               end
             end
           end

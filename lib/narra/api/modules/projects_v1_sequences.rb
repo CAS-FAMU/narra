@@ -87,7 +87,7 @@ module Narra
               sequence.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || sequence.author.username.equal?(params[:author])
               sequence.public = params[:public] unless params[:public].nil?
               # update contributors if exist
-              update_array(sequence.contributors, JSON.parse(params[:contributors]).collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
+              update_array(sequence.contributors, params[:contributors].collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
             end
           end
 

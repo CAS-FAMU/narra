@@ -34,8 +34,12 @@ module Narra
           model.prepared?
         end
 
-        expose :hidden, if: lambda { |model, options| model.hidden? } do |item|
-          item.hidden?
+        expose :master, if: lambda { |model, options| model.master? } do |item|
+          item.master?
+        end
+
+        expose :sequence, if: lambda { |model, options| model.master? } do |item|
+          { id: item.sequence._id.to_s, name: item.sequence.name }
         end
 
         expose :purged, if: lambda { |model, options| model.library.purged } do |item|
@@ -54,7 +58,12 @@ module Narra
         end
 
         expose :keywords, if: lambda { |model, options| !model.get_meta(name: 'keywords').nil? } do |item|
-          item.get_meta(name: 'keywords').value.split(',').first(5).join(', ')
+          # keywords
+          metadata = item.get_meta(name: 'keywords')
+          # return the right one
+          value = metadata.respond_to?('each') ? metadata.first.value : metadata.value
+          # get values and return first 5
+          value.split(',').first(5).join(', ')
         end
 
         include Narra::API::Entities::Thumbnails

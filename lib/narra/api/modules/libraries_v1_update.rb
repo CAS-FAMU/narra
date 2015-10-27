@@ -49,7 +49,7 @@ module Narra
               unless params[:generators].nil?
                 generators = params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
                 # push them if changed
-                library.update_attributes(generators: generators) unless generators.sort == library.generators.sort
+                library.update_attributes(generators: generators)
               end
             end
           end

@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 1ad0113806af494abf6f0bc13bc64b5da5cdd684
+  revision: 45450b0aa09d9fe5bd819034c834bb2231d5de7c
   specs:
-    narra-core (0.0.10)
+    narra-core (0.0.11)
       aasm
       activesupport
       carrierwave-mongoid
@@ -45,7 +45,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.2)
-    aasm (4.3.0)
+    aasm (4.4.0)
     actionmailer (4.2.2)
       actionpack (= 4.2.2)
       actionview (= 4.2.2)
@@ -285,7 +285,7 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.3)
-    jwt (1.5.1)
+    jwt (1.5.2)
     logger-better (0.2.1)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -297,7 +297,7 @@ GEM
     mime-types (2.6.2)
     mini_magick (4.3.6)
     mini_portile (0.6.2)
-    minitest (5.8.1)
+    minitest (5.8.2)
     mongo (2.1.2)
       bson (~> 3.0)
     mongoid (5.0.0)
@@ -314,12 +314,13 @@ GEM
       rspec (~> 3.3)
     mongoid-tree (2.0.1)
       mongoid (>= 4.0, < 6.0)
-    multi_json (1.11.2)
+    multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.0.1)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     oauth2 (1.0.0)
@@ -383,6 +384,10 @@ GEM
     redis (3.2.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -437,11 +442,11 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    viddl-rb (1.0.1)
-      mime-types
-      multi_json
-      nokogiri
-      progressbar
+    viddl-rb (1.1.1)
+      multi_json (~> 1.10.0)
+      nokogiri (~> 1.6.0)
+      progressbar (~> 0.21)
+      rest-client
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -474,3 +479,6 @@ DEPENDENCIES
   rspec-mocks
   rspec-rails
   streamio-ffmpeg!
+
+BUNDLED WITH
+   1.10.6

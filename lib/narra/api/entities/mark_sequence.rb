@@ -30,9 +30,9 @@ module Narra
 
         expose :clip do |model, options|
           # get item if exists
-          item = options[:sequence].models.find_by(name: model.clip)
+          item = get_item(model.clip, options)
           # basic clip output
-          if item.nil?
+          if item.nil? || !item.prepared?
             output = {name: model.clip, thumbnail: model.clip == 'black' ? thumbnail_black : thumbnail_empty}
           else
             output = {id: item._id.to_s, name: model.clip, type: item.type, thumbnail: item.url_thumbnail}
@@ -52,8 +52,57 @@ module Narra
           output
         end
 
-        expose :in
-        expose :out
+        expose :in do |model, options|
+          # get item if exists
+          item = get_item(model.clip, options)
+          # check
+          unless item.nil?
+            # get start timecode
+            start_tc = get_timecode(options[:sequence], item)
+            # calculate time
+            time = (model.in - start_tc).to_f
+            # check
+            time if time >= 0
+          else
+            nil
+          end
+        end
+
+        expose :out do |model, options|
+          # get item if exists
+          item = get_item(model.clip, options)
+          # check
+          unless item.nil?
+            # get start timecode
+            start_tc = get_timecode(options[:sequence], item)
+            # calculate time
+            time = (model.out - start_tc).to_f
+            # check
+            time if time >= 0
+          else
+            nil
+          end
+        end
+
+        expose :duration do |model, options|
+          model.out - model.in
+        end
+
+        protected
+
+        def get_item(name, options)
+          # get item if exists
+          @item ||= options[:sequence].models.find_by(name: name)
+        end
+
+        def get_timecode(sequence, item)
+          # get timecode
+          @timecode ||= item.get_meta(name: 'timecode', generator: :source)
+          # start_tc
+          value = Timecode.parse(@timecode.nil? ? '00:00:00:00' : @timecode.value, sequence.fps)
+          # return timecode
+          (value.to_f / sequence.fps).to_f
+        end
       end
     end
   end
