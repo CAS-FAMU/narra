@@ -47,6 +47,15 @@ module Narra
           model.contributors.collect { |user| {username: user.username, name: user.name} }
         end
 
+        expose :master, :if => lambda { |sequence, options| options[:type] == :detail_sequence && !sequence.master.nil?} do |sequence, options|
+          {
+              id: sequence.master._id.to_s,
+              name: sequence.master.name,
+              thumbnail: sequence.master.url_thumbnail,
+              source: sequence.master.video.url
+          }
+        end
+
         expose :project, :if => {:type => :detail_sequence} do |sequence, options|
           {
               id: sequence.project._id.to_s,

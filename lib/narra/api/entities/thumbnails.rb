@@ -30,7 +30,7 @@ module Narra
           base.class_eval do
             expose :thumbnails do |model, options|
               # setup thumbnail count
-              count = options[:type] == :detail_item ? Narra::Tools::Settings.thumbnail_count.to_i : Narra::Tools::Settings.thumbnail_count_preview.to_i
+              count = options[:type].to_s.include?('detail') || options[:type].to_s.include?('thumbnails') ? Narra::Tools::Settings.thumbnail_count.to_i : Narra::Tools::Settings.thumbnail_count_preview.to_i
               # resolve
               if !model.url_thumbnails.nil? && !model.url_thumbnails.empty?
                 model.url_thumbnails.sample(count)

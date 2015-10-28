@@ -62,7 +62,7 @@ module Narra
                 # parse connector
                 connector = item[:connector].to_sym
                 # check for options
-                options = (item[:options].nil? ? {} : item[:options]).merge({metadata: metadata})
+                options = (item[:options].nil? ? {} : item[:options]).merge({user_metadata: metadata})
                 # add new item
                 items << Narra::Core.add_item(item[:url], current_user, library, connector, options)
               end

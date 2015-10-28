@@ -37,7 +37,7 @@ module Narra
 
           desc 'Return all projects.'
           get do
-            return_many(Project, Narra::API::Entities::Project, false, [:author])
+            return_many(Project, Narra::API::Entities::Project, false, [:author], 'thumbnails')
           end
 
           desc 'Validation if a specific project exists.'

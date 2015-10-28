@@ -55,6 +55,8 @@ module Narra
           }
         end
 
+        expose :layouts, if: {type: :detail_project}
+
         expose :public do |model, options|
           model.is_public?
         end

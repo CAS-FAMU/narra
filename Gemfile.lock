@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 45450b0aa09d9fe5bd819034c834bb2231d5de7c
+  revision: dda29f0ad4f12640c9fa3b41759e58424c4e9196
   specs:
-    narra-core (0.0.11)
+    narra-core (0.0.12)
       aasm
       activesupport
       carrierwave-mongoid
@@ -28,6 +28,14 @@ GIT
     narra-lemmatizer (0.0.1)
       narra-core
       nokogiri
+
+GIT
+  remote: https://github.com/CAS-FAMU/narra-youtube.git
+  revision: d700da348cd71439b00b7b6ac7ef17993e4d96da
+  specs:
+    narra-youtube (0.0.1)
+      multi_json
+      rest-client
 
 GIT
   remote: https://github.com/DatabaseCleaner/database_cleaner.git
@@ -235,7 +243,7 @@ GEM
     fog-serverlove (0.1.2)
       fog-core
       fog-json
-    fog-softlayer (1.0.0)
+    fog-softlayer (1.0.1)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.1)
@@ -409,7 +417,7 @@ GEM
       rspec-mocks (~> 3.3.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
-    sidekiq (3.5.1)
+    sidekiq (3.5.2)
       celluloid (~> 0.17.2)
       connection_pool (~> 2.2, >= 2.2.0)
       json (~> 1.0)
@@ -470,6 +478,7 @@ DEPENDENCIES
   mongoid-tree
   narra-core!
   narra-lemmatizer!
+  narra-youtube!
   omniauth
   omniauth-github
   omniauth-google-oauth2

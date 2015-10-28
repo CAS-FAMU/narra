@@ -41,11 +41,11 @@ module Narra
           unless item.nil?
             case item.type
               when :video
-                output.merge({source: item.video.url})
+                output.merge!({source: item.video.url})
               when :image
-                output.merge({source: item.image.url})
+                output.merge!({source: item.image.url})
               when :audio
-                output.merge({source: item.audio.url})
+                output.merge!({source: item.audio.url})
             end
           end
           # output

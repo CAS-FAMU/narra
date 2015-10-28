@@ -25,7 +25,7 @@ module Narra
       module Generic
 
         # generic method for returning of the specific object based on the owner
-        def return_many(model, entity, authentication, authorization = [])
+        def return_many(model, entity, authentication, authorization = [], feature = '')
           authenticate! if authentication
           # check for user and authorize
           roles = authorize(authorization)
@@ -46,7 +46,7 @@ module Narra
             end
           end
           # present
-          present_ok(objects, model, entity)
+          present_ok(objects, model, entity, feature)
         end
 
         # Generic method for returning of the specific object based on the owner
