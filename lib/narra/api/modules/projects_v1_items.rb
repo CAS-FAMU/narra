@@ -54,6 +54,22 @@ module Narra
               present_ok(project.items.find(params[:id]), Item, Narra::API::Entities::Item, 'public')
             end
           end
+
+          desc 'Return project item metadata.'
+          post ':name/items/:id/metadata' do
+            return_one_custom(Project, :name, false, [:author]) do |project, roles, public|
+              # get authorized
+              error_not_authorized! unless (roles & [:admin, :author, :contributor]).size > 0 || public
+              # check for selection
+              if params[:fields].nil?
+                # present
+                present_ok_generic_options('metadata', project.items.find(params[:id]).meta, {with: Narra::API::Entities::MetaItem, type: 'item'})
+              else
+                # present selected
+                present_ok_generic_options('metadata', project.items.find(params[:id]).meta.any_in(name: params[:fields]), {with: Narra::API::Entities::MetaItem, type: 'item'})
+              end
+            end
+          end
         end
       end
     end
