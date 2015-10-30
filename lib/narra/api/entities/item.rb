@@ -68,23 +68,23 @@ module Narra
 
         include Narra::API::Entities::Thumbnails
 
-        expose :video_proxy_hq, if: lambda { |model, options| options[:type] == :detail_item || options[:type] == :public_item && model.type == :video && model.prepared? } do |model, options|
+        expose :video_proxy_hq, if: lambda { |model, options| (options[:type] == :detail_item || options[:type] == :public_item) && model.type == :video && model.prepared? } do |model, options|
           model.video.url
         end
 
-        expose :video_proxy_lq, if: lambda { |model, options| options[:type] == :detail_item || options[:type] == :public_item && model.type == :video && model.prepared? } do |model, options|
+        expose :video_proxy_lq, if: lambda { |model, options| (options[:type] == :detail_item || options[:type] == :public_item) && model.type == :video && model.prepared? } do |model, options|
           model.video.lq.url
         end
 
-        expose :image_proxy_hq, if: lambda { |model, options| options[:type] == :detail_item || options[:type] == :public_item && model.type == :image && model.prepared? } do |model, options|
+        expose :image_proxy_hq, if: lambda { |model, options| (options[:type] == :detail_item || options[:type] == :public_item) && model.type == :image && model.prepared? } do |model, options|
           model.image.url
         end
 
-        expose :image_proxy_lq, if: lambda { |model, options| options[:type] == :detail_item || options[:type] == :public_item && model.type == :image && model.prepared? } do |model, options|
+        expose :image_proxy_lq, if: lambda { |model, options| (options[:type] == :detail_item || options[:type] == :public_item) && model.type == :image && model.prepared? } do |model, options|
           model.image.lq.url
         end
 
-        expose :audio_proxy, if: lambda { |model, options| options[:type] == :detail_item || options[:type] == :public_item && (model.type == :audio || model.type == :video) && model.prepared? } do |model, options|
+        expose :audio_proxy, if: lambda { |model, options| (options[:type] == :detail_item || options[:type] == :public_item) && (model.type == :audio || model.type == :video) && model.prepared? } do |model, options|
           case model.type
             when :video
               model.video.audio.url
