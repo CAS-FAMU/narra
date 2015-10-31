@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: dda29f0ad4f12640c9fa3b41759e58424c4e9196
+  revision: ce13e70eae1da6e13b0a1d74815b6ae56c1fa1e4
   specs:
-    narra-core (0.0.12)
+    narra-core (0.0.13)
       aasm
       activesupport
       carrierwave-mongoid
@@ -48,6 +48,13 @@ GIT
   revision: 90470da0eaecb71df0ca6ae90f3d27f76cdb3ca2
   specs:
     streamio-ffmpeg (1.0.0)
+
+GIT
+  remote: https://github.com/petrpulc/narra-keyword-synth.git
+  revision: 100453c36bfa2584abff668bf6a69e750b41e20f
+  specs:
+    narra-keyword-synth (0.0.1)
+      narra-core
 
 GEM
   remote: https://rubygems.org/
@@ -477,6 +484,7 @@ DEPENDENCIES
   mongoid-rspec
   mongoid-tree
   narra-core!
+  narra-keyword-synth!
   narra-lemmatizer!
   narra-youtube!
   omniauth

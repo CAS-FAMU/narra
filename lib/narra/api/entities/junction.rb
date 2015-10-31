@@ -24,12 +24,14 @@ module Narra
     module Entities
       class Junction < Grape::Entity
 
+        include Narra::API::Helpers::Thumbnails
+
         expose :items do |junction, options|
           junction.items.collect { |item| {
               id: item._id.to_s,
               name: item.name,
               type: item.type,
-              thumbnail: item.url_thumbnail
+              thumbnail: item.url_thumbnail.nil? ? thumbnail(item.type) : item.url_thumbnail
           }}
         end
 
