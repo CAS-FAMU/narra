@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.1.4
+  - 2.4.1
 
 services:
   - mongodb
@@ -8,3 +8,6 @@ services:
 addons:
    code_climate:
      repo_token: 8ad48d69e6a9e8bc75b7cdd1e3fa794c108e95789da80a4ae42bdbb972064d17
+
+after_success:
+  - bundle exec codeclimate-test-reporter

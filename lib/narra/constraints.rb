@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2017 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Narra Core. If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
+# Authors: Michal Mocnak <michal@marigan.net>
 #
 
-# Load all modules
-Dir[Rails.root + 'lib/narra/api/modules/**/*.rb'].each do |file|
-  require file
+require 'narra/constraints/admin_constraint'
+
+module Narra
+  module Constraints
+  end
 end

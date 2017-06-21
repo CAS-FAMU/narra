@@ -1,19 +1,23 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: b7dba9d0fbd3295e23e6252bb4a5100b10b83929
+  revision: 4972303a115ba07e420cb2b2e5b2c4b5b2b109a8
   specs:
-    narra-core (0.0.13)
+    narra-core (0.0.16)
       aasm
       activesupport
       carrierwave-mongoid
       carrierwave-video
       edl
       fog
+      fog-aws
+      fog-google
+      fog-local
       logger-better
       mediawiki_api
       mini_magick
       mongoid
-      rails (~> 4.2.2)
+      nokogiri (~> 1.8.0)
+      rails (~> 5.1.1)
       sidekiq
       sinatra
       streamio-ffmpeg
@@ -23,25 +27,25 @@ GIT
 
 GIT
   remote: https://github.com/CAS-FAMU/narra-lemmatizer.git
-  revision: fbc2fbc14f44fdabfbd6d64c4477bb0fe31de025
+  revision: b5fa16af9a9bf969d6fd512b5bb65b0fc8044b3c
   specs:
-    narra-lemmatizer (0.0.1)
+    narra-lemmatizer (0.0.2)
       narra-core
       nokogiri
 
 GIT
   remote: https://github.com/CAS-FAMU/narra-youtube.git
-  revision: d700da348cd71439b00b7b6ac7ef17993e4d96da
+  revision: dc0bf6007bf9b69a8a5cdde120bbe6c13f612641
   specs:
-    narra-youtube (0.0.1)
+    narra-youtube (0.0.2)
       multi_json
       rest-client
 
 GIT
   remote: https://github.com/DatabaseCleaner/database_cleaner.git
-  revision: b87f00320f8aa0f7e499d183128f05ce29cedc33
+  revision: 40e084e9a903fdae186ad4196bb5b306498a5096
   specs:
-    database_cleaner (1.5.1)
+    database_cleaner (1.6.1)
 
 GIT
   remote: https://github.com/marigan/streamio-ffmpeg.git
@@ -51,130 +55,124 @@ GIT
 
 GIT
   remote: https://github.com/petrpulc/narra-keyword-synth.git
-  revision: 100453c36bfa2584abff668bf6a69e750b41e20f
+  revision: bb8e93e01e7e5e3c0badb8faaf0f4b3a7cb77512
   specs:
-    narra-keyword-synth (0.0.1)
+    narra-keyword-synth (0.0.2)
       narra-core
 
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.2)
-    aasm (4.4.1)
-    actionmailer (4.2.2)
-      actionpack (= 4.2.2)
-      actionview (= 4.2.2)
-      activejob (= 4.2.2)
+    CFPropertyList (2.3.5)
+    aasm (4.12.0)
+      concurrent-ruby (~> 1.0)
+    actioncable (5.1.1)
+      actionpack (= 5.1.1)
+      nio4r (~> 2.0)
+      websocket-driver (~> 0.6.1)
+    actionmailer (5.1.1)
+      actionpack (= 5.1.1)
+      actionview (= 5.1.1)
+      activejob (= 5.1.1)
       mail (~> 2.5, >= 2.5.4)
-      rails-dom-testing (~> 1.0, >= 1.0.5)
-    actionpack (4.2.2)
-      actionview (= 4.2.2)
-      activesupport (= 4.2.2)
-      rack (~> 1.6)
-      rack-test (~> 0.6.2)
-      rails-dom-testing (~> 1.0, >= 1.0.5)
-      rails-html-sanitizer (~> 1.0, >= 1.0.1)
-    actionview (4.2.2)
-      activesupport (= 4.2.2)
+      rails-dom-testing (~> 2.0)
+    actionpack (5.1.1)
+      actionview (= 5.1.1)
+      activesupport (= 5.1.1)
+      rack (~> 2.0)
+      rack-test (~> 0.6.3)
+      rails-dom-testing (~> 2.0)
+      rails-html-sanitizer (~> 1.0, >= 1.0.2)
+    actionview (5.1.1)
+      activesupport (= 5.1.1)
       builder (~> 3.1)
-      erubis (~> 2.7.0)
-      rails-dom-testing (~> 1.0, >= 1.0.5)
-      rails-html-sanitizer (~> 1.0, >= 1.0.1)
-    activejob (4.2.2)
-      activesupport (= 4.2.2)
-      globalid (>= 0.3.0)
-    activemodel (4.2.2)
-      activesupport (= 4.2.2)
-      builder (~> 3.1)
-    activerecord (4.2.2)
-      activemodel (= 4.2.2)
-      activesupport (= 4.2.2)
-      arel (~> 6.0)
-    activesupport (4.2.2)
+      erubi (~> 1.4)
+      rails-dom-testing (~> 2.0)
+      rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    activejob (5.1.1)
+      activesupport (= 5.1.1)
+      globalid (>= 0.3.6)
+    activemodel (5.1.1)
+      activesupport (= 5.1.1)
+    activerecord (5.1.1)
+      activemodel (= 5.1.1)
+      activesupport (= 5.1.1)
+      arel (~> 8.0)
+    activesupport (5.1.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
-      json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
-      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.3.8)
     approximately (1.1.0)
-    arel (6.0.3)
+    arel (8.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bson (3.2.6)
-    builder (3.2.2)
-    carrierwave (0.10.0)
+    bson (4.2.1)
+    builder (3.2.3)
+    carrierwave (0.11.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
       json (>= 1.7)
       mime-types (>= 1.16)
-    carrierwave-mongoid (0.8.1)
-      carrierwave (>= 0.8.0, < 0.11.0)
-      mongoid (>= 3.0, < 6.0)
+      mimemagic (>= 0.3.0)
+    carrierwave-mongoid (0.10.0)
+      carrierwave (>= 0.8.0, < 0.12.0)
+      mongoid (>= 3.0, < 7.0)
       mongoid-grid_fs (>= 1.3, < 3.0)
     carrierwave-video (0.5.6)
       carrierwave
       streamio-ffmpeg
-    celluloid (0.17.2)
-      celluloid-essentials
-      celluloid-extras
-      celluloid-fsm
-      celluloid-pool
-      celluloid-supervision
-      timers (>= 4.1.1)
-    celluloid-essentials (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-extras (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-fsm (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-pool (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-supervision (0.20.5)
-      timers (>= 4.1.1)
-    codeclimate-test-reporter (0.4.8)
-      simplecov (>= 0.7.1, < 1.0.0)
+    codeclimate-test-reporter (1.0.8)
+      simplecov (<= 0.13)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    connection_pool (2.2.0)
+    concurrent-ruby (1.0.5)
+    connection_pool (2.2.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    diff-lcs (1.2.5)
+    diff-lcs (1.3)
     docile (1.1.5)
-    domain_name (0.5.25)
+    domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
-    edl (0.1.5)
+    edl (0.1.6)
       timecode
     equalizer (0.0.11)
-    erubis (2.7.0)
-    excon (0.45.4)
-    factory_girl (4.5.0)
+    erubi (1.6.0)
+    excon (0.57.0)
+    factory_girl (4.8.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.5.0)
-      factory_girl (~> 4.5.0)
+    factory_girl_rails (4.8.0)
+      factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    faraday (0.9.2)
+    faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
     faraday-cookie_jar (0.0.6)
       faraday (>= 0.7.4)
       http-cookie (~> 1.0.0)
+    faraday_middleware (0.11.0.1)
+      faraday (>= 0.7.4, < 1.0)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
-    fog (1.35.0)
-      fog-aliyun
+    fog (1.40.0)
+      fog-aliyun (>= 0.1.0)
       fog-atmos
       fog-aws (>= 0.6.0)
       fog-brightbox (~> 0.4)
-      fog-core (~> 1.32)
+      fog-cloudatcost (~> 0.1.0)
+      fog-core (~> 1.43)
+      fog-digitalocean (>= 0.3.0)
+      fog-dnsimple (~> 1.0)
       fog-dynect (~> 0.0.2)
       fog-ecloud (~> 0.1)
-      fog-google (>= 0.1.1)
+      fog-google (<= 0.1.0)
       fog-json
       fog-local
+      fog-openstack
       fog-powerdns (>= 0.1.1)
       fog-profitbricks
+      fog-rackspace
       fog-radosgw (>= 0.0.2)
       fog-riakcs
       fog-sakuracloud (>= 0.0.4)
@@ -184,10 +182,11 @@ GEM
       fog-terremark
       fog-vmfusion
       fog-voxel
+      fog-vsphere (>= 0.4.0)
       fog-xenserver
       fog-xml (~> 0.1.1)
       ipaddress (~> 0.5)
-      nokogiri
+      json (>= 1.8, < 2.0)
     fog-aliyun (0.1.0)
       fog-core (~> 1.27)
       fog-json (~> 1.0)
@@ -196,47 +195,65 @@ GEM
     fog-atmos (0.1.0)
       fog-core
       fog-xml
-    fog-aws (0.7.6)
-      fog-core (~> 1.27)
+    fog-aws (1.4.0)
+      fog-core (~> 1.38)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
-    fog-brightbox (0.9.0)
+    fog-brightbox (0.11.0)
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.32.1)
+    fog-cloudatcost (0.1.2)
+      fog-core (~> 1.36)
+      fog-json (~> 1.0)
+      fog-xml (~> 0.1)
+      ipaddress (~> 0.8)
+    fog-core (1.44.3)
       builder
-      excon (~> 0.45)
+      excon (~> 0.49)
       formatador (~> 0.2)
-      mime-types
-      net-scp (~> 1.1)
-      net-ssh (>= 2.1.3)
-    fog-dynect (0.0.2)
+    fog-digitalocean (0.3.0)
+      fog-core (~> 1.42)
+      fog-json (>= 1.0)
+      fog-xml (>= 0.1)
+      ipaddress (>= 0.5)
+    fog-dnsimple (1.0.0)
+      fog-core (~> 1.38)
+      fog-json (~> 1.0)
+    fog-dynect (0.0.3)
       fog-core
       fog-json
       fog-xml
     fog-ecloud (0.3.0)
       fog-core
       fog-xml
-    fog-google (0.1.1)
+    fog-google (0.1.0)
       fog-core
       fog-json
       fog-xml
     fog-json (1.0.2)
       fog-core (~> 1.0)
       multi_json (~> 1.10)
-    fog-local (0.2.1)
+    fog-local (0.3.1)
       fog-core (~> 1.27)
+    fog-openstack (0.1.21)
+      fog-core (>= 1.40)
+      fog-json (>= 1.0)
+      ipaddress (>= 0.8)
     fog-powerdns (0.1.1)
       fog-core (~> 1.27)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
-    fog-profitbricks (0.0.5)
-      fog-core
-      fog-xml
-      nokogiri
-    fog-radosgw (0.0.4)
+    fog-profitbricks (3.0.0)
+      fog-core (~> 1.42)
+      fog-json (~> 1.0)
+    fog-rackspace (0.1.5)
+      fog-core (>= 1.35)
+      fog-json (>= 1.0)
+      fog-xml (>= 0.1)
+      ipaddress (>= 0.8)
+    fog-radosgw (0.0.5)
       fog-core (>= 1.21.0)
       fog-json
       fog-xml (>= 0.0.1)
@@ -244,13 +261,13 @@ GEM
       fog-core
       fog-json
       fog-xml
-    fog-sakuracloud (1.3.3)
+    fog-sakuracloud (1.7.5)
       fog-core
       fog-json
     fog-serverlove (0.1.2)
       fog-core
       fog-json
-    fog-softlayer (1.0.2)
+    fog-softlayer (1.1.4)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.1)
@@ -265,216 +282,223 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-xenserver (0.2.2)
+    fog-vsphere (1.10.0)
+      fog-core
+      rbvmomi (~> 1.9)
+    fog-xenserver (0.3.0)
       fog-core
       fog-xml
-    fog-xml (0.1.2)
+    fog-xml (0.1.3)
       fog-core
-      nokogiri (~> 1.5, >= 1.5.11)
+      nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
-    globalid (0.3.6)
-      activesupport (>= 4.1.0)
-    grape (0.13.0)
+    globalid (0.4.0)
+      activesupport (>= 4.2.0)
+    grape (0.19.2)
       activesupport
       builder
       hashie (>= 2.1.0)
       multi_json (>= 1.3.2)
       multi_xml (>= 0.5.2)
+      mustermann-grape (~> 1.0.0)
       rack (>= 1.3.0)
       rack-accept
-      rack-mount
       virtus (>= 1.0.0)
-    grape-entity (0.4.8)
-      activesupport
+    grape-entity (0.6.1)
+      activesupport (>= 5.0.0)
       multi_json (>= 1.3.2)
-    hashie (3.4.3)
-    hitimes (1.2.3)
-    http-cookie (1.0.2)
+    hashie (3.5.5)
+    http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (0.7.0)
-    ice_nine (0.11.1)
+    i18n (0.8.4)
+    ice_nine (0.11.2)
     inflecto (0.0.2)
-    ipaddress (0.8.0)
-    jquery-rails (4.0.5)
-      rails-dom-testing (~> 1.0)
+    ipaddress (0.8.3)
+    jquery-rails (4.3.1)
+      rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.3)
-    jwt (1.5.2)
+    json (1.8.6)
+    jwt (1.5.6)
     logger-better (0.2.1)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.3)
-      mime-types (>= 1.16, < 3)
-    mediawiki_api (0.5.0)
+    mail (2.6.6)
+      mime-types (>= 1.16, < 4)
+    mediawiki_api (0.7.1)
       faraday (~> 0.9, >= 0.9.0)
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
-    mime-types (2.6.2)
-    mini_magick (4.3.6)
-    mini_portile (0.6.2)
-    minitest (5.8.2)
-    mongo (2.1.2)
-      bson (~> 3.0)
-    mongoid (5.0.1)
-      activemodel (~> 4.0)
-      mongo (~> 2.1)
-      origin (~> 2.1)
-      tzinfo (>= 0.3.37)
-    mongoid-grid_fs (2.2.1)
-      mime-types (>= 1.0, < 3.0)
-      mongoid (>= 3.0, < 6.0)
-    mongoid-rspec (3.0.0)
-      mongoid (~> 5.0)
+      faraday_middleware (~> 0.10, >= 0.10.0)
+    method_source (0.8.2)
+    mime-types (3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0521)
+    mimemagic (0.3.2)
+    mini_magick (4.7.2)
+    mini_portile2 (2.2.0)
+    minitest (5.10.2)
+    mongo (2.4.2)
+      bson (>= 4.2.1, < 5.0.0)
+    mongoid (6.2.0)
+      activemodel (~> 5.1)
+      mongo (>= 2.4.1, < 3.0.0)
+    mongoid-grid_fs (2.3.0)
+      mime-types (>= 1.0, < 4.0)
+      mongoid (>= 3.0, < 7.0)
+    mongoid-rspec (1.10.0)
+      mongoid (>= 3.0.1)
       rake
-      rspec (~> 3.3)
-    mongoid-tree (2.0.1)
-      mongoid (>= 4.0, < 6.0)
-    multi_json (1.10.1)
-    multi_xml (0.5.5)
+      rspec (>= 2.14)
+    mongoid-tree (2.1.0)
+      mongoid (>= 4.0, < 7.0)
+    multi_json (1.12.1)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
-    net-ssh (3.0.1)
+    mustermann (1.0.0)
+    mustermann-grape (1.0.0)
+      mustermann (~> 1.0.0)
     netrc (0.11.0)
-    nokogiri (1.6.6.2)
-      mini_portile (~> 0.6.0)
-    oauth2 (1.0.0)
-      faraday (>= 0.8, < 0.10)
+    nio4r (2.1.0)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
+    oauth2 (1.4.0)
+      faraday (>= 0.8, < 0.13)
       jwt (~> 1.0)
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
-      rack (~> 1.2)
-    omniauth (1.2.2)
-      hashie (>= 1.2, < 4)
-      rack (~> 1.0)
-    omniauth-github (1.1.2)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.1)
-    omniauth-google-oauth2 (0.2.10)
-      addressable (~> 2.3)
-      jwt (~> 1.0)
+      rack (>= 1.2, < 3)
+    omniauth (1.6.1)
+      hashie (>= 3.4.6, < 3.6.0)
+      rack (>= 1.6.2, < 3)
+    omniauth-github (1.3.0)
+      omniauth (~> 1.5)
+      omniauth-oauth2 (>= 1.4.0, < 2.0)
+    omniauth-google-oauth2 (0.5.0)
+      jwt (~> 1.5)
       multi_json (~> 1.3)
       omniauth (>= 1.1.1)
-      omniauth-oauth2 (~> 1.3.1)
-    omniauth-oauth2 (1.3.1)
+      omniauth-oauth2 (>= 1.3.1)
+    omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    origin (2.1.1)
-    progressbar (0.21.0)
-    rack (1.6.4)
+    progressbar (1.8.2)
+    rack (2.0.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-cors (0.4.0)
-    rack-mount (0.8.3)
-      rack (>= 1.0.0)
-    rack-protection (1.5.3)
+    rack-cors (0.4.1)
+    rack-protection (2.0.0)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rails (4.2.2)
-      actionmailer (= 4.2.2)
-      actionpack (= 4.2.2)
-      actionview (= 4.2.2)
-      activejob (= 4.2.2)
-      activemodel (= 4.2.2)
-      activerecord (= 4.2.2)
-      activesupport (= 4.2.2)
+    rails (5.1.1)
+      actioncable (= 5.1.1)
+      actionmailer (= 5.1.1)
+      actionpack (= 5.1.1)
+      actionview (= 5.1.1)
+      activejob (= 5.1.1)
+      activemodel (= 5.1.1)
+      activerecord (= 5.1.1)
+      activesupport (= 5.1.1)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 4.2.2)
-      sprockets-rails
-    rails-deprecated_sanitizer (1.0.3)
-      activesupport (>= 4.2.0.alpha)
-    rails-dom-testing (1.0.7)
-      activesupport (>= 4.2.0.beta, < 5.0)
-      nokogiri (~> 1.6.0)
-      rails-deprecated_sanitizer (>= 1.0.1)
-    rails-html-sanitizer (1.0.2)
+      railties (= 5.1.1)
+      sprockets-rails (>= 2.0.0)
+    rails-dom-testing (2.0.3)
+      activesupport (>= 4.2.0)
+      nokogiri (>= 1.6)
+    rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    railties (4.2.2)
-      actionpack (= 4.2.2)
-      activesupport (= 4.2.2)
+    railties (5.1.1)
+      actionpack (= 5.1.1)
+      activesupport (= 5.1.1)
+      method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.4.2)
-    redis (3.2.1)
-    redis-namespace (1.5.2)
-      redis (~> 3.0, >= 3.0.4)
-    rest-client (1.8.0)
+    rake (12.0.0)
+    rbvmomi (1.11.2)
+      builder (~> 3.0)
+      json (>= 1.8)
+      nokogiri (~> 1.5)
+      trollop (~> 2.1)
+    redis (3.3.3)
+    rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
-    rspec (3.3.0)
-      rspec-core (~> 3.3.0)
-      rspec-expectations (~> 3.3.0)
-      rspec-mocks (~> 3.3.0)
-    rspec-core (3.3.2)
-      rspec-support (~> 3.3.0)
-    rspec-expectations (3.3.1)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
+    rspec (3.6.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+    rspec-core (3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-expectations (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-mocks (3.3.2)
+      rspec-support (~> 3.6.0)
+    rspec-mocks (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.3.0)
-    rspec-rails (3.3.3)
-      actionpack (>= 3.0, < 4.3)
-      activesupport (>= 3.0, < 4.3)
-      railties (>= 3.0, < 4.3)
-      rspec-core (~> 3.3.0)
-      rspec-expectations (~> 3.3.0)
-      rspec-mocks (~> 3.3.0)
-      rspec-support (~> 3.3.0)
-    rspec-support (3.3.0)
-    sidekiq (3.5.3)
-      celluloid (~> 0.17.2)
-      connection_pool (~> 2.2, >= 2.2.0)
-      json (~> 1.0)
-      redis (~> 3.2, >= 3.2.1)
-      redis-namespace (~> 1.5, >= 1.5.2)
-    simplecov (0.10.0)
-      docile (~> 1.1.0)
-      json (~> 1.8)
-      simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.0)
-    sinatra (1.4.6)
-      rack (~> 1.4)
-      rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
-    sprockets (3.4.0)
-      rack (> 1, < 3)
-    sprockets-rails (2.3.3)
+      rspec-support (~> 3.6.0)
+    rspec-rails (3.6.0)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
-      sprockets (>= 2.8, < 4.0)
-    thor (0.19.1)
-    thread_safe (0.3.5)
-    tilt (2.0.1)
-    timecode (2.1.0)
+      railties (>= 3.0)
+      rspec-core (~> 3.6.0)
+      rspec-expectations (~> 3.6.0)
+      rspec-mocks (~> 3.6.0)
+      rspec-support (~> 3.6.0)
+    rspec-support (3.6.0)
+    sidekiq (5.0.3)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      rack-protection (>= 1.5.0)
+      redis (~> 3.3, >= 3.3.3)
+    simplecov (0.13.0)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.1)
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~> 2.0)
+    sprockets (3.7.1)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+    sprockets-rails (3.2.0)
+      actionpack (>= 4.0)
+      activesupport (>= 4.0)
+      sprockets (>= 3.0.0)
+    thor (0.19.4)
+    thread_safe (0.3.6)
+    tilt (2.0.7)
+    timecode (2.2.2)
       approximately (~> 1.1)
-    timers (4.1.1)
-      hitimes
-    tzinfo (1.2.2)
+    trollop (2.1.2)
+    tzinfo (1.2.3)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.1)
-    viddl-rb (1.1.1)
-      multi_json (~> 1.10.0)
-      nokogiri (~> 1.6.0)
-      progressbar (~> 0.21)
-      rest-client
+    unf_ext (0.0.7.4)
+    viddl-rb (1.0.1)
+      mime-types
+      multi_json
+      nokogiri
+      progressbar
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
-    wisper (1.6.1)
+    websocket-driver (0.6.5)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.2)
+    wisper (2.0.0)
     xml-simple (1.1.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  codeclimate-test-reporter
+  codeclimate-test-reporter (~> 1.0.0)
   database_cleaner!
   factory_girl_rails
   grape
@@ -490,12 +514,13 @@ DEPENDENCIES
   omniauth
   omniauth-github
   omniauth-google-oauth2
-  omniauth-oauth2 (= 1.3.1)
+  omniauth-oauth2
   rack-cors
-  rails (= 4.2.2)
+  rails (= 5.1.1)
   rspec-mocks
   rspec-rails
+  simplecov
   streamio-ffmpeg!
 
 BUNDLED WITH
-   1.10.6
+   1.15.1

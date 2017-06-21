@@ -19,25 +19,13 @@
 # Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
 #
 
+require 'rails_helper'
 
-require 'spec_helper'
-
-describe Narra::API::Modules::EventsV1 do
-  before(:each) do
-    # create libraries
-    @library = FactoryGirl.create(:library, author: @author_user)
-
-    # create items
-    @item = FactoryGirl.create(:item, library: @library)
-
-    # create events
-    @event = FactoryGirl.create(:event, item: @item)
-  end
-
+describe Narra::API::Modules::GeneratorsV1 do
   context 'not authenticated' do
-    describe 'GET /v1/events' do
-      it 'returns events' do
-        get '/v1/events'
+    describe 'GET /v1/generators' do
+      it 'returns generators' do
+        get "/v1/generators"
 
         # check response status
         expect(response.status).to match(401)
@@ -53,9 +41,9 @@ describe Narra::API::Modules::EventsV1 do
   end
 
   context 'not authorized' do
-    describe 'GET /v1/events' do
-      it 'returns events' do
-        get '/v1/events' + '?token=' + @author_token
+    describe 'GET /v1/generators' do
+      it 'returns generators' do
+        get "/v1/generators", params: {token: @unroled_token}
 
         # check response status
         expect(response.status).to match(403)
@@ -71,10 +59,10 @@ describe Narra::API::Modules::EventsV1 do
   end
 
   context 'authenticated & authorized' do
-    describe 'GET /v1/events' do
-      it 'returns events' do
+    describe 'GET /v1/generators' do
+      it 'returns generators' do
         # send request
-        get '/v1/events' + '?token=' + @admin_token
+        get "/v1/generators", params: {token: @author_token}
 
         # check response status
         expect(response.status).to match(200)
@@ -84,14 +72,11 @@ describe Narra::API::Modules::EventsV1 do
 
         # check received data format
         expect(data).to have_key('status')
-        expect(data).to have_key('events')
+        expect(data).to have_key('generators')
 
         # check received data
         expect(data['status']).to match('OK')
-        expect(data['events'].count).to match(1)
-        expect(data['events'][0]['message']).to match(@event.message)
-        expect(data['events'][0]).to have_key('item')
-        expect(data['events'][0]['item']['id']).to match(@item._id.to_s)
+        expect(data['generators'].count).to match(2)
       end
     end
   end

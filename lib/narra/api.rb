@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2013 CAS / FAMU
+# Copyright (C) 2017 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -16,24 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Narra Core. If not, see <http://www.gnu.org/licenses/>.
 #
-# Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
+# Authors: Michal Mocnak <michal@marigan.net>
 #
 
-require 'sidekiq/web'
-require 'narra/api'
-require 'narra/constraints'
+require 'grape'
+require 'grape-entity'
 
-Rails.application.routes.draw do
-  constraints(Narra::Constraints::AdminConstraint) do
-    namespace 'service' do
-      # sidekiq monitoring
-      mount Sidekiq::Web => '/workers'
-    end
+require 'narra/api/helpers'
+require 'narra/api/entities'
+require 'narra/api/modules'
+require 'narra/api/mounter'
+
+module Narra
+  module API
   end
-
-  # Mount the API root mounter
-  mount Narra::API::Mounter => '/'
-
-  # Root redirection
-  root :to => redirect('/v1/system/version')
 end

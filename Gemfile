@@ -21,14 +21,14 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.2'
+gem 'rails', '5.1.1'
 gem 'jquery-rails'
 gem 'grape'
 gem 'grape-entity'
 gem 'mongoid'
 gem 'mongoid-tree'
 gem 'omniauth'
-gem 'omniauth-oauth2', '1.3.1'
+gem 'omniauth-oauth2'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 gem 'rack-cors'
@@ -40,6 +40,7 @@ gem 'rspec-rails', :group => [:test, :development]
 gem 'rspec-mocks', :group => [:test, :development]
 gem 'mongoid-rspec', :group => :test
 gem 'factory_girl_rails', :group => :test
-gem 'codeclimate-test-reporter', :group => :test, :require => nil
+gem 'simplecov', :group => :test
+gem 'codeclimate-test-reporter', '~> 1.0.0', :group => :test
 gem 'streamio-ffmpeg', git: 'https://github.com/marigan/streamio-ffmpeg.git'
 gem 'database_cleaner', git: 'https://github.com/DatabaseCleaner/database_cleaner.git', :group => :test

@@ -60,7 +60,7 @@ module Narra
             # get start timecode
             start_tc = get_timecode(options[:sequence], item)
             # calculate time
-            time = (model.in - start_tc).to_f
+            time = (model.input - start_tc).to_f
             # check
             time if time >= 0
           else
@@ -76,7 +76,7 @@ module Narra
             # get start timecode
             start_tc = get_timecode(options[:sequence], item)
             # calculate time
-            time = (model.out - start_tc).to_f
+            time = (model.output - start_tc).to_f
             # check
             time if time >= 0
           else
@@ -85,7 +85,7 @@ module Narra
         end
 
         expose :duration do |model, options|
-          model.out - model.in
+          model.output - model.input
         end
 
         protected

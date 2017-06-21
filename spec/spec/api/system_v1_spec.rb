@@ -19,21 +19,19 @@
 # Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
 #
 
-require 'sidekiq/web'
-require 'narra/api'
-require 'narra/constraints'
+require 'rails_helper'
 
-Rails.application.routes.draw do
-  constraints(Narra::Constraints::AdminConstraint) do
-    namespace 'service' do
-      # sidekiq monitoring
-      mount Sidekiq::Web => '/workers'
+describe Narra::API::Modules::SystemV1 do
+  describe 'GET /v1/system/version' do
+    it 'returns system version' do
+      # send request
+      get "/v1/system/version"
+
+      # check response status
+      expect(response.status).to match(200)
+
+      # check received data
+      expect(JSON.parse(response.body)['version']).to match(Narra::VERSION)
     end
   end
-
-  # Mount the API root mounter
-  mount Narra::API::Mounter => '/'
-
-  # Root redirection
-  root :to => redirect('/v1/system/version')
 end
