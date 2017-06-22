@@ -42,5 +42,5 @@ gem 'mongoid-rspec', :group => :test
 gem 'factory_girl_rails', :group => :test
 gem 'simplecov', :group => :test
 gem 'codeclimate-test-reporter', '~> 1.0.0', :group => :test
-gem 'streamio-ffmpeg', git: 'https://github.com/marigan/streamio-ffmpeg.git'
-gem 'database_cleaner', git: 'https://github.com/DatabaseCleaner/database_cleaner.git', :group => :test
+gem 'streamio-ffmpeg'
+gem 'database_cleaner', :group => :test

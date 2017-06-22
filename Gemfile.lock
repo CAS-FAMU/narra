@@ -1,19 +1,19 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 4972303a115ba07e420cb2b2e5b2c4b5b2b109a8
+  revision: 3e3d13d8db179ade5485135a642b4da9e91ea9ae
   specs:
-    narra-core (0.0.16)
+    narra-core (0.0.17)
       aasm
       activesupport
       carrierwave-mongoid
       carrierwave-video
       edl
-      fog
       fog-aws
       fog-google
-      fog-local
+      google-api-client (~> 0.8.6)
       logger-better
       mediawiki_api
+      mime-types
       mini_magick
       mongoid
       nokogiri (~> 1.8.0)
@@ -22,7 +22,6 @@ GIT
       sinatra
       streamio-ffmpeg
       timecode
-      viddl-rb
       wisper
 
 GIT
@@ -42,18 +41,6 @@ GIT
       rest-client
 
 GIT
-  remote: https://github.com/DatabaseCleaner/database_cleaner.git
-  revision: 40e084e9a903fdae186ad4196bb5b306498a5096
-  specs:
-    database_cleaner (1.6.1)
-
-GIT
-  remote: https://github.com/marigan/streamio-ffmpeg.git
-  revision: 90470da0eaecb71df0ca6ae90f3d27f76cdb3ca2
-  specs:
-    streamio-ffmpeg (1.0.0)
-
-GIT
   remote: https://github.com/petrpulc/narra-keyword-synth.git
   revision: bb8e93e01e7e5e3c0badb8faaf0f4b3a7cb77512
   specs:
@@ -63,7 +50,6 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.5)
     aasm (4.12.0)
       concurrent-ruby (~> 1.0)
     actioncable (5.1.1)
@@ -103,8 +89,14 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.5.1)
+      public_suffix (~> 2.0, >= 2.0.2)
     approximately (1.1.0)
     arel (8.0.0)
+    autoparse (0.3.3)
+      addressable (>= 2.3.1)
+      extlib (>= 0.9.15)
+      multi_json (>= 1.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -130,6 +122,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
+    database_cleaner (1.6.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.3)
@@ -141,6 +134,7 @@ GEM
     equalizer (0.0.11)
     erubi (1.6.0)
     excon (0.57.0)
+    extlib (0.9.16)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.8.0)
@@ -153,59 +147,8 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.11.0.1)
       faraday (>= 0.7.4, < 1.0)
-    fission (0.5.0)
-      CFPropertyList (~> 2.2)
-    fog (1.40.0)
-      fog-aliyun (>= 0.1.0)
-      fog-atmos
-      fog-aws (>= 0.6.0)
-      fog-brightbox (~> 0.4)
-      fog-cloudatcost (~> 0.1.0)
-      fog-core (~> 1.43)
-      fog-digitalocean (>= 0.3.0)
-      fog-dnsimple (~> 1.0)
-      fog-dynect (~> 0.0.2)
-      fog-ecloud (~> 0.1)
-      fog-google (<= 0.1.0)
-      fog-json
-      fog-local
-      fog-openstack
-      fog-powerdns (>= 0.1.1)
-      fog-profitbricks
-      fog-rackspace
-      fog-radosgw (>= 0.0.2)
-      fog-riakcs
-      fog-sakuracloud (>= 0.0.4)
-      fog-serverlove
-      fog-softlayer
-      fog-storm_on_demand
-      fog-terremark
-      fog-vmfusion
-      fog-voxel
-      fog-vsphere (>= 0.4.0)
-      fog-xenserver
-      fog-xml (~> 0.1.1)
-      ipaddress (~> 0.5)
-      json (>= 1.8, < 2.0)
-    fog-aliyun (0.1.0)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
-      ipaddress (~> 0.8)
-      xml-simple (~> 1.1)
-    fog-atmos (0.1.0)
-      fog-core
-      fog-xml
     fog-aws (1.4.0)
       fog-core (~> 1.38)
-      fog-json (~> 1.0)
-      fog-xml (~> 0.1)
-      ipaddress (~> 0.8)
-    fog-brightbox (0.11.0)
-      fog-core (~> 1.22)
-      fog-json
-      inflecto (~> 0.0.2)
-    fog-cloudatcost (0.1.2)
-      fog-core (~> 1.36)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
@@ -213,87 +156,38 @@ GEM
       builder
       excon (~> 0.49)
       formatador (~> 0.2)
-    fog-digitalocean (0.3.0)
-      fog-core (~> 1.42)
-      fog-json (>= 1.0)
-      fog-xml (>= 0.1)
-      ipaddress (>= 0.5)
-    fog-dnsimple (1.0.0)
-      fog-core (~> 1.38)
-      fog-json (~> 1.0)
-    fog-dynect (0.0.3)
-      fog-core
-      fog-json
-      fog-xml
-    fog-ecloud (0.3.0)
-      fog-core
-      fog-xml
-    fog-google (0.1.0)
+    fog-google (0.5.3)
       fog-core
       fog-json
       fog-xml
     fog-json (1.0.2)
       fog-core (~> 1.0)
       multi_json (~> 1.10)
-    fog-local (0.3.1)
-      fog-core (~> 1.27)
-    fog-openstack (0.1.21)
-      fog-core (>= 1.40)
-      fog-json (>= 1.0)
-      ipaddress (>= 0.8)
-    fog-powerdns (0.1.1)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
-      fog-xml (~> 0.1)
-    fog-profitbricks (3.0.0)
-      fog-core (~> 1.42)
-      fog-json (~> 1.0)
-    fog-rackspace (0.1.5)
-      fog-core (>= 1.35)
-      fog-json (>= 1.0)
-      fog-xml (>= 0.1)
-      ipaddress (>= 0.8)
-    fog-radosgw (0.0.5)
-      fog-core (>= 1.21.0)
-      fog-json
-      fog-xml (>= 0.0.1)
-    fog-riakcs (0.1.0)
-      fog-core
-      fog-json
-      fog-xml
-    fog-sakuracloud (1.7.5)
-      fog-core
-      fog-json
-    fog-serverlove (0.1.2)
-      fog-core
-      fog-json
-    fog-softlayer (1.1.4)
-      fog-core
-      fog-json
-    fog-storm_on_demand (0.1.1)
-      fog-core
-      fog-json
-    fog-terremark (0.1.0)
-      fog-core
-      fog-xml
-    fog-vmfusion (0.1.0)
-      fission
-      fog-core
-    fog-voxel (0.1.0)
-      fog-core
-      fog-xml
-    fog-vsphere (1.10.0)
-      fog-core
-      rbvmomi (~> 1.9)
-    fog-xenserver (0.3.0)
-      fog-core
-      fog-xml
     fog-xml (0.1.3)
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
+    google-api-client (0.8.6)
+      activesupport (>= 3.2)
+      addressable (~> 2.3)
+      autoparse (~> 0.3)
+      extlib (~> 0.9)
+      faraday (~> 0.9)
+      googleauth (~> 0.3)
+      launchy (~> 2.4)
+      multi_json (~> 1.10)
+      retriable (~> 1.4)
+      signet (~> 0.6)
+    googleauth (0.5.1)
+      faraday (~> 0.9)
+      jwt (~> 1.4)
+      logging (~> 2.0)
+      memoist (~> 0.12)
+      multi_json (~> 1.11)
+      os (~> 0.9)
+      signet (~> 0.7)
     grape (0.19.2)
       activesupport
       builder
@@ -312,15 +206,20 @@ GEM
       domain_name (~> 0.5)
     i18n (0.8.4)
     ice_nine (0.11.2)
-    inflecto (0.0.2)
     ipaddress (0.8.3)
     jquery-rails (4.3.1)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.6)
+    json (2.1.0)
     jwt (1.5.6)
+    launchy (2.4.3)
+      addressable (~> 2.3)
+    little-plugger (1.1.4)
     logger-better (0.2.1)
+    logging (2.2.2)
+      little-plugger (~> 1.1)
+      multi_json (~> 1.10)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.6)
@@ -329,6 +228,7 @@ GEM
       faraday (~> 0.9, >= 0.9.0)
       faraday-cookie_jar (~> 0.0, >= 0.0.6)
       faraday_middleware (~> 0.10, >= 0.10.0)
+    memoist (0.16.0)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -381,7 +281,8 @@ GEM
     omniauth-oauth2 (1.4.0)
       oauth2 (~> 1.0)
       omniauth (~> 1.2)
-    progressbar (1.8.2)
+    os (0.9.6)
+    public_suffix (2.0.5)
     rack (2.0.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -414,16 +315,12 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (12.0.0)
-    rbvmomi (1.11.2)
-      builder (~> 3.0)
-      json (>= 1.8)
-      nokogiri (~> 1.5)
-      trollop (~> 2.1)
     redis (3.3.3)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    retriable (1.4.1)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
       rspec-expectations (~> 3.6.0)
@@ -450,6 +347,11 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.3, >= 3.3.3)
+    signet (0.7.3)
+      addressable (~> 2.3)
+      faraday (~> 0.9)
+      jwt (~> 1.5)
+      multi_json (~> 1.10)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -467,22 +369,18 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    streamio-ffmpeg (3.0.2)
+      multi_json (~> 1.8)
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
     timecode (2.2.2)
       approximately (~> 1.1)
-    trollop (2.1.2)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
-    viddl-rb (1.0.1)
-      mime-types
-      multi_json
-      nokogiri
-      progressbar
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -492,14 +390,13 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
     wisper (2.0.0)
-    xml-simple (1.1.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   codeclimate-test-reporter (~> 1.0.0)
-  database_cleaner!
+  database_cleaner
   factory_girl_rails
   grape
   grape-entity
@@ -520,7 +417,7 @@ DEPENDENCIES
   rspec-mocks
   rspec-rails
   simplecov
-  streamio-ffmpeg!
+  streamio-ffmpeg
 
 BUNDLED WITH
    1.15.1
