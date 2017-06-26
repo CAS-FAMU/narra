@@ -21,6 +21,8 @@
 
 require 'sidekiq/web'
 require 'narra/api'
+require 'narra/version'
+require 'narra/modules'
 require 'narra/constraints'
 
 Rails.application.routes.draw do

@@ -24,7 +24,7 @@ development:
     default:
       database: narra_dev
       hosts:
-        - localhost:27017
+        - mongo:27017
   options:
     preload_models: true
     raise_not_found_error: false
@@ -34,7 +34,7 @@ production:
     default:
       database: narra
       hosts:
-        - localhost:27017
+        - mongo:27017
   options:
     preload_models: true
     raise_not_found_error: false

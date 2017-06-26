@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 3e3d13d8db179ade5485135a642b4da9e91ea9ae
+  revision: 149d8bff797e41553737e817f58459149586b0c5
   specs:
-    narra-core (0.0.17)
+    narra-core (0.0.18)
       aasm
       activesupport
       carrierwave-mongoid
@@ -18,6 +18,7 @@ GIT
       mongoid
       nokogiri (~> 1.8.0)
       rails (~> 5.1.1)
+      redis-namespace
       sidekiq
       sinatra
       streamio-ffmpeg
@@ -26,9 +27,9 @@ GIT
 
 GIT
   remote: https://github.com/CAS-FAMU/narra-lemmatizer.git
-  revision: b5fa16af9a9bf969d6fd512b5bb65b0fc8044b3c
+  revision: 3e085bad640700045286a0cf511ff9c4b39a13f9
   specs:
-    narra-lemmatizer (0.0.2)
+    narra-lemmatizer (0.0.3)
       narra-core
       nokogiri
 
@@ -123,6 +124,9 @@ GEM
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
     database_cleaner (1.6.1)
+    debase (0.2.1)
+      debase-ruby_core_source
+    debase-ruby_core_source (0.9.9)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.3)
@@ -316,6 +320,8 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (12.0.0)
     redis (3.3.3)
+    redis-namespace (1.5.3)
+      redis (~> 3.0, >= 3.0.4)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -342,6 +348,8 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
+    ruby-debug-ide (0.6.0)
+      rake (>= 0.8.1)
     sidekiq (5.0.3)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -378,6 +386,8 @@ GEM
       approximately (~> 1.1)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2017.2)
+      tzinfo (>= 1.0.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
@@ -397,6 +407,7 @@ PLATFORMS
 DEPENDENCIES
   codeclimate-test-reporter (~> 1.0.0)
   database_cleaner
+  debase
   factory_girl_rails
   grape
   grape-entity
@@ -416,8 +427,9 @@ DEPENDENCIES
   rails (= 5.1.1)
   rspec-mocks
   rspec-rails
+  ruby-debug-ide
   simplecov
-  streamio-ffmpeg
+  tzinfo-data
 
 BUNDLED WITH
    1.15.1

@@ -2,7 +2,7 @@
 Mongoid.logger.level = Logger::INFO
 Mongo::Logger.logger.level = Logger::INFO
 
-if ENV['RAILS_ENV'] == 'development'
+if Rails.env.development?
   # Narra logging setup
   Narra::Tools::Logger.default_logger.level = Logger::DEBUG
 else

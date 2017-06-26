@@ -19,6 +19,8 @@
 # Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
 #
 
+require 'narra/api/entities/mark_meta'
+
 module Narra
   module API
     module Entities

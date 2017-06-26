@@ -32,15 +32,17 @@ gem 'omniauth-oauth2'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 gem 'rack-cors'
+gem 'tzinfo-data'
 gem 'narra-core', git: 'https://github.com/CAS-FAMU/narra-core.git'
 gem 'narra-youtube', git: 'https://github.com/CAS-FAMU/narra-youtube.git'
 gem 'narra-lemmatizer', git: 'https://github.com/CAS-FAMU/narra-lemmatizer.git'
 gem 'narra-keyword-synth', git: 'https://github.com/petrpulc/narra-keyword-synth.git'
 gem 'rspec-rails', :group => [:test, :development]
 gem 'rspec-mocks', :group => [:test, :development]
+gem 'ruby-debug-ide', :group => :development
+gem 'debase', :group => :development
 gem 'mongoid-rspec', :group => :test
 gem 'factory_girl_rails', :group => :test
 gem 'simplecov', :group => :test
 gem 'codeclimate-test-reporter', '~> 1.0.0', :group => :test
-gem 'streamio-ffmpeg'
 gem 'database_cleaner', :group => :test

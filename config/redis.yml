@@ -19,5 +19,5 @@
 # Authors: Michal Mocnak <michal@marigan.net>
 #
 
-hostname: localhost
+hostname: redis
 port: 6379
