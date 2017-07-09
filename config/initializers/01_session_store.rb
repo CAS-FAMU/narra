@@ -19,4 +19,4 @@
 # Authors: Michal Mocnak <michal@marigan.net>, Krystof Pesek <krystof.pesek@gmail.com>
 #
 
-Narra::Application.config.session_store :cookie_store, key: '_narra_core_session'
+Narra::Application.config.session_store :cookie_store, key: '_narra_session'

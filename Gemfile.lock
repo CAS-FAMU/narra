@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 149d8bff797e41553737e817f58459149586b0c5
+  revision: 5c7264deda536f2d62129e4ec11af678f8ffa159
   specs:
-    narra-core (0.0.18)
+    narra-core (0.0.19)
       aasm
       activesupport
       carrierwave-mongoid
@@ -137,7 +137,7 @@ GEM
       timecode
     equalizer (0.0.11)
     erubi (1.6.0)
-    excon (0.57.0)
+    excon (0.57.1)
     extlib (0.9.16)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
@@ -238,7 +238,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
-    mini_magick (4.7.2)
+    mini_magick (4.8.0)
     mini_portile2 (2.2.0)
     minitest (5.10.2)
     mongo (2.4.2)
@@ -350,7 +350,7 @@ GEM
     rspec-support (3.6.0)
     ruby-debug-ide (0.6.0)
       rake (>= 0.8.1)
-    sidekiq (5.0.3)
+    sidekiq (5.0.4)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
