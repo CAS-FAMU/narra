@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 5c7264deda536f2d62129e4ec11af678f8ffa159
+  revision: a9293ed546d7d650521598cd6fe0952fc5aff7d1
   specs:
-    narra-core (0.0.19)
+    narra-core (0.0.20)
       aasm
       activesupport
       carrierwave-mongoid
@@ -102,7 +102,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bson (4.2.1)
+    bson (4.2.2)
     builder (3.2.3)
     carrierwave (0.11.2)
       activemodel (>= 3.2.0)
@@ -136,7 +136,7 @@ GEM
     edl (0.1.6)
       timecode
     equalizer (0.0.11)
-    erubi (1.6.0)
+    erubi (1.6.1)
     excon (0.57.1)
     extlib (0.9.16)
     factory_girl (4.8.0)
@@ -192,12 +192,9 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
-    grape (0.19.2)
+    grape (1.0.0)
       activesupport
       builder
-      hashie (>= 2.1.0)
-      multi_json (>= 1.3.2)
-      multi_xml (>= 0.5.2)
       mustermann-grape (~> 1.0.0)
       rack (>= 1.3.0)
       rack-accept
@@ -208,7 +205,7 @@ GEM
     hashie (3.5.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (0.8.4)
+    i18n (0.8.5)
     ice_nine (0.11.2)
     ipaddress (0.8.3)
     jquery-rails (4.3.1)
