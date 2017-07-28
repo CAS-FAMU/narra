@@ -21,7 +21,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '5.1.1'
+gem 'rails', '5.1.2'
 gem 'jquery-rails'
 gem 'grape'
 gem 'grape-entity'

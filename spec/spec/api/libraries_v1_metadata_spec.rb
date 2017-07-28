@@ -27,8 +27,11 @@ describe Narra::API::Modules::LibrariesV1Metadata do
     @meta_01 = FactoryGirl.create(:meta_library)
     @meta_02 = FactoryGirl.create(:meta_library)
 
+    # create scenarios
+    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+
     # create libraries
-    @library = FactoryGirl.create(:library, author: @author_user, meta: [@meta_01, @meta_02])
+    @library = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, meta: [@meta_01, @meta_02])
   end
 
   context 'not authenticated' do

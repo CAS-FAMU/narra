@@ -23,10 +23,14 @@ require 'rails_helper'
 
 describe Narra::API::Modules::ItemsV1 do
   before(:each) do
+    # create scenarios
+    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+
     # create libraries
-    @library_01 = FactoryGirl.create(:library, author: @author_user, contributors: [@contributor_user])
-    @library_02 = FactoryGirl.create(:library, author: @author_user)
-    @library_03 = FactoryGirl.create(:library, author: @admin_user)
+    @library_01 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, contributors: [@contributor_user])
+    @library_02 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library)
+    @library_03 = FactoryGirl.create(:library, author: @admin_user, scenario: @scenario_library)
 
     # create metadata
     @meta_src_01 = FactoryGirl.create(:meta_item, :source)
@@ -38,7 +42,7 @@ describe Narra::API::Modules::ItemsV1 do
     @item_meta = FactoryGirl.create(:item, library: @library_02, meta: [@meta_src_01, @meta_src_02])
 
     # create projects for testing purpose
-    @project = FactoryGirl.create(:project, author: @author_user, contributors: [@contributor_user], libraries: [@library_03])
+    @project = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, contributors: [@contributor_user], libraries: [@library_03])
 
     # create events
     @event = FactoryGirl.create(:event, item: @item)

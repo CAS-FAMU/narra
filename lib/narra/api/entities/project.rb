@@ -29,33 +29,7 @@ module Narra
           { username: model.author.username, name: model.author.name }
         end
 
-        expose :synthesizers, if: {type: :detail_project} do |project, options|
-          project.synthesizers.collect { |synthesizer|
-            {
-                identifier: synthesizer[:identifier],
-                title: Narra::Core.synthesizer(synthesizer[:identifier]).title,
-                description: Narra::Core.synthesizer(synthesizer[:identifier]).description,
-                options: synthesizer[:options]
-            }
-          }
-        end
-
-        expose :visualizations, if: {type: :detail_project} do |project, options|
-          # process
-          project.visualizations.collect { |visualization|
-            # get model
-            model = Narra::Visualization.find(visualization[:id])
-            {
-                id: visualization[:id],
-                name: model.name,
-                type: visualization[:type],
-                description: model.description,
-                options: visualization[:options].nil? ? model.options : visualization[:options]
-            }
-          }
-        end
-
-        expose :layouts, if: {type: :detail_project}
+        expose :scenario, using: Narra::API::Entities::Scenario, :if => {:type => :detail_project}
 
         expose :public do |model, options|
           model.is_public?

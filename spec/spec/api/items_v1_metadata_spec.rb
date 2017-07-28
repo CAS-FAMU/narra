@@ -23,10 +23,13 @@ require 'rails_helper'
 
 describe Narra::API::Modules::ItemsV1Metadata do
   before(:each) do
+    # create scenarios
+    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+
     # create libraries
-    @library_01 = FactoryGirl.create(:library, author: @author_user)
-    @library_02 = FactoryGirl.create(:library, author: @author_user)
-    @library_03 = FactoryGirl.create(:library, author: @admin_user)
+    @library_01 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library)
+    @library_02 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library)
+    @library_03 = FactoryGirl.create(:library, author: @admin_user, scenario: @scenario_library)
 
     # create metadata
     @meta_src_01 = FactoryGirl.create(:meta_item, :source)

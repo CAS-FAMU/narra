@@ -25,13 +25,13 @@ require 'narra/api/entities/meta_item'
 require 'narra/api/entities/item'
 require 'narra/api/entities/junction'
 require 'narra/api/entities/meta'
+require 'narra/api/entities/scenario'
 require 'narra/api/entities/library'
 require 'narra/api/entities/mark_meta'
 require 'narra/api/entities/mark_sequence'
 require 'narra/api/entities/project'
 require 'narra/api/entities/sequence'
 require 'narra/api/entities/user'
-require 'narra/api/entities/visualization'
 
 module Narra
   module API

@@ -23,8 +23,11 @@ require 'rails_helper'
 
 describe Narra::API::Modules::EventsV1 do
   before(:each) do
+    # create scenarios
+    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+
     # create libraries
-    @library = FactoryGirl.create(:library, author: @author_user)
+    @library = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library)
 
     # create items
     @item = FactoryGirl.create(:item, library: @library)

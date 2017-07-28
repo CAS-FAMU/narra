@@ -23,6 +23,10 @@ require 'rails_helper'
 
 describe Narra::API::Modules::ProjectsV1 do
   before(:each) do
+    # create scenario
+    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+
     # create item
     @item_01 = FactoryGirl.create(:item)
     @item_02 = FactoryGirl.create(:item)
@@ -31,19 +35,19 @@ describe Narra::API::Modules::ProjectsV1 do
     @item_05 = FactoryGirl.create(:item)
 
     # create libraries
-    @library_01 = FactoryGirl.create(:library, author: @author_user, items: [@item_01])
-    @library_02 = FactoryGirl.create(:library, author: @author_user, items: [@item_02])
-    @library_03 = FactoryGirl.create(:library, author: @author_user, items: [@item_03])
-    @library_04 = FactoryGirl.create(:library, author: @author_user, items: [@item_04])
-    @library_05 = FactoryGirl.create(:library, author: @author_user, items: [@item_05])
-    @library_06 = FactoryGirl.create(:library, author: @author_user, items: [@item_04])
-    @library_07 = FactoryGirl.create(:library, author: @author_user, items: [@item_05])
+    @library_01 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_01])
+    @library_02 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_02])
+    @library_03 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_03])
+    @library_04 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_04])
+    @library_05 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_05])
+    @library_06 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_04])
+    @library_07 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_05])
 
     # create projects for testing purpose
-    @project = FactoryGirl.create(:project, author: @author_user, libraries: [@library_01, @library_02])
-    @project_admin = FactoryGirl.create(:project, author: @admin_user, libraries: [@library_03, @library_04])
-    @project_contributor = FactoryGirl.create(:project, author: @author_user, contributors: [@contributor_user], libraries: [@library_06, @library_07])
-    @project_public = FactoryGirl.create(:project, author: @author_user, libraries: [@library_05])
+    @project = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, libraries: [@library_01, @library_02])
+    @project_admin = FactoryGirl.create(:project, author: @admin_user, scenario: @scenario_project, libraries: [@library_03, @library_04])
+    @project_contributor = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, contributors: [@contributor_user], libraries: [@library_06, @library_07])
+    @project_public = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, libraries: [@library_05])
     @project_public.public = true
 
     # create marks
@@ -110,7 +114,7 @@ describe Narra::API::Modules::ProjectsV1 do
 
     describe 'POST /v1/projects/new' do
       it 'creates new project' do
-        post "/v1/projects/new", params: {name: 'test', title: 'test'}
+        post "/v1/projects/new", params: {name: 'test', title: 'test', scenario: 'test'}
 
         # check response status
         expect(response.status).to match(401)
@@ -244,7 +248,7 @@ describe Narra::API::Modules::ProjectsV1 do
 
     describe 'POST /v1/projects/new' do
       it 'creates new project' do
-        post "/v1/projects/new", params: {token: @unroled_token, name: 'test', title: 'test'}
+        post "/v1/projects/new", params: {token: @unroled_token, scenario: 'test', name: 'test', title: 'test'}
 
         # check response status
         expect(response.status).to match(403)
@@ -395,7 +399,7 @@ describe Narra::API::Modules::ProjectsV1 do
     describe 'POST /v1/projects/new' do
       it 'creates new project' do
         # send request
-        post "/v1/projects/new", params: {token: @author_token, name: 'test_project', title: 'Test Project', description: 'Test Project Description'}
+        post "/v1/projects/new", params: {token: @author_token, scenario: @scenario_project._id, name: 'test_project', title: 'Test Project', description: 'Test Project Description'}
 
         # check response status
         expect(response.status).to match(201)

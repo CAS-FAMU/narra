@@ -84,8 +84,17 @@ module Narra
           if parameters.empty?
             object = yield if block_given?
           else
+            # check for subtype
+            if parameters.has_key?(:type)
+              # assign proper model for creation
+              factory = parameters[:type]
+              # remove parameter
+              parameters.except!(:type)
+            else
+              factory = model
+            end
             # create object
-            object = model.create(parameters)
+            object = factory.create(parameters)
             # block
             yield object if block_given?
             # save

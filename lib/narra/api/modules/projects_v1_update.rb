@@ -46,24 +46,12 @@ module Narra
               project.update_attributes(title: params[:title]) unless params[:title].nil? || project.title.equal?(params[:title])
               project.update_attributes(description: params[:description]) unless params[:description].nil? || project.description.equal?(params[:description])
               project.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || project.author.username.equal?(params[:author])
-              project.update_attributes(layouts: params[:layouts]) unless params[:layouts].nil?
+              project.update_attributes(scenario: Scenario.find(params[:scenario])) unless params[:scenario].nil? || project.scenario._id.equal?(params[:scenario])
               project.public = params[:public] unless params[:public].nil?
               # update contributors if exist
               update_array(project.contributors, params[:contributors].collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
               # update libraries if exist
               update_array(project.libraries, params[:libraries].collect { |l| Library.find(l) }) unless params[:libraries].nil?
-              # gather synthesizers if exist
-              unless params[:synthesizers].nil?
-                synthesizers = params[:synthesizers].select { |s| !Narra::Core.synthesizer(s[:identifier].to_sym).nil? }
-                # push them if changed
-                project.update_attributes(synthesizers: synthesizers)
-              end
-              # gather visualizations if exist
-              unless params[:visualizations].nil?
-                visualizations = params[:visualizations].select { |v| !Narra::Visualization.find(v[:id]).nil? }
-                # push them if changed
-                project.update_attributes(visualizations: visualizations)
-              end
             end
           end
         end

@@ -27,8 +27,11 @@ describe Narra::API::Modules::ProjectsV1Metadata do
     @meta_01 = FactoryGirl.create(:meta_project)
     @meta_02 = FactoryGirl.create(:meta_project)
 
+    # create scenario
+    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+
     # create libraries
-    @project = FactoryGirl.create(:project, author: @author_user, meta: [@meta_01, @meta_02])
+    @project = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, meta: [@meta_01, @meta_02])
   end
 
   context 'not authenticated' do

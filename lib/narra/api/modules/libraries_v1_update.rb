@@ -22,7 +22,7 @@
 module Narra
   module API
     module Modules
-      class LibrariesV1Items < Narra::API::Modules::Generic
+      class LibrariesV1Update < Narra::API::Modules::Generic
 
         version 'v1', :using => :path
         format :json
@@ -42,15 +42,10 @@ module Narra
               library.update_attributes(name: params[:name]) unless params[:name].nil? || library.name.equal?(params[:name])
               library.update_attributes(description: params[:description]) unless params[:description].nil? || library.description.equal?(params[:description])
               library.update_attributes(author: User.find_by(username: params[:author])) unless params[:author].nil? || library.author.username.equal?(params[:author])
+              library.update_attributes(scenario: Scenario.find(params[:scenario])) unless params[:scenario].nil? || library.scenario._id.equal?(params[:scenario])
               library.shared = params[:shared] unless params[:shared].nil?
               # update contributors if exist
               update_array(library.contributors, params[:contributors].collect { |c| User.find_by(username: c) }) unless params[:contributors].nil?
-              # gather generators if exist
-              unless params[:generators].nil?
-                generators = params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
-                # push them if changed
-                library.update_attributes(generators: generators)
-              end
             end
           end
         end

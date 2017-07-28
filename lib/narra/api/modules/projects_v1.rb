@@ -59,13 +59,15 @@ module Narra
 
           desc 'Create new project.'
           post 'new' do
-            required_attributes! [:name, :title]
+            required_attributes! [:name, :title, :scenario]
             # check for the author
             author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
             # check for contributors
             contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
+            # get scenario
+            scenario = Narra::Scenario.find(params[:scenario])
             # prepare params
-            parameters = {name: params[:name], title: params[:title], description: params[:description], author: author, contributors: contributors}
+            parameters = {name: params[:name], title: params[:title], description: params[:description], author: author, contributors: contributors, scenario: scenario}
             # create new project
             new_one(Project, Narra::API::Entities::Project, true, [:author], parameters)
           end

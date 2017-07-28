@@ -40,7 +40,7 @@ module Narra
             return_many(Library, Narra::API::Entities::Library, true, [:author])
           end
 
-          desc 'Validation if a specific project exists.'
+          desc 'Validation if a specific library exists.'
           post 'validate' do
             authenticate!
             # prepare
@@ -58,15 +58,15 @@ module Narra
 
           desc 'Create new library.'
           post 'new' do
-            required_attributes! [:name]
+            required_attributes! [:name, :scenario]
             # check for the author
             author = params[:author].nil? ? current_user : User.find_by(username: params[:author])
             # check for contributors
             contributors = params[:contributors].nil? ? [] : params[:contributors].collect { |c| User.find_by(username: c) }
-            # check for generators
-            generators = params[:generators].nil? ? [] : params[:generators].select { |g| !Narra::Core.generator(g[:identifier].to_sym).nil? }
+            # get scenario
+            scenario = Narra::Scenario.find(params[:scenario])
             # prepare params
-            parameters = {name: params[:name], description: params[:description], author: author, contributors: contributors, generators: generators}
+            parameters = {name: params[:name], description: params[:description], author: author, contributors: contributors, scenario: scenario}
             # create library
             new_one(Library, Narra::API::Entities::Library, true, [:author], parameters) do |library|
               # check for the project if any
