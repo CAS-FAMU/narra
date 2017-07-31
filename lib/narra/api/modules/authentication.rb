@@ -56,8 +56,11 @@ module Narra
               @auth = Narra::Identity.create_from_hash(info, Narra::User.where(name: info[:name]).first)
             end
 
+            # prepare payload
+            payload = {:uid => info[:uid]}
+
             # get token
-            @token = CGI::escape(Base64.urlsafe_encode64(info[:uid]))
+            @token = ::JWT.encode payload, Narra::JWT::RSA_PRIVATE, 'RS256'
 
             # get back to origin path or return token
             if request.env['omniauth.origin']

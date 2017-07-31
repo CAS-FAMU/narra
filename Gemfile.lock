@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: f8fffa2b5eecd4d8c1551fcf6eef62a5d36a9215
+  revision: 14a015b2cf837f9b9d235f7d8858de5adf155ba1
   specs:
     narra-core (0.1.0)
       aasm
@@ -274,7 +274,7 @@ GEM
     omniauth-github (1.3.0)
       omniauth (~> 1.5)
       omniauth-oauth2 (>= 1.4.0, < 2.0)
-    omniauth-google-oauth2 (0.5.1)
+    omniauth-google-oauth2 (0.5.2)
       jwt (~> 1.5)
       multi_json (~> 1.3)
       omniauth (>= 1.1.1)
@@ -409,6 +409,7 @@ DEPENDENCIES
   grape
   grape-entity
   jquery-rails
+  jwt
   mongoid
   mongoid-rspec
   mongoid-tree

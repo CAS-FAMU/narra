@@ -82,8 +82,11 @@ module Narra
             # set token to session
             env['rack.session'][:token] = params[:token] unless params[:token].nil?
 
+            # decode token
+            decoded_token = ::JWT.decode env['rack.session'][:token], Narra::JWT::RSA_PUBLIC, true, { :algorithm => 'RS256' }
+
             # get uid
-            uid = Base64::urlsafe_decode64(env['rack.session'][:token])
+            uid = decoded_token[0]['uid']
 
             # get identity for token
             identity = Identity.where(uid: uid).first

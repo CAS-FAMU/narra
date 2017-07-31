@@ -31,6 +31,14 @@ require 'narra/api'
 require 'narra/version'
 require 'narra/core'
 
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in narra-core spec/support/ and its subdirectories.
+Dir[Gem.loaded_specs['narra-core'].gem_dir + '/spec/support/**/*.rb'].each { |f| require f }
+
+# Requires factories,
+# in narra-core spec/factories/ and its subdirectories.
+Dir[Gem.loaded_specs['narra-core'].gem_dir + '/spec/factories/**/*.rb'].each { |f| require f }
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -44,15 +52,7 @@ require 'narra/core'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in narra-core spec/support/ and its subdirectories.
-Dir[Gem.loaded_specs['narra-core'].gem_dir + '/spec/support/**/*.rb'].each { |f| require f }
-
-# Requires factories,
-# in narra-core spec/factories/ and its subdirectories.
-Dir[Gem.loaded_specs['narra-core'].gem_dir + '/spec/factories/**/*.rb'].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   # RSpec Rails can automatically mix in different behaviours to your tests
