@@ -76,11 +76,15 @@ module Narra
 
         def current_user
           # check for token presence
-          return nil if params[:token].nil? && env['rack.session'][:token].nil?
+          return nil if params[:token].nil? && env['rack.session'][:token].nil? && env['HTTP_AUTHORIZATION'].nil?
 
           begin
             # set token to session
-            env['rack.session'][:token] = params[:token] unless params[:token].nil?
+            if params[:token].nil?
+              env['rack.session'][:token] = env['HTTP_AUTHORIZATION'].gsub(/^Bearer /, '')
+            else
+              env['rack.session'][:token] = params[:token]
+            end
 
             # decode token
             decoded_token = ::JWT.decode env['rack.session'][:token], Narra::JWT::RSA_PUBLIC, true, { :algorithm => 'RS256' }
