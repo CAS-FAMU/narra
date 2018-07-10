@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 14a015b2cf837f9b9d235f7d8858de5adf155ba1
+  revision: 2b0b0196fed10476202db2dd9fdbd1163432a4aa
   specs:
-    narra-core (0.1.0)
+    narra-core (0.1.1)
       aasm
       activesupport
       carrierwave-mongoid
@@ -108,10 +108,9 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    carrierwave-mongoid (1.0.0)
-      carrierwave (>= 0.8, < 1.3)
-      mongoid (>= 3.0, < 7.0)
-      mongoid-grid_fs (>= 1.3, < 3.0)
+    carrierwave-mongoid (0.1.0)
+      carrierwave
+      mongoid
     carrierwave-video (0.6.0)
       carrierwave
       streamio-ffmpeg
@@ -150,7 +149,6 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
-    ffi (1.9.25-x64-mingw32)
     fog-aws (3.0.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
@@ -243,15 +241,12 @@ GEM
     minitest (5.11.3)
     mongo (2.6.0)
       bson (>= 4.3.0, < 5.0.0)
-    mongoid (6.4.1)
+    mongoid (7.0.1)
       activemodel (>= 5.1, < 6.0.0)
       mongo (>= 2.5.1, < 3.0.0)
     mongoid-compatibility (0.5.1)
       activesupport
       mongoid (>= 2.0)
-    mongoid-grid_fs (2.3.0)
-      mime-types (>= 1.0, < 4.0)
-      mongoid (>= 3.0, < 7.0)
     mongoid-rspec (4.0.1)
       activesupport (>= 3.0.0)
       mongoid (>= 3.1)
@@ -268,8 +263,6 @@ GEM
     netrc (0.11.0)
     nio4r (2.3.1)
     nokogiri (1.8.4)
-      mini_portile2 (~> 2.3.0)
-    nokogiri (1.8.4-x64-mingw32)
       mini_portile2 (~> 2.3.0)
     oauth2 (1.4.0)
       faraday (>= 0.8, < 0.13)
@@ -328,11 +321,6 @@ GEM
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
     rest-client (2.0.2)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
-    rest-client (2.0.2-x64-mingw32)
-      ffi (~> 1.9)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
@@ -401,7 +389,6 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    unf_ext (0.0.7.5-x64-mingw32)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -414,7 +401,6 @@ GEM
 
 PLATFORMS
   ruby
-  x64-mingw32
 
 DEPENDENCIES
   codeclimate-test-reporter (~> 1.0.0)
