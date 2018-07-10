@@ -24,14 +24,14 @@ require 'rails_helper'
 describe Narra::API::Modules::LibrariesV1Metadata do
   before(:each) do
     # create metadata
-    @meta_01 = FactoryGirl.create(:meta_library)
-    @meta_02 = FactoryGirl.create(:meta_library)
+    @meta_01 = FactoryBot.create(:meta_library)
+    @meta_02 = FactoryBot.create(:meta_library)
 
     # create scenarios
-    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+    @scenario_library = FactoryBot.create(:scenario_library, author: @author_user)
 
     # create libraries
-    @library = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, meta: [@meta_01, @meta_02])
+    @library = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, meta: [@meta_01, @meta_02])
   end
 
   context 'not authenticated' do

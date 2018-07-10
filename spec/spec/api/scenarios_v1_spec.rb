@@ -24,10 +24,10 @@ require 'rails_helper'
 describe Narra::API::Modules::ScenariosV1 do
   before(:each) do
     # create scenarios
-    @scenario = FactoryGirl.create(:scenario_library, author: @author_user)
-    @scenario_admin = FactoryGirl.create(:scenario_library, author: @admin_user)
-    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
-    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+    @scenario = FactoryBot.create(:scenario_library, author: @author_user)
+    @scenario_admin = FactoryBot.create(:scenario_library, author: @admin_user)
+    @scenario_library = FactoryBot.create(:scenario_library, author: @author_user)
+    @scenario_project = FactoryBot.create(:scenario_project, author: @author_user)
   end
 
   context 'not authenticated' do

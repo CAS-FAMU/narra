@@ -24,28 +24,28 @@ require 'rails_helper'
 describe Narra::API::Modules::ItemsV1 do
   before(:each) do
     # create scenarios
-    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
-    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+    @scenario_library = FactoryBot.create(:scenario_library, author: @author_user)
+    @scenario_project = FactoryBot.create(:scenario_project, author: @author_user)
 
     # create libraries
-    @library_01 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, contributors: [@contributor_user])
-    @library_02 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library)
-    @library_03 = FactoryGirl.create(:library, author: @admin_user, scenario: @scenario_library)
+    @library_01 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, contributors: [@contributor_user])
+    @library_02 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library)
+    @library_03 = FactoryBot.create(:library, author: @admin_user, scenario: @scenario_library)
 
     # create metadata
-    @meta_src_01 = FactoryGirl.create(:meta_item, :source)
-    @meta_src_02 = FactoryGirl.create(:meta_item, :source)
+    @meta_src_01 = FactoryBot.create(:meta_item, :source)
+    @meta_src_02 = FactoryBot.create(:meta_item, :source)
 
     # create items
-    @item = FactoryGirl.create(:item, library: @library_01)
-    @item_admin = FactoryGirl.create(:item, library: @library_03)
-    @item_meta = FactoryGirl.create(:item, library: @library_02, meta: [@meta_src_01, @meta_src_02])
+    @item = FactoryBot.create(:item, library: @library_01)
+    @item_admin = FactoryBot.create(:item, library: @library_03)
+    @item_meta = FactoryBot.create(:item, library: @library_02, meta: [@meta_src_01, @meta_src_02])
 
     # create projects for testing purpose
-    @project = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, contributors: [@contributor_user], libraries: [@library_03])
+    @project = FactoryBot.create(:project, author: @author_user, scenario: @scenario_project, contributors: [@contributor_user], libraries: [@library_03])
 
     # create events
-    @event = FactoryGirl.create(:event, item: @item)
+    @event = FactoryBot.create(:event, item: @item)
   end
 
   context 'not authenticated' do

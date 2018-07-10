@@ -24,14 +24,14 @@ require 'rails_helper'
 describe Narra::API::Modules::ProjectsV1Metadata do
   before(:each) do
     # create metadata
-    @meta_01 = FactoryGirl.create(:meta_project)
-    @meta_02 = FactoryGirl.create(:meta_project)
+    @meta_01 = FactoryBot.create(:meta_project)
+    @meta_02 = FactoryBot.create(:meta_project)
 
     # create scenario
-    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+    @scenario_project = FactoryBot.create(:scenario_project, author: @author_user)
 
     # create libraries
-    @project = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, meta: [@meta_01, @meta_02])
+    @project = FactoryBot.create(:project, author: @author_user, scenario: @scenario_project, meta: [@meta_01, @meta_02])
   end
 
   context 'not authenticated' do

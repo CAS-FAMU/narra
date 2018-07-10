@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 2b0b0196fed10476202db2dd9fdbd1163432a4aa
+  revision: 32fa43eaf06bcba39ac178da7cda5e98b29d2f90
   specs:
     narra-core (0.1.1)
       aasm
@@ -15,7 +15,7 @@ GIT
       mediawiki_api
       mime-types
       mini_magick
-      mongoid
+      mongoid (< 7.0.0)
       nokogiri (~> 1.8.0)
       rails (~> 5.1.2)
       redis-namespace
@@ -108,9 +108,10 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    carrierwave-mongoid (0.1.0)
-      carrierwave
-      mongoid
+    carrierwave-mongoid (1.0.0)
+      carrierwave (>= 0.8, < 1.3)
+      mongoid (>= 3.0, < 7.0)
+      mongoid-grid_fs (>= 1.3, < 3.0)
     carrierwave-video (0.6.0)
       carrierwave
       streamio-ffmpeg
@@ -137,10 +138,10 @@ GEM
     erubi (1.7.1)
     excon (0.62.0)
     extlib (0.9.16)
-    factory_girl (4.9.0)
+    factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.9.0)
-      factory_girl (~> 4.9.0)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
@@ -241,12 +242,15 @@ GEM
     minitest (5.11.3)
     mongo (2.6.0)
       bson (>= 4.3.0, < 5.0.0)
-    mongoid (7.0.1)
+    mongoid (6.4.1)
       activemodel (>= 5.1, < 6.0.0)
       mongo (>= 2.5.1, < 3.0.0)
     mongoid-compatibility (0.5.1)
       activesupport
       mongoid (>= 2.0)
+    mongoid-grid_fs (2.3.0)
+      mime-types (>= 1.0, < 4.0)
+      mongoid (>= 3.0, < 7.0)
     mongoid-rspec (4.0.1)
       activesupport (>= 3.0.0)
       mongoid (>= 3.1)
@@ -406,7 +410,7 @@ DEPENDENCIES
   codeclimate-test-reporter (~> 1.0.0)
   database_cleaner
   debase
-  factory_girl_rails
+  factory_bot_rails
   grape
   grape-entity
   jquery-rails

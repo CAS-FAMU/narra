@@ -24,16 +24,16 @@ require 'rails_helper'
 describe Narra::API::Modules::EventsV1 do
   before(:each) do
     # create scenarios
-    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
+    @scenario_library = FactoryBot.create(:scenario_library, author: @author_user)
 
     # create libraries
-    @library = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library)
+    @library = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library)
 
     # create items
-    @item = FactoryGirl.create(:item, library: @library)
+    @item = FactoryBot.create(:item, library: @library)
 
     # create events
-    @event = FactoryGirl.create(:event, item: @item)
+    @event = FactoryBot.create(:event, item: @item)
   end
 
   context 'not authenticated' do

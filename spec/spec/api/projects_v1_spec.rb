@@ -24,39 +24,39 @@ require 'rails_helper'
 describe Narra::API::Modules::ProjectsV1 do
   before(:each) do
     # create scenario
-    @scenario_library = FactoryGirl.create(:scenario_library, author: @author_user)
-    @scenario_project = FactoryGirl.create(:scenario_project, author: @author_user)
+    @scenario_library = FactoryBot.create(:scenario_library, author: @author_user)
+    @scenario_project = FactoryBot.create(:scenario_project, author: @author_user)
 
     # create item
-    @item_01 = FactoryGirl.create(:item)
-    @item_02 = FactoryGirl.create(:item)
-    @item_03 = FactoryGirl.create(:item)
-    @item_04 = FactoryGirl.create(:item)
-    @item_05 = FactoryGirl.create(:item)
+    @item_01 = FactoryBot.create(:item)
+    @item_02 = FactoryBot.create(:item)
+    @item_03 = FactoryBot.create(:item)
+    @item_04 = FactoryBot.create(:item)
+    @item_05 = FactoryBot.create(:item)
 
     # create libraries
-    @library_01 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_01])
-    @library_02 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_02])
-    @library_03 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_03])
-    @library_04 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_04])
-    @library_05 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_05])
-    @library_06 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_04])
-    @library_07 = FactoryGirl.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_05])
+    @library_01 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_01])
+    @library_02 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_02])
+    @library_03 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_03])
+    @library_04 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_04])
+    @library_05 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_05])
+    @library_06 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_04])
+    @library_07 = FactoryBot.create(:library, author: @author_user, scenario: @scenario_library, items: [@item_05])
 
     # create projects for testing purpose
-    @project = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, libraries: [@library_01, @library_02])
-    @project_admin = FactoryGirl.create(:project, author: @admin_user, scenario: @scenario_project, libraries: [@library_03, @library_04])
-    @project_contributor = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, contributors: [@contributor_user], libraries: [@library_06, @library_07])
-    @project_public = FactoryGirl.create(:project, author: @author_user, scenario: @scenario_project, libraries: [@library_05])
+    @project = FactoryBot.create(:project, author: @author_user, scenario: @scenario_project, libraries: [@library_01, @library_02])
+    @project_admin = FactoryBot.create(:project, author: @admin_user, scenario: @scenario_project, libraries: [@library_03, @library_04])
+    @project_contributor = FactoryBot.create(:project, author: @author_user, scenario: @scenario_project, contributors: [@contributor_user], libraries: [@library_06, @library_07])
+    @project_public = FactoryBot.create(:project, author: @author_user, scenario: @scenario_project, libraries: [@library_05])
     @project_public.public = true
 
     # create marks
-    @mark = FactoryGirl.build(:mark_flow, clip: @item_01)
-    @mark_admin = FactoryGirl.build(:mark_flow, clip: @item_02)
+    @mark = FactoryBot.build(:mark_flow, clip: @item_01)
+    @mark_admin = FactoryBot.build(:mark_flow, clip: @item_02)
 
     # create sequences for testing purpose
-    @sequence = FactoryGirl.create(:sequence, project: @project, author: @author_user, marks: [@mark])
-    @sequence_admin = FactoryGirl.create(:sequence, project: @project_admin, author: @admin_user, marks: [@mark_admin])
+    @sequence = FactoryBot.create(:sequence, project: @project, author: @author_user, marks: [@mark])
+    @sequence_admin = FactoryBot.create(:sequence, project: @project_admin, author: @admin_user, marks: [@mark_admin])
   end
 
   context 'not authenticated' do
