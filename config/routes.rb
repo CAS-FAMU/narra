@@ -35,7 +35,4 @@ Rails.application.routes.draw do
 
   # Mount the API root mounter
   mount Narra::API::Mounter => '/'
-
-  # Root redirection
-  root :to => redirect('/v1/system/version')
 end

@@ -32,6 +32,10 @@ module Narra
         mount(api)
       end
 
+      get do
+        redirect '/v1/system/version'
+      end
+
       # Catch all not resolved request and return not found error answer
       route :any, '*path' do
         error_not_found!
