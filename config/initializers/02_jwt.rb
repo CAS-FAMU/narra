@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 CAS / FAMU
+# Copyright (C) 2017 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -21,7 +21,21 @@
 
 module Narra
   module JWT
-    RSA_PRIVATE = OpenSSL::PKey::RSA.generate 2048
+
+    # generate rsa key if not in database
+    rsa_temp = Narra::Tools::Settings.get('rsa_private')
+
+    if rsa_temp.nil?
+      # generate new rsa key
+      RSA_PRIVATE = OpenSSL::PKey::RSA.generate 2048
+      # save and store
+      Narra::Tools::Settings.set('rsa_private', RSA_PRIVATE.to_s)
+    else
+      # load rsa key
+      RSA_PRIVATE = OpenSSL::PKey::RSA.new(rsa_temp)
+    end
+
+    # generate public key from private
     RSA_PUBLIC = RSA_PRIVATE.public_key
   end
 end

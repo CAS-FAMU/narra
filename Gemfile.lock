@@ -1,31 +1,4 @@
 GIT
-  remote: https://github.com/CAS-FAMU/narra-core.git
-  revision: 32fa43eaf06bcba39ac178da7cda5e98b29d2f90
-  specs:
-    narra-core (0.1.1)
-      aasm
-      activesupport
-      carrierwave-mongoid
-      carrierwave-video
-      edl
-      fog-aws
-      fog-google
-      google-api-client (~> 0.8.6)
-      logger-better
-      mediawiki_api
-      mime-types
-      mini_magick
-      mongoid (< 7.0.0)
-      nokogiri (~> 1.8.0)
-      rails (~> 5.1.2)
-      redis-namespace
-      sidekiq
-      sinatra
-      streamio-ffmpeg
-      timecode
-      wisper
-
-GIT
   remote: https://github.com/CAS-FAMU/narra-lemmatizer.git
   revision: 3e085bad640700045286a0cf511ff9c4b39a13f9
   specs:
@@ -47,6 +20,32 @@ GIT
   specs:
     narra-keyword-synth (0.0.2)
       narra-core
+
+PATH
+  remote: ../narra-core
+  specs:
+    narra-core (0.1.2)
+      aasm
+      activesupport
+      carrierwave-mongoid
+      carrierwave-video
+      edl
+      fog-aws
+      fog-google
+      google-api-client (~> 0.8.6)
+      logger-better
+      mediawiki_api
+      mime-types
+      mini_magick
+      mongoid (< 7.0.0)
+      nokogiri (~> 1.8.0)
+      rails (~> 5.1.2)
+      redis-namespace
+      sidekiq
+      sinatra
+      streamio-ffmpeg
+      timecode
+      wisper
 
 GEM
   remote: https://rubygems.org/
