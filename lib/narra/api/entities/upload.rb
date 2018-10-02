@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 CAS / FAMU
+# Copyright (C) 2018 CAS / FAMU
 #
 # This file is part of Narra Core.
 #
@@ -19,24 +19,21 @@
 # Authors: Michal Mocnak <michal@marigan.net>
 #
 
-require 'narra/api/entities/thumbnails'
-require 'narra/api/entities/event'
-require 'narra/api/entities/meta_item'
-require 'narra/api/entities/item'
-require 'narra/api/entities/junction'
-require 'narra/api/entities/meta'
-require 'narra/api/entities/scenario'
-require 'narra/api/entities/library'
-require 'narra/api/entities/mark_meta'
-require 'narra/api/entities/mark_sequence'
-require 'narra/api/entities/project'
-require 'narra/api/entities/sequence'
-require 'narra/api/entities/user'
-require 'narra/api/entities/upload'
-
 module Narra
   module API
     module Entities
+      class Upload < Grape::Entity
+
+        expose :id do |model, options|
+          model._id.to_s
+        end
+
+        expose :filename
+
+        expose :url do |model|
+          model.file.url
+        end
+      end
     end
   end
 end

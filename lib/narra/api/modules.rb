@@ -45,6 +45,7 @@ require 'narra/api/modules/scenarios_v1_update'
 require 'narra/api/modules/settings_v1'
 require 'narra/api/modules/synthesizers_v1'
 require 'narra/api/modules/system_v1'
+require 'narra/api/modules/upload_v1'
 require 'narra/api/modules/users_v1'
 
 module Narra

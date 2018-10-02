@@ -24,7 +24,7 @@ GIT
 PATH
   remote: ../narra-core
   specs:
-    narra-core (0.1.2)
+    narra-core (0.2.0)
       aasm
       activesupport
       carrierwave-mongoid
@@ -50,7 +50,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (4.12.3)
+    aasm (5.0.1)
       concurrent-ruby (~> 1.0)
     actioncable (5.1.2)
       actionpack (= 5.1.2)
@@ -107,9 +107,9 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    carrierwave-mongoid (1.0.0)
+    carrierwave-mongoid (1.1.0)
       carrierwave (>= 0.8, < 1.3)
-      mongoid (>= 3.0, < 7.0)
+      mongoid (>= 3.0, < 8.0)
       mongoid-grid_fs (>= 1.3, < 3.0)
     carrierwave-video (0.6.0)
       carrierwave
@@ -149,12 +149,12 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
-    fog-aws (3.0.0)
+    fog-aws (3.3.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
-    fog-core (2.1.0)
+    fog-core (2.1.2)
       builder
       excon (~> 0.58)
       formatador (~> 0.2)
@@ -183,13 +183,12 @@ GEM
       multi_json (~> 1.10)
       retriable (~> 1.4)
       signet (~> 0.6)
-    googleauth (0.6.2)
+    googleauth (0.6.6)
       faraday (~> 0.12)
       jwt (>= 1.4, < 3.0)
-      logging (~> 2.0)
       memoist (~> 0.12)
       multi_json (~> 1.11)
-      os (~> 0.9)
+      os (>= 0.9, < 2.0)
       signet (~> 0.7)
     grape (1.0.3)
       activesupport
@@ -216,11 +215,7 @@ GEM
     jwt (1.5.6)
     launchy (2.4.3)
       addressable (~> 2.3)
-    little-plugger (1.1.4)
     logger-better (0.2.2)
-    logging (2.2.2)
-      little-plugger (~> 1.1)
-      multi_json (~> 1.10)
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -235,7 +230,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_magick (4.8.0)
+    mini_magick (4.9.2)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
@@ -247,9 +242,9 @@ GEM
     mongoid-compatibility (0.5.1)
       activesupport
       mongoid (>= 2.0)
-    mongoid-grid_fs (2.3.0)
+    mongoid-grid_fs (2.4.0)
       mime-types (>= 1.0, < 4.0)
-      mongoid (>= 3.0, < 7.0)
+      mongoid (>= 3.0, < 8.0)
     mongoid-rspec (4.0.1)
       activesupport (>= 3.0.0)
       mongoid (>= 3.1)
@@ -286,13 +281,13 @@ GEM
     omniauth-oauth2 (1.5.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.2)
-    os (0.9.6)
-    public_suffix (3.0.2)
+    os (1.0.0)
+    public_suffix (3.0.3)
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-cors (1.0.2)
-    rack-protection (2.0.3)
+    rack-protection (2.0.4)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -320,7 +315,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (12.3.1)
-    redis (4.0.1)
+    redis (4.0.2)
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
     rest-client (2.0.2)
@@ -351,12 +346,11 @@ GEM
     rspec-support (3.7.1)
     ruby-debug-ide (0.6.1)
       rake (>= 0.8.1)
-    sidekiq (5.1.3)
-      concurrent-ruby (~> 1.0)
-      connection_pool (~> 2.2, >= 2.2.0)
+    sidekiq (5.2.2)
+      connection_pool (~> 2.2, >= 2.2.2)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
-    signet (0.8.1)
+    signet (0.10.0)
       addressable (~> 2.3)
       faraday (~> 0.9)
       jwt (>= 1.5, < 3.0)
@@ -366,10 +360,10 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    sinatra (2.0.3)
+    sinatra (2.0.4)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.3)
+      rack-protection (= 2.0.4)
       tilt (~> 2.0)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
@@ -434,4 +428,4 @@ DEPENDENCIES
   tzinfo-data
 
 BUNDLED WITH
-   1.16.2
+   1.16.3
