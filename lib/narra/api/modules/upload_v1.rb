@@ -38,6 +38,7 @@ module Narra
           desc "Upload possible item."
           post do
             required_attributes! [:files]
+            error_parameter_missing!(:files) unless params[:files].kind_of?(Array)
             # get authenticated
             authenticate!
             # get authorized
@@ -50,6 +51,7 @@ module Narra
               upload = Narra::Upload.new
               # store file
               upload.filename = file[:filename]
+              upload.user = current_user
               upload.file = file[:tempfile]
               # save
               upload.save!
@@ -63,9 +65,9 @@ module Narra
           get ':username' do
             return_one_custom(User, :username, true, [:author]) do |user, roles, public|
               # get authorized
-              error_not_authorized! unless authorize([:admin]).size > 0 or params[:username] == user.username
+              error_not_authorized! unless authorize([:admin]).size > 0 or params[:username] == current_user.username
               # present
-              present_ok(user.uploads, Upload, Narra::API::Entities::Upload)
+              present_ok(user.uploads, Narra::Upload, Narra::API::Entities::Upload)
             end
           end
         end
